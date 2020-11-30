@@ -374,6 +374,22 @@ ActiveRecord::Schema.define(version: 2020_12_06_205429) do
     t.index ["market_id"], name: "index_trading_fees_on_market_id"
   end
 
+  create_table "transactions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "currency_id"
+    t.string "reference_type"
+    t.integer "reference_id"
+    t.string "hash"
+    t.string "from_address"
+    t.string "to_address"
+    t.decimal "amount", precision: 10
+    t.integer "txout"
+    t.string "status"
+    t.json "options"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["currency_id"], name: "index_transactions_on_currency_id"
+  end
+
   create_table "transfers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "key", limit: 30, null: false
     t.integer "category", limit: 1, null: false
