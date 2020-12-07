@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_06_205429) do
+ActiveRecord::Schema.define(version: 2020_12_07_212141) do
 
   create_table "accounts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "member_id", null: false
@@ -384,14 +384,26 @@ ActiveRecord::Schema.define(version: 2020_12_06_205429) do
   end
 
   create_table "triggers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "order_id", null: false
+    t.string "market_id", limit: 20, null: false
+    t.integer "member_id", null: false
+    t.bigint "order_id"
+    t.decimal "trigger_price", precision: 32, scale: 16, default: "0.0", null: false
+    t.decimal "amount", precision: 32, scale: 16, default: "0.0", null: false
+    t.decimal "execution_price", precision: 32, scale: 16, default: "0.0"
+    t.decimal "locked", precision: 32, scale: 16, default: "0.0", null: false
     t.integer "order_type", limit: 1, null: false, unsigned: true
-    t.binary "value", limit: 128, null: false
+    t.integer "side", null: false
     t.integer "state", limit: 1, default: 0, null: false, unsigned: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 3, null: false
+    t.datetime "updated_at", precision: 3, null: false
+    t.index ["member_id"], name: "index_triggers_on_member_id"
     t.index ["order_id"], name: "index_triggers_on_order_id"
+    t.index ["order_type", "market_id"], name: "index_triggers_on_order_type_and_market_id"
+    t.index ["order_type", "member_id"], name: "index_triggers_on_order_type_and_member_id"
     t.index ["order_type"], name: "index_triggers_on_order_type"
+    t.index ["side"], name: "index_triggers_on_side"
+    t.index ["state", "side", "market_id"], name: "index_triggers_on_state_and_side_and_market_id"
+    t.index ["state", "side", "member_id"], name: "index_triggers_on_state_and_side_and_member_id"
     t.index ["state"], name: "index_triggers_on_state"
   end
 
