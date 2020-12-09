@@ -21,6 +21,7 @@ production:
   <<: *default
   url: <%= ENV['DATABASE_URL'] %>
   database: <%= ENV.fetch('DATABASE_NAME', 'peatio_production') %>
+  idle_timeout: 0
 
 archive_db:
   <<: *default
