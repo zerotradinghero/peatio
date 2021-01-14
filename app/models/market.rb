@@ -93,6 +93,7 @@ class Market < ApplicationRecord
 
   validates :amount_precision,
             :price_precision,
+            :total_precision,
             numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
   validates :price_precision,
@@ -206,6 +207,7 @@ end
 #  engine_id        :bigint           not null
 #  amount_precision :integer          default(4), not null
 #  price_precision  :integer          default(4), not null
+#  total_precision  :integer          default(4), not null
 #  min_price        :decimal(32, 16)  default(0.0), not null
 #  max_price        :decimal(32, 16)  default(0.0), not null
 #  min_amount       :decimal(32, 16)  default(0.0), not null

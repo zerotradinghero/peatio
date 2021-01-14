@@ -81,6 +81,14 @@ module API
         )
 
         expose(
+          :total_precision,
+          documentation: {
+            type: BigDecimal,
+            desc: "Precision for order total."
+          }
+        )
+
+        expose(
           :state,
           documentation: {
             type: String,

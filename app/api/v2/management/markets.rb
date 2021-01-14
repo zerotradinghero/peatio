@@ -35,6 +35,10 @@ module API
                    type: { value: Integer },
                    values: { value: ->(p) { p && p >= 0 } },
                    desc: -> { API::V2::Management::Entities::Market.documentation[:price_precision][:desc] }
+          optional :total_precision,
+                   type: { value: Integer },
+                   values: { value: ->(p) { p && p >= 0 } },
+                   desc: -> { API::V2::Management::Entities::Market.documentation[:total_precision][:desc] }
           optional :max_price,
                    type: { value: BigDecimal },
                    values: { value: ->(p) { p >= 0 } },

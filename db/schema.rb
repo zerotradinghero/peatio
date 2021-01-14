@@ -204,6 +204,7 @@ ActiveRecord::Schema.define(version: 2020_12_22_155655) do
     t.bigint "engine_id", null: false
     t.integer "amount_precision", limit: 1, default: 4, null: false
     t.integer "price_precision", limit: 1, default: 4, null: false
+    t.integer "total_precision", limit: 1, default: 4, null: false
     t.decimal "min_price", precision: 32, scale: 16, default: "0.0", null: false
     t.decimal "max_price", precision: 32, scale: 16, default: "0.0", null: false
     t.decimal "min_amount", precision: 32, scale: 16, default: "0.0", null: false
