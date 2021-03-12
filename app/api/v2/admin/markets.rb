@@ -24,7 +24,7 @@ module API
             },
             total_precision: {
               type: { value: Integer, message: 'admin.market.non_integer_price_precision' },
-              values: { value: -> (p){ p && p >= 0 }, message: 'admin.market.invalid_price_precision' },
+              values: { value: -> (p){ p && p >= 0 }, message: 'admin.market.invalid_total_precision' },
               default: 4,
               desc: -> { API::V2::Admin::Entities::Market.documentation[:total_precision][:desc] }
             },

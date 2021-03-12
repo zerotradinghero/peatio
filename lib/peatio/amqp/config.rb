@@ -54,7 +54,8 @@ module AMQP
       def exchange(id)
         type = data[:exchange][id][:type]
         name = data[:exchange][id][:name]
-        [type, name]
+        durable = data[:queue][id][:durable]
+        [type, name, durable]
       end
 
     end

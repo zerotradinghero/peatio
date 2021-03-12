@@ -20,7 +20,9 @@ module AMQP
       end
 
       def exchange(id)
-        exchanges[id] ||= channel.send *AMQP::Config.exchange(id)
+        type, name, durable = AMQP::Config.exchange(id)
+
+        exchanges[id] ||= Bunny::Exchange.new(channel, type, name, { :durable => durable })
       end
 
       def publish(eid, payload, attrs={})

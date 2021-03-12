@@ -152,7 +152,7 @@ module Matching
       end
       @increment_count += 1
       @sequence_number += 1
-      ::AMQP::Queue.enqueue_event("public", market, "ob-inc", {
+      ::AMQP::Queue.enqueue_event("public", market, "depth", {
         "#{side}s" => [price.to_s, amount.to_s],
         "sequence" => @sequence_number,
       })
