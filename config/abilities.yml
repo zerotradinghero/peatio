@@ -32,10 +32,14 @@ admin_permissions:
       - Market
       - TradingFee
       - Wallet
-      - Adjustment  
+      - Adjustment
+      - InternalTransfer
+      - WhitelistedSmartContract
     read:
       - Trade
       - Order
+    create:
+      - Deposits::Fiat
     update:
       - Order
   admin:
@@ -59,9 +63,13 @@ admin_permissions:
       - TradingFee
       - Wallet
       - Adjustment 
+      - InternalTransfer
+      - WhitelistedSmartContract
     read:
       - Trade
       - Order
+    create:
+      - Deposits::Fiat
     update:
       - Order
   technical:
@@ -73,6 +81,7 @@ admin_permissions:
       - Trade
       - Order
       - Member
+      - InternalTransfer
     manage:
       - WithdrawLimit
       - Blockchain
@@ -106,6 +115,7 @@ admin_permissions:
       - Trade
       - Order
       - Adjustment
+      - InternalTransfer
     create:
       - Deposits::Fiat
       - Adjustment
@@ -143,6 +153,7 @@ admin_permissions:
       - Market
       - Trade
       - Order
+      - InternalTransfer
 
 user_permissions:
   superadmin:

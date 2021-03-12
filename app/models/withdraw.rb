@@ -108,6 +108,12 @@ class Withdraw < ApplicationRecord
           currency.coin? && txid?
         end
       end
+      after_commit do
+        tx = currency.blockchain_api.fetch_transaction(self)
+        if tx.present?
+          success! if tx.status.success?
+        end
+      end
     end
 
     event :dispatch do

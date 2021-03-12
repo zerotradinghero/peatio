@@ -15,6 +15,9 @@ module API
           requires :id,
                    type: String,
                    desc: -> { API::V2::Management::Entities::Market.documentation[:id][:desc] }
+          optional :engine_id,
+                   type: Integer,
+                   desc: -> { API::V2::Management::Entities::Market.documentation[:engine_id][:desc] }
           optional :state,
                    type: String,
                    values: { value: ::Market::STATES },
@@ -64,7 +67,7 @@ module API
           success API::V2::Management::Entities::Market
         end
         post '/markets/list' do
-          present ::Market.ordered, with: API::V2::Entities::Market
+          present ::Market.ordered, with: API::V2::Management::Entities::Market
           status 200
         end
       end

@@ -88,12 +88,12 @@ class Member < ApplicationRecord
     trades.each(&:revert_trade!)
   end
 
-  def payment_address(wallet_id)
+  def payment_address(wallet_id, remote = false)
     wallet = Wallet.find(wallet_id)
 
     return if wallet.blank?
 
-    pa = PaymentAddress.find_by(member: self, wallet: wallet)
+    pa = PaymentAddress.find_by(member: self, wallet: wallet, remote: remote)
 
     if pa.blank?
       pa = payment_addresses.create!(wallet: wallet)
@@ -105,7 +105,7 @@ class Member < ApplicationRecord
   end
 
   # Attempts to create additional deposit address for account.
-  def payment_address!(wallet_id)
+  def payment_address!(wallet_id, remote = false)
     wallet = Wallet.find(wallet_id)
 
     return if wallet.blank?
@@ -113,11 +113,11 @@ class Member < ApplicationRecord
     pa = PaymentAddress.find_by(member: self, wallet: wallet)
 
     # The address generation process is in progress.
-    if pa.address.blank?
+    if pa.present? && pa.address.blank?
       pa
     else
-      # allows user to have multiple addresses.
-      pa = payment_addresses.create!(wallet: wallet)
+      # allows user to have multiple addresses
+      pa = payment_addresses.create!(wallet: wallet, remote: remote)
     end
     pa
   end
@@ -133,6 +133,14 @@ class Member < ApplicationRecord
       Member.find_by(id: member_id)&.uid
     end
 
+    def find_by_username_or_uid(uid_or_username)
+      if Member.find_by(uid: uid_or_username).present?
+        Member.find_by(uid: uid_or_username)
+      elsif Member.find_by(username: uid_or_username).present?
+        Member.find_by(username: uid_or_username)
+      end
+    end
+
     # Create Member object from payload
     # == Example payload
     # {
@@ -140,6 +148,7 @@ class Member < ApplicationRecord
     #   :sub=>"session",
     #   :aud=>["peatio"],
     #   :email=>"admin@barong.io",
+    #   :username=>"barong",
     #   :uid=>"U123456789",
     #   :role=>"admin",
     #   :state=>"active",
@@ -154,6 +163,7 @@ class Member < ApplicationRecord
       validate_payload(params)
       member = Member.find_or_create_by(uid: p[:uid]) do |m|
         m.email = params[:email]
+        m.username = params[:username]
         m.role = params[:role]
         m.state = params[:state]
         m.level = params[:level]
@@ -165,7 +175,7 @@ class Member < ApplicationRecord
 
     # Filter and validate payload params
     def filter_payload(payload)
-      payload.slice(:email, :uid, :role, :state, :level)
+      payload.slice(:email, :username, :uid, :role, :state, :level)
     end
 
     def validate_payload(p)
@@ -210,6 +220,7 @@ end
 #  id         :integer          not null, primary key
 #  uid        :string(32)       not null
 #  email      :string(255)      not null
+#  username   :string(255)
 #  level      :integer          not null
 #  role       :string(16)       not null
 #  group      :string(32)       default("vip-0"), not null
@@ -219,6 +230,7 @@ end
 #
 # Indexes
 #
-#  index_members_on_email  (email) UNIQUE
-#  index_members_on_uid    (uid) UNIQUE
+#  index_members_on_email     (email) UNIQUE
+#  index_members_on_uid       (uid) UNIQUE
+#  index_members_on_username  (username) UNIQUE
 #
