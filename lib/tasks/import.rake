@@ -116,7 +116,33 @@ namespace :import do
     Kernel.puts "Errored #{errors_count}"
   end
 
-  desc 'Import configs(accounts, blockchains, currencies, wallets, trading_fees, markets, engines) to the database'
+  desc 'Load whitelisted smart contracts from CSV'
+  task :whitelisted_smart_contracts, [:config_load_path] => [:environment] do |_, args|
+    args.with_defaults(:config_load_path => 'exported_whitelisted_smart_contracts.csv')
+    csv_table = File.read(Rails.root.join(args[:config_load_path]))
+    count = 0
+    errors_count = 0
+    CSV.parse(csv_table, headers: true, quote_empty: false).each do |row|
+      row = row.to_h.compact.symbolize_keys!
+      address = row[:address]
+      blockchain_key = row[:blockchain_key]
+      description = row[:description]
+      next if address.blank? || blockchain_key.blank? || ::Blockchain.pluck(:key).exclude?(blockchain_key)
+      next if Blockchain.find_by(key: blockchain_key).blank?
+
+      ::WhitelistedSmartContract.create!(description: description, address: address,
+                                     blockchain_key: blockchain_key, state: 'active')
+      count += 1
+    rescue StandardError => e
+      message = { error: e.message, uid: row[:uid], currency_id: currency_id[:currency_id] }
+      Rails.logger.error message
+      errors_count += 1
+    end
+    Kernel.puts "whitelisted contracts created #{count}"
+    Kernel.puts "Errored #{errors_count}"
+  end
+
+  desc 'Import configs(accounts, blockchains, currencies, wallets, trading_fees, markets, engines, whitelisted_smart_contracts) to the database'
   task :configs, [:config_load_path] => :environment do |_, args|
     args.with_defaults(config_load_path: 'import_configs.yaml')
 
@@ -124,15 +150,34 @@ namespace :import do
     Peatio::Import.new(import_data).load_all
   end
 
-  desc 'Load local trades to the influx'
-  task trade_to_influx: :environment do
-    Trade.find_in_batches do |batch|
-      batch.each_with_index do |trade, index|
-        # We will convert created_at to ms and update it with index to make sure that we have unique
-        # timestamps for each trade because influxdb use timestamp as unique identifier.
-        influx_data = trade.influx_data.merge(timestamp: trade.created_at.to_i * 1000 + index)
-        Peatio::InfluxDB.client(keyshard: trade.market_id).write_point('trades', influx_data, "ms")
+  desc 'Load local trades to the Influx. By default, it will load trades starting from the last id in Influx'
+  task :trade_to_influx, [:full_load] => :environment do |_, args|
+    args.with_defaults(full_load: 'false')
+    if args.full_load == 'false'
+      ids = []
+      Peatio::InfluxDB.config[:host].each do |host|
+        client = Peatio::InfluxDB.client(host: [host])
+        client.query('SELECT id from trades ORDER BY desc limit 1') do |_name, _tags, points|
+          ids << points.map(&:deep_symbolize_keys!).first[:id]
+        end
       end
+      last_id = ids.max
+      Trade.where('id > ?', last_id.to_i).find_in_batches do |batch|
+        process_trades_batch(batch)
+      end
+    elsif args.full_load == 'true'
+      Trade.find_in_batches do |batch|
+        process_trades_batch(batch)
+      end
+    end
+  end
+
+  def process_trades_batch(batch)
+    batch.each_with_index do |trade, index|
+      # We will convert created_at to ms and update it with index to make sure that we have unique
+      # timestamps for each trade because influxdb use timestamp as unique identifier.
+      influx_data = trade.influx_data.merge(timestamp: trade.created_at.to_i * 1000 + index)
+      Peatio::InfluxDB.client(keyshard: trade.market_id).write_point('trades', influx_data, "ms")
     end
   end
 

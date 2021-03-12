@@ -18,6 +18,11 @@ module Ethereum
       # Clean client state during configure.
       @client = nil
       @erc20 = []; @eth = []
+      @whitelisted_addresses = if settings[:whitelisted_addresses].present?
+                                 settings[:whitelisted_addresses].pluck(:address).to_set
+                               else
+                                 []
+                               end
 
       @settings.merge!(settings.slice(*SUPPORTED_SETTINGS))
       @settings[:currencies]&.each do |c|
@@ -42,7 +47,9 @@ module Ethereum
           next if @erc20.find do |c|
             # Check `to` and `input` options to find erc-20 smart contract contract 
             c.dig(:options, :erc20_contract_address) == normalize_address(tx.fetch('to')) ||
-            c.dig(:options, :erc20_contract_address) == '0x' + tx.fetch('input')[34...74].to_s
+            c.dig(:options, :erc20_contract_address) == '0x' + tx.fetch('input')[34...74].to_s ||
+            # Check if `to` in whitelisted smart contracts
+            @whitelisted_addresses.include?(tx.fetch('to'))
           end.blank?
 
           tx = client.json_rpc(:eth_getTransactionReceipt, [normalize_txid(tx.fetch('hash'))])
@@ -90,10 +97,15 @@ module Ethereum
         attributes = {
           amount: convert_from_base_unit(txn_json.fetch('value').hex, currency),
           to_address: normalize_address(txn_json['to']),
+          txout: txn_json.fetch('transactionIndex').to_i(16),
           status: transaction_status(txn_receipt)
         }
       else
-        txn_json = txn_receipt.fetch('logs').find { |log| log['logIndex'].to_i(16) == transaction.txout }
+        if transaction.txout.present?
+          txn_json = txn_receipt.fetch('logs').find { |log| log['logIndex'].to_i(16) == transaction.txout }
+        else
+          txn_json = txn_receipt.fetch('logs').first
+        end
         attributes = {
           amount: convert_from_base_unit(txn_json.fetch('data').hex, currency),
           to_address: normalize_address('0x' + txn_json.fetch('topics').last[-40..-1]),

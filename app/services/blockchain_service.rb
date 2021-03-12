@@ -2,14 +2,16 @@ class BlockchainService
   Error = Class.new(StandardError)
   BalanceLoadError = Class.new(StandardError)
 
-  attr_reader :blockchain, :currencies, :adapter
+  attr_reader :blockchain, :whitelisted_smart_contract, :currencies, :adapter
 
   def initialize(blockchain)
     @blockchain = blockchain
     @currencies = blockchain.currencies.deposit_enabled
+    @whitelisted_addresses = blockchain.whitelisted_smart_contracts.active
     @adapter = Peatio::Blockchain.registry[blockchain.client.to_sym].new
     @adapter.configure(server: @blockchain.server,
-                       currencies: @currencies.map(&:to_blockchain_api_settings))
+                       currencies: @currencies.map(&:to_blockchain_api_settings),
+                       whitelisted_addresses: @whitelisted_addresses)
   end
 
   def latest_block_number
@@ -29,6 +31,18 @@ class BlockchainService
 
   def supports_cash_addr_format?
     @adapter.features[:cash_addr_format]
+  end
+
+  def fetch_transaction(transaction)
+    tx = Peatio::Transaction.new(currency_id: transaction.currency_id,
+                                 hash: transaction.txid,
+                                 to_address: transaction.rid,
+                                 amount: transaction.amount)
+    if @adapter.respond_to?(:fetch_transaction)
+      @adapter.fetch_transaction(tx)
+    else
+      tx
+    end
   end
 
   def process_block(block_number)

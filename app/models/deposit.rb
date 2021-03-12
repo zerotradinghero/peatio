@@ -20,7 +20,8 @@ class Deposit < ApplicationRecord
 
   acts_as_eventable prefix: 'deposit', on: %i[create update]
 
-  validates :tid, :aasm_state, :type, presence: true
+  validates :tid, presence: true, uniqueness: { case_sensitive: false }
+  validates :aasm_state, :type, presence: true
   validates :completed_at, presence: { if: :completed? }
   validates :block_number, allow_blank: true, numericality: { greater_than_or_equal_to: 0, only_integer: true }
   validates :amount,
@@ -50,7 +51,7 @@ class Deposit < ApplicationRecord
     event :accept do
       transitions from: :submitted, to: :accepted
       after do
-        if currency.coin?
+        if currency.coin? && Peatio::App.config.deposit_funds_locked
           account.plus_locked_funds(amount)
         else
           account.plus_funds(amount)
@@ -95,8 +96,10 @@ class Deposit < ApplicationRecord
     event :dispatch do
       transitions from: %i[processing fee_processing], to: :collected
       after do
-        account.unlock_funds(amount)
-        record_complete_operations!
+        if Peatio::App.config.deposit_funds_locked
+          account.unlock_funds(amount)
+          record_complete_operations!
+        end
       end
     end
 
@@ -197,7 +200,7 @@ class Deposit < ApplicationRecord
         member_id: member_id
       )
 
-      kind = currency.coin? ? :locked : :main
+      kind = currency.coin? && Peatio::App.config.deposit_funds_locked ? :locked : :main
       # Credit locked fiat/crypto Liability account.
       Operations::Liability.credit!(
         amount: amount,
