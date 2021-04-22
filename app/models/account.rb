@@ -16,6 +16,8 @@ class Account < ApplicationRecord
   scope :visible, -> { joins(:currency).merge(Currency.where(visible: true)) }
   scope :ordered, -> { joins(:currency).order(position: :asc) }
 
+  after_commit :trigger_event
+
   def as_json_for_event_api
     {
       id: id,
@@ -25,6 +27,18 @@ class Account < ApplicationRecord
       locked: locked,
       created_at: created_at&.iso8601,
       updated_at: updated_at&.iso8601
+    }
+  end
+
+  def trigger_event
+    ::AMQP::Queue.enqueue_event("private", maker.uid, "trade", for_notify)
+  end
+
+  def for_notify
+    {
+      currency: currency_id,
+      balance: balance,
+      locked: locked
     }
   end
 
