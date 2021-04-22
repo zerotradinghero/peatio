@@ -11,9 +11,10 @@ module API
             withdraw.with_lock do
               case action
                 when 'process'
-                  withdraw.process!
+                  withdraw.accept!
                   # Process fiat withdraw immediately. Crypto withdraws will be processed by workers.
                   if withdraw.currency.fiat?
+                    withdraw.process!
                     withdraw.dispatch!
                     withdraw.success!
                   end
@@ -122,7 +123,6 @@ module API
           withdraw = "withdraws/#{currency.type}".camelize.constantize.new(declared_params)
 
           withdraw.save!
-          withdraw.with_lock { withdraw.accept! }
           perform_action(withdraw, params[:action]) if params[:action]
           present withdraw, with: API::V2::Management::Entities::Withdraw
         rescue ::Account::AccountError => e

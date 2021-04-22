@@ -61,6 +61,7 @@ module API
 
         def check_jwt!(jwt)
           security_configuration = Rails.configuration.x.security_configuration
+          Rails.logger.error { jwt }
           begin
             scope    = security_configuration.fetch(:scopes).fetch(security_scope)
             keychain = security_configuration

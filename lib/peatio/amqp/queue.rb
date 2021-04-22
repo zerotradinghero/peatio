@@ -20,6 +20,8 @@ module AMQP
       end
 
       def exchange(id)
+        return exchanges[id] if exchanges[id]
+
         type, name, durable = AMQP::Config.exchange(id)
 
         exchanges[id] ||= Bunny::Exchange.new(channel, type, name, { :durable => durable })

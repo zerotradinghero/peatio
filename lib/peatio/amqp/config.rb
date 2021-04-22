@@ -52,9 +52,16 @@ module AMQP
       end
 
       def exchange(id)
+        Rails.logger.debug { data[:queue][id] }
         type = data[:exchange][id][:type]
         name = data[:exchange][id][:name]
-        durable = data[:queue][id][:durable]
+
+        if data[:queue][id]
+          durable = data[:queue][id][:durable] || false
+        else
+          durable = false
+        end
+
         [type, name, durable]
       end
 

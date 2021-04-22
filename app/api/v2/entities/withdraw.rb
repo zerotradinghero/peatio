@@ -14,6 +14,14 @@ module API
         )
 
         expose(
+          :tid,
+          documentation: {
+            type: Integer,
+            desc: 'The shared transaction ID.'
+          }
+        )
+
+        expose(
           :currency_id,
           as: :currency,
           documentation: {

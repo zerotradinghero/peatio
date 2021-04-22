@@ -76,6 +76,10 @@ class Withdraw < ApplicationRecord
         lock_funds
         record_submit_operations!
       end
+      after_commit do
+        # auto process withdrawal if sum less than limits and WITHDRAW_ADMIN_APPROVE env set to false (not set)
+        process! if verify_limits && ENV.false?('WITHDRAW_ADMIN_APPROVE') && currency.coin?
+      end
     end
 
     event :cancel do

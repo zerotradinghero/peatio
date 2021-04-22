@@ -40,6 +40,14 @@ module API
         )
 
         expose(
+          :from_addresses,
+          documentation: {
+            type: String,
+            desc: 'Deposit address.'
+          }
+        )
+
+        expose(
           :txid,
           documentation: {
             type: String,
