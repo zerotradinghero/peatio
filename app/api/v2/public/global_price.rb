@@ -6,7 +6,7 @@ module API
     module Public
       class GlobalPrice < Grape::API
         get "/global_price" do
-          Rails.cache.fetch(:global_price)
+          JSON.parse(Rails.cache.fetch(:global_price) || "{}")
         end
       end
     end
