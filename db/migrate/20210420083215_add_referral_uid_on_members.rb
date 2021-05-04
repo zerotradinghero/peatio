@@ -1,5 +1,5 @@
 class AddReferralUidOnMembers < ActiveRecord::Migration[5.2]
   def change
-    add_column :members, :referral_uid, :integer, after: :price_precision
+    add_column :members, :referral_uid, :integer, after: :group
   end
 end
