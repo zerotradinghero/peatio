@@ -34,7 +34,8 @@ ARGV.each do |id|
   queue  = ch.queue *AMQP::Config.binding_queue(id)
 
   if args = AMQP::Config.binding_exchange(id)
-    x = ch.send *args
+    type, name, durable = args
+    x = ch.exchange(name, { type: type, durable: durable })
 
     case args.first
     when 'direct'

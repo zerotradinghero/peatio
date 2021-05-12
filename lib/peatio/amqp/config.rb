@@ -52,7 +52,6 @@ module AMQP
       end
 
       def exchange(id)
-        Rails.logger.debug { data[:queue][id] }
         type = data[:exchange][id][:type]
         name = data[:exchange][id][:name]
 
