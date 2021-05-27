@@ -150,11 +150,13 @@ class Trade < ApplicationRecord
   end
 
   def for_global
-    { tid:        id,
-      taker_type: taker_type,
-      date:       created_at.to_i,
-      price:      price.to_s || ZERO,
-      amount:     amount.to_s || ZERO }
+    { id:             id,
+      price:          price || ZERO,
+      amount:         amount || ZERO,
+      total:          total || ZERO,
+      market:         market.id,
+      taker_type:     taker_type,
+      created_at:     created_at }
   end
 
   def record_complete_operations!
