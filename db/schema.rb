@@ -268,6 +268,7 @@ ActiveRecord::Schema.define(version: 2021_03_02_120855) do
     t.string "ask", limit: 10, null: false
     t.string "market_id", limit: 20, null: false
     t.decimal "price", precision: 32, scale: 16
+    t.decimal "stop_price", precision: 32, scale: 16
     t.decimal "volume", precision: 32, scale: 16, null: false
     t.decimal "origin_volume", precision: 32, scale: 16, null: false
     t.decimal "maker_fee", precision: 17, scale: 16, default: "0.0", null: false
