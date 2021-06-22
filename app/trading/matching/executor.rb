@@ -46,7 +46,7 @@ module Matching
 
     def execute!
       # NOTE: Run matching engine for disabled markets.
-      @market = Market.find(@trade_payload[:market_id])
+      @market = Market.find_spot_by_symbol(@trade_payload[:market_id])
       @price  = @trade_payload[:strike_price].to_d
       @amount = @trade_payload[:amount].to_d
       @total  = @trade_payload[:total].to_d
@@ -87,7 +87,7 @@ module Matching
 
         accounts_table = Account
           .lock
-          .select(:id, :member_id, :currency_id, :balance, :locked)
+          .select(:member_id, :currency_id, :balance, :locked)
           .where(member_id: [@maker_order.member_id, @taker_order .member_id].uniq, currency_id: [@market.base_unit, @market.quote_unit])
           .each_with_object({}) { |record, memo| memo["#{record.currency_id}:#{record.member_id}"] = record }
 
@@ -109,7 +109,15 @@ module Matching
           table     = record.class.arel_table
           statement = Arel::UpdateManager.new
           statement.table(table)
-          statement.where(table[:id].eq(record.id))
+
+          if record.composite?
+            record.class.primary_key.each do |key|
+              statement.where(table[key].eq(record[key]))
+            end
+          else
+            statement.where(table[:id].eq(record.id))
+          end
+
           updates = record.changed_attributes.map do |(attribute, _)|
             if Order === record
               value = record.public_send(attribute)
@@ -119,6 +127,7 @@ module Matching
             end
           end
           statement.set updates
+
           statement.to_sql
         end.join('; ').tap do |sql|
           Rails.logger.debug { sql }
@@ -147,7 +156,7 @@ module Matching
       AMQP::Queue.publish :trade, @trade.as_json, {
         headers: {
           type:     :local,
-          market:   @market.id,
+          market:   @market.symbol,
           maker_id: @maker_id,
           taker_id: @taker_id
         }
