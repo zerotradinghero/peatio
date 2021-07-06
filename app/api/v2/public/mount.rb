@@ -15,6 +15,7 @@ module API
         mount Public::Webhooks
         mount Public::WithdrawLimits
         mount Public::GlobalPrice
+        mount Public::Config
       end
     end
   end
