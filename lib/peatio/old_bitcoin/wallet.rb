@@ -1,6 +1,8 @@
 module OldBitcoin
   class Wallet < Peatio::Wallet::Abstract
 
+    DEFAULT_FEATURES = { skip_deposit_collection: false }.freeze
+
     def initialize(settings = {})
       @settings = settings
     end
