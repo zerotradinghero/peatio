@@ -5,7 +5,7 @@ module OldBitcoin
 
     def initialize(custom_features = {})
       @features = DEFAULT_FEATURES.merge(custom_features).slice(*SUPPORTED_FEATURES)
-      @settings = settings
+      @settings = {}
     end
 
     def configure(settings = {})
@@ -31,10 +31,10 @@ module OldBitcoin
 
     def create_transaction!(transaction, options = {})
       txid = client.json_rpc_for_withdrawal(:sendtoaddress,
-                                            transaction.to_address,
-                                            transaction.amount,
-      # options  # subtract fee from transaction amount.
-                                            )
+                                             transaction.to_address,
+                                             transaction.amount,
+                                             # options  # subtract fee from transaction amount.
+                                             )
       transaction.hash = txid
       transaction
     rescue OldBitcoin::Client::Error => e
