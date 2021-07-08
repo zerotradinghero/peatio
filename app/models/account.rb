@@ -16,8 +16,6 @@ class Account < ApplicationRecord
   scope :visible, -> { joins(:currency).merge(Currency.where(visible: true)) }
   scope :ordered, -> { joins(:currency).order(position: :asc) }
 
-  after_commit :trigger_event
-
   def as_json_for_event_api
     {
       id: id,
@@ -44,6 +42,7 @@ class Account < ApplicationRecord
 
   def plus_funds!(amount)
     update_columns(attributes_after_plus_funds!(amount))
+    trigger_event
   end
 
   def plus_funds(amount)
@@ -61,6 +60,7 @@ class Account < ApplicationRecord
 
   def plus_locked_funds!(amount)
     update_columns(attributes_after_plus_locked_funds!(amount))
+    trigger_event
   end
 
   def plus_locked_funds(amount)
@@ -78,6 +78,7 @@ class Account < ApplicationRecord
 
   def sub_funds!(amount)
     update_columns(attributes_after_sub_funds!(amount))
+    trigger_event
   end
 
   def sub_funds(amount)
@@ -95,6 +96,7 @@ class Account < ApplicationRecord
 
   def lock_funds!(amount)
     update_columns(attributes_after_lock_funds!(amount))
+    trigger_event
   end
 
   def lock_funds(amount)
@@ -112,6 +114,7 @@ class Account < ApplicationRecord
 
   def unlock_funds!(amount)
     update_columns(attributes_after_unlock_funds!(amount))
+    trigger_event
   end
 
   def unlock_funds(amount)
@@ -129,6 +132,7 @@ class Account < ApplicationRecord
 
   def unlock_and_sub_funds!(amount)
     update_columns(attributes_after_unlock_and_sub_funds!(amount))
+    trigger_event
   end
 
   def unlock_and_sub_funds(amount)
