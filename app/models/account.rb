@@ -31,7 +31,7 @@ class Account < ApplicationRecord
   end
 
   def trigger_event
-    ::AMQP::Queue.enqueue_event("private", member.uid, "account", for_notify)
+    ::AMQP::Queue.enqueue_event("private", member.uid, "balance", for_notify)
   end
 
   def for_notify
