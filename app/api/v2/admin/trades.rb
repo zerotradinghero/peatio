@@ -16,8 +16,12 @@ module API
           success: API::V2::Admin::Entities::Trade
         params do
           optional :market,
-                   values: { value: -> { ::Market.ids }, message: 'admin.market.doesnt_exist' },
+                   values: { value: -> { ::Market.pluck(:symbol) }, message: 'admin.market.doesnt_exist' },
                    desc: -> { API::V2::Admin::Entities::Market.documentation[:id][:desc] }
+          optional :market_type,
+                   values: { value: -> { ::Market::TYPES }, message: 'market.market.invalid_market_type' },
+                   desc: -> { API::V2::Admin::Entities::Market.documentation[:type] },
+                   default: -> { ::Market::DEFAULT_TYPE }
           optional :order_id,
                    type: Integer,
                    desc: -> { API::V2::Entities::Order.documentation[:id][:desc] }
@@ -27,12 +31,13 @@ module API
           use :ordering
         end
         get '/trades' do
-          admin_authorize! :read, Trade
+          admin_authorize! :read, ::Trade
 
           member = Member.find_by(uid: params[:uid]) if params[:uid].present?
 
           ransack_params = Helpers::RansackBuilder.new(params.except!(:uid))
                              .translate(market: :market_id)
+                             .eq(:market_type)
                              .with_daterange
                              .merge(g: [
                                { maker_id_eq: member&.id, taker_id_eq: member&.id, m: 'or' },
@@ -58,7 +63,7 @@ module API
                    desc: -> { API::V2::Admin::Entities::Trade.documentation[:id][:desc] }
         end
         get '/trades/:id' do
-          admin_authorize! :read, Trade
+          admin_authorize! :read, ::Trade
 
           present Trade.find(params[:id]), with: API::V2::Admin::Entities::Trade, extended: true
         end

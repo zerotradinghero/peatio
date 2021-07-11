@@ -18,16 +18,20 @@ module API
           optional :market_id,
                    type: String,
                    desc: -> { API::V2::Entities::TradingFee.documentation[:market_id][:desc] },
-                   values: { value: -> { ::Market.ids.append(::TradingFee::ANY) },
+                   values: { value: -> { ::Market.pluck(:symbol).append(::TradingFee::ANY) },
                              message: 'admin.trading_fee.market_doesnt_exist' }
+          optional :market_type,
+                   values: { value: -> { ::Market::TYPES }, message: 'admin.trading_fee.invalid_market_type' },
+                   desc: -> { API::V2::Admin::Entities::Market.documentation[:type] },
+                   default: -> { ::Market::DEFAULT_TYPE }
           use :pagination
           use :ordering
         end
         get '/trading_fees' do
-          admin_authorize! :read, TradingFee
+          admin_authorize! :read, ::TradingFee
 
           ransack_params = Helpers::RansackBuilder.new(params)
-                             .eq(:group, :market_id)
+                             .eq(:group, :market_id, :market_type)
                              .build
 
           search = TradingFee.ransack(ransack_params)
@@ -55,11 +59,15 @@ module API
                    type: String,
                    desc: -> { API::V2::Entities::TradingFee.documentation[:market_id][:desc] },
                    default: ::TradingFee::ANY,
-                   values: { value: -> { ::Market.ids.append(::TradingFee::ANY) },
+                   values: { value: -> { ::Market.pluck(:symbol).append(::TradingFee::ANY) },
                              message: 'admin.trading_fee.market_doesnt_exist' }
+          optional :market_type,
+                   values: { value: -> { ::Market::TYPES }, message: 'admin.trading_fee.invalid_market_type' },
+                   desc: -> { API::V2::Admin::Entities::Market.documentation[:type] },
+                   default: -> { ::Market::DEFAULT_TYPE }
         end
         post '/trading_fees/new' do
-          admin_authorize! :create, TradingFee
+          admin_authorize! :create, ::TradingFee
 
           trading_fee = ::TradingFee.new(declared(params))
           if trading_fee.save
@@ -92,11 +100,15 @@ module API
           optional :market_id,
                    type: String,
                    desc: -> { API::V2::Entities::TradingFee.documentation[:market_id][:desc] },
-                   values: { value: -> { ::Market.ids.append(::TradingFee::ANY) },
+                   values: { value: -> { ::Market.spot.pluck(:symbol).append(::TradingFee::ANY) },
                              message: 'admin.trading_fee.market_doesnt_exist' }
+          optional :market_type,
+                   values: { value: -> { ::Market::TYPES }, message: 'admin.trading_fee.invalid_market_type' },
+                   desc: -> { API::V2::Admin::Entities::Market.documentation[:type] },
+                   default: -> { ::Market::DEFAULT_TYPE }
         end
         post '/trading_fees/update' do
-          admin_authorize! :update, TradingFee
+          admin_authorize! :update, ::TradingFee
 
           trading_fee = ::TradingFee.find(params[:id])
           if trading_fee.update(declared(params, include_missing: false))
@@ -115,7 +127,7 @@ module API
                    desc: -> { API::V2::Entities::TradingFee.documentation[:id][:desc] }
         end
         post '/trading_fees/delete' do
-          admin_authorize! :delete, TradingFee
+          admin_authorize! :delete, ::TradingFee
 
           present TradingFee.destroy(params[:id]), with: API::V2::Entities::TradingFee
         end
