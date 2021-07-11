@@ -144,16 +144,8 @@ module Matching
     end
 
     def publish_trade
-      AMQP::Queue.publish :trade, @trade.as_json, {
-        headers: {
-          type:     :local,
-          market:   @market.id,
-          maker_id: @maker_id,
-          taker_id: @taker_id
-        }
-      }
-
       @trade.trigger_event
+      @trade.write_to_influx
 
       [@maker_order, @taker_order].each do |order|
         event =
