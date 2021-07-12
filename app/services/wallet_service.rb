@@ -100,7 +100,8 @@ class WalletService
                                                   txout:        deposit.txout,
                                                   to_address:   deposit.address,
                                                   block_number: deposit.block_number,
-                                                  amount:       deposit.amount)
+                                                  amount:       deposit.amount,
+                                                  currency_id:  deposit.currency_id)
 
     transactions = @adapter.prepare_deposit_collection!(deposit_transaction,
                                                         # In #spread_deposit valid transactions saved with pending state
