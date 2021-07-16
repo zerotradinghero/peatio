@@ -112,7 +112,7 @@ module Ethereum
     end
 
     def create_eth_transaction!(transaction, options = {})
-      currency_options = @currency.fetch(:options).slice(:gas_limit, :gas_price)
+      currency_options = @currency.fetch(:options).slice(:gas_limit, :gas_price, :custom_gas_price)
       options.merge!(DEFAULT_ETH_FEE, currency_options)
 
       amount = convert_to_base_unit(transaction.amount)
@@ -121,6 +121,10 @@ module Ethereum
         options[:gas_price] = transaction.options[:gas_price]
       else
         options[:gas_price] = calculate_gas_price(options)
+      end
+
+      unless options[:custom_gas_price].nil?
+        options[:gas_price] = options[:custom_gas_price]
       end
 
       # Subtract fees from initial deposit amount in case of deposit collection
@@ -148,7 +152,7 @@ module Ethereum
     end
 
     def create_erc20_transaction!(transaction, options = {})
-      currency_options = @currency.fetch(:options).slice(:gas_limit, :gas_price, contract_address_option)
+      currency_options = @currency.fetch(:options).slice(:gas_limit, :gas_price, :custom_gas_price, contract_address_option)
       options.merge!(DEFAULT_ERC20_FEE, currency_options)
 
       amount = convert_to_base_unit(transaction.amount)
@@ -160,6 +164,12 @@ module Ethereum
         options[:gas_price] = transaction.options[:gas_price]
       else
         options[:gas_price] = calculate_gas_price(options)
+      end
+
+      Rails.logger.info { options }
+
+      unless options[:custom_gas_price].nil?
+        options[:gas_price] = options[:custom_gas_price]
       end
 
       txid = client.json_rpc(:personal_sendTransaction,

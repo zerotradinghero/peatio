@@ -219,7 +219,7 @@ class Withdraw < ApplicationRecord
   end
 
   def blockchain_api
-    blockchain_currency.blockchain_api
+    blockchain.blockchain_api
   end
 
   def confirmations

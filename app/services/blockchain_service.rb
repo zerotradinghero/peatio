@@ -79,6 +79,7 @@ class BlockchainService
   def filter_deposits(block)
     addresses = PaymentAddress.where(wallet: Wallet.deposit.with_currency(@currencies),
                                      blockchain_key: @blockchain.key, address: block.transactions.map(&:to_address)).pluck(:address)
+
     block.select { |transaction| transaction.to_address.in?(addresses) }
   end
 
