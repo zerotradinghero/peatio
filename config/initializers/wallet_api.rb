@@ -7,5 +7,5 @@ Peatio::Wallet.registry[:"ow-hdwallet-bsc"] = OWHDWallet::WalletBSC
 Peatio::Wallet.registry[:"ow-hdwallet-heco"] = OWHDWallet::WalletHECO
 Peatio::Wallet.registry[:opendax_cloud] = OpendaxCloud::Wallet
 Peatio::Wallet.registry[:"geth-bsc"] = Ethereum::Bsc::Wallet
-Peatio::Wallet.registry[:"geth-heco"] = Ethereum::Heco::Blockchain
-Peatio::Wallet.registry[:old_bitcoin] = OldBitcoin::Wallet
+Peatio::Wallet.registry[:"geth-heco"] = Ethereum::Heco::Wallet
+Peatio::Wallet.registry[:"old-bitcoin"] = Dogecoin::Wallet

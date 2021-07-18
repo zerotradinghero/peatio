@@ -2,7 +2,7 @@ require 'memoist'
 require 'faraday'
 require 'better-faraday'
 
-module OldBitcoin
+module Dogecoin
   class Client
     Error = Class.new(StandardError)
     class ConnectionError < Error; end

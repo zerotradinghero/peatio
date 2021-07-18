@@ -1,4 +1,4 @@
-module OldBitcoin
+module Dogecoin
   class Wallet < Peatio::Wallet::Abstract
 
     DEFAULT_FEATURES = { skip_deposit_collection: false }.freeze
@@ -25,7 +25,7 @@ module OldBitcoin
 
     def create_address!(_options = {})
       { address: client.json_rpc(:getnewaddress) }
-    rescue OldBitcoin::Client::Error => e
+    rescue Dogecoin::Client::Error => e
       raise Peatio::Wallet::ClientError, e
     end
 
@@ -37,14 +37,14 @@ module OldBitcoin
                                              )
       transaction.hash = txid
       transaction
-    rescue OldBitcoin::Client::Error => e
+    rescue Dogecoin::Client::Error => e
       raise Peatio::Wallet::ClientError, e
     end
 
     def load_balance!
       client.json_rpc(:getbalance).to_d
 
-    rescue OldBitcoin::Client::Error => e
+    rescue Dogecoin::Client::Error => e
       raise Peatio::Wallet::ClientError, e
     end
 
