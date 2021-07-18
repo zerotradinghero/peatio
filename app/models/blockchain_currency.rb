@@ -116,10 +116,14 @@ class BlockchainCurrency < ApplicationRecord
     gas_speed = withdrawal_gas_speed ? blockchain.withdrawal_gas_speed : blockchain.collection_gas_speed
     opt.merge!(gas_price: gas_speed) if gas_speed
 
-    opt.deep_symbolize_keys.merge(id:                    currency.id,
-                                  base_factor:           base_factor,
-                                  min_collection_amount: min_collection_amount,
-                                  options:               opt)
+    s = opt.deep_symbolize_keys.merge(id:                    currency.id,
+                                      base_factor:           base_factor,
+                                      min_collection_amount: min_collection_amount,
+                                      options:               opt)
+
+    return s if parent_id.nil?
+
+    s.deep_symbolize_keys.merge(parent_base_factor: BlockchainCurrency.find_by(currency_id: parent_id, blockchain_key: blockchain_key).base_factor)
   end
 
   def link_wallets

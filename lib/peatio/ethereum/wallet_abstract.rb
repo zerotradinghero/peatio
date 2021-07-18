@@ -30,7 +30,7 @@ module Ethereum
 
       @currency = @settings.fetch(:currency) do
         raise Peatio::Wallet::MissingSettingError, :currency
-      end.slice(:id, :base_factor, :min_collection_amount, :options)
+      end.slice(:id, :base_factor, :parent_base_factor, :min_collection_amount, :options)
     end
 
     def create_address!(options = {})
@@ -60,13 +60,17 @@ module Ethereum
       return [] if deposit_currency.dig(:options, contract_address_option).blank?
       return [] if deposit_spread.blank?
 
-      options = DEFAULT_ERC20_FEE.merge(deposit_currency.fetch(:options).slice(:gas_limit, :gas_price))
+      options = DEFAULT_ERC20_FEE.merge(deposit_currency.fetch(:options).slice(:gas_limit, :gas_price, :custom_gas_price))
 
       options[:gas_price] = calculate_gas_price(options)
 
+      unless options[:custom_gas_price].nil?
+        options[:gas_price] = options[:custom_gas_price]
+      end
+
       # We collect fees depending on the number of spread deposit size
       # Example: if deposit spreads on three wallets need to collect eth fee for 3 transactions
-      fees = convert_from_base_unit(options.fetch(:gas_limit).to_i * options.fetch(:gas_price).to_i)
+      fees = convert_from_base_unit(options.fetch(:gas_limit).to_i * options.fetch(:gas_price).to_i, @currency.fetch(:parent_base_factor, @currency.fetch(:base_factor)))
       amount = fees * deposit_spread.size
 
       # If fee amount is greater than min collection amount
@@ -93,7 +97,7 @@ module Ethereum
         client.json_rpc(:eth_getBalance, [normalize_address(@wallet.fetch(:address)), 'latest'])
         .hex
         .to_d
-        .yield_self { |amount| convert_from_base_unit(amount) }
+        .yield_self { |amount| convert_from_base_unit(amount, @currency.fetch(:base_factor)) }
       else
         raise Peatio::Wallet::ClientError.new("Currency #{@currency[:id]} doesn't have option #{contract_address_option}")
       end
@@ -108,14 +112,14 @@ module Ethereum
       client.json_rpc(:eth_call, [{ to: contract_address, data: data }, 'latest'])
         .hex
         .to_d
-        .yield_self { |amount| convert_from_base_unit(amount) }
+        .yield_self { |amount| convert_from_base_unit(amount, @currency.fetch(:base_factor)) }
     end
 
     def create_eth_transaction!(transaction, options = {})
       currency_options = @currency.fetch(:options).slice(:gas_limit, :gas_price, :custom_gas_price)
       options.merge!(DEFAULT_ETH_FEE, currency_options)
 
-      amount = convert_to_base_unit(transaction.amount)
+      amount = convert_to_base_unit(transaction.amount, @currency.fetch(:parent_base_factor, @currency.fetch(:base_factor)))
 
       if transaction.options.present?
         options[:gas_price] = transaction.options[:gas_price]
@@ -145,7 +149,7 @@ module Ethereum
       end
       # Make sure that we return currency_id
       transaction.currency_id = 'eth' if transaction.currency_id.blank?
-      transaction.amount = convert_from_base_unit(amount)
+      transaction.amount = convert_from_base_unit(amount, @currency.fetch(:base_factor))
       transaction.hash = normalize_txid(txid)
       transaction.options = options
       transaction
@@ -155,7 +159,7 @@ module Ethereum
       currency_options = @currency.fetch(:options).slice(:gas_limit, :gas_price, :custom_gas_price, contract_address_option)
       options.merge!(DEFAULT_ERC20_FEE, currency_options)
 
-      amount = convert_to_base_unit(transaction.amount)
+      amount = convert_to_base_unit(transaction.amount, @currency.fetch(:base_factor))
       data = abi_encode('transfer(address,uint256)',
                         normalize_address(transaction.to_address),
                         '0x' + amount.to_s(16))
@@ -165,8 +169,6 @@ module Ethereum
       else
         options[:gas_price] = calculate_gas_price(options)
       end
-
-      Rails.logger.info { options }
 
       unless options[:custom_gas_price].nil?
         options[:gas_price] = options[:custom_gas_price]
@@ -212,12 +214,12 @@ module Ethereum
       end
     end
 
-    def convert_from_base_unit(value)
-      value.to_d / @currency.fetch(:base_factor)
+    def convert_from_base_unit(value, base_factor)
+      value.to_d / base_factor
     end
 
-    def convert_to_base_unit(value)
-      x = value.to_d * @currency.fetch(:base_factor)
+    def convert_to_base_unit(value, base_factor)
+      x = value.to_d * base_factor
       unless (x % 1).zero?
         raise Peatio::Wallet::ClientError,
             "Failed to convert value to base (smallest) unit because it exceeds the maximum precision: " \
