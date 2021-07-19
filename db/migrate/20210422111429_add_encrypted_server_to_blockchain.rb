@@ -8,7 +8,7 @@ class AddEncryptedServerToBlockchain < ActiveRecord::Migration[5.2]
     server.each do |s|
       atr = Blockchain.__vault_attributes[:server]
       enc = Vault::Rails.encrypt(atr[:path], atr[:key], s[1])
-      query = ActiveRecord::Base.sanitize_sql_array(["UPDATE blockchains SET ? = ? WHERE id = ?", atr[:encrypted_column], enc, s[0]])
+      query = ActiveRecord::Base.sanitize_sql_array(["UPDATE blockchains SET #{atr[:encrypted_column]} = ? WHERE id = ?", enc, s[0]])
       execute(query)
     end
   end
