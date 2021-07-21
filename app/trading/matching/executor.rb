@@ -153,7 +153,7 @@ module Matching
     end
 
     def publish_trade
-      trade.write_to_influx
+      @trade.write_to_influx
       @trade.trigger_event
 
       [@maker_order, @taker_order].each do |order|

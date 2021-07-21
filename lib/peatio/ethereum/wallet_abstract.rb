@@ -46,7 +46,7 @@ module Ethereum
     def create_transaction!(transaction, options = {})
       if @currency.dig(:options, contract_address_option).present?
         create_erc20_transaction!(transaction)
-      elsif @currency[:id] == native_currency_id
+      elsif @currency[:id] == native_currency_id || native_currency_id == "custom_eth"
         create_eth_transaction!(transaction, options)
       else
         raise Peatio::Wallet::ClientError.new("Currency #{@currency[:id]} doesn't have option #{contract_address_option}")
@@ -93,7 +93,7 @@ module Ethereum
     def load_balance!
       if @currency.dig(:options, contract_address_option).present?
         load_erc20_balance(@wallet.fetch(:address))
-      elsif @currency[:id] == native_currency_id
+      elsif @currency[:id] == native_currency_id || native_currency_id == "custom_eth"
         client.json_rpc(:eth_getBalance, [normalize_address(@wallet.fetch(:address)), 'latest'])
         .hex
         .to_d

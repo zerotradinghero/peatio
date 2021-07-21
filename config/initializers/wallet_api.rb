@@ -9,3 +9,4 @@ Peatio::Wallet.registry[:opendax_cloud] = OpendaxCloud::Wallet
 Peatio::Wallet.registry[:"geth-bsc"] = Ethereum::Bsc::Wallet
 Peatio::Wallet.registry[:"geth-heco"] = Ethereum::Heco::Wallet
 Peatio::Wallet.registry[:dogecoin] = Dogecoin::Wallet
+Peatio::Wallet.registry[:"geth-custom-eth"] = Ethereum::CustomEth::Wallet

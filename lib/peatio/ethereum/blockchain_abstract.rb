@@ -34,7 +34,7 @@ module Ethereum
       @settings[:currencies]&.each do |c|
         if c.dig(:options, contract_address_option).present?
           @erc20 << c
-        elsif c[:id] == native_currency_id
+        elsif c[:id] == native_currency_id || native_currency_id == "custom_eth"
           raise "Unexpected duplicated native token #{c[:id]}" unless @eth.nil?
 
           @eth = c
@@ -115,7 +115,7 @@ module Ethereum
 
       if currency.dig(:options, contract_address_option).present?
         load_erc20_balance(address, currency)
-      elsif currency_id.to_s == native_currency_id
+      elsif currency_id.to_s == native_currency_id || native_currency_id == "custom_eth"
         client.json_rpc(:eth_getBalance, [normalize_address(address), 'latest'])
               .hex
               .to_d
