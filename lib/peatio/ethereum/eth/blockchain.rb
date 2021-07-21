@@ -1,4 +1,4 @@
-module Ethereum::Heco
+module Ethereum::Eth
   class Blockchain < ::Ethereum::BlockchainAbstract
     include Params
   end

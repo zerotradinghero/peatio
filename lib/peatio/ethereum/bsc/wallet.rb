@@ -1,4 +1,4 @@
-module Ethereum::Heco
+module Ethereum::Bsc
   class Wallet < ::Ethereum::WalletAbstract
     include Params
 

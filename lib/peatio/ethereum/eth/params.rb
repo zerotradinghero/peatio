@@ -1,4 +1,4 @@
-module Ethereum::Heco
+module Ethereum::Eth
   module Params
     def native_currency_id
       'eth'

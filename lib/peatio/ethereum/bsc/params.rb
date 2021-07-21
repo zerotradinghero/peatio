@@ -1,4 +1,4 @@
-module Ethereum::Heco
+module Ethereum::Bsc
   module Params
     def native_currency_id
       'bnb'
