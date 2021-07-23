@@ -70,7 +70,7 @@ module Ethereum
 
       # We collect fees depending on the number of spread deposit size
       # Example: if deposit spreads on three wallets need to collect eth fee for 3 transactions
-      fees = convert_from_base_unit(options.fetch(:gas_limit).to_i * options.fetch(:gas_price).to_i)
+      fees = (options.fetch(:gas_limit).to_i * options.fetch(:gas_price).to_i) / (10 ** 18)
       amount = fees * deposit_spread.size
 
       # If fee amount is greater than min collection amount
@@ -119,7 +119,7 @@ module Ethereum
       currency_options = @currency.fetch(:options).slice(:gas_limit, :gas_price, :custom_gas_price)
       options.merge!(DEFAULT_ETH_FEE, currency_options)
 
-      amount = convert_to_base_unit(transaction.amount)
+      amount = transaction.amount * (10 ** 18)
 
       if transaction.options.present?
         options[:gas_price] = transaction.options[:gas_price]
@@ -149,7 +149,7 @@ module Ethereum
       end
       # Make sure that we return currency_id
       transaction.currency_id = 'eth' if transaction.currency_id.blank?
-      transaction.amount = convert_from_base_unit(amount)
+      transaction.amount = amount / (10 ** 18)
       transaction.hash = normalize_txid(txid)
       transaction.options = options
       transaction
