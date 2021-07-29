@@ -162,7 +162,7 @@ class Trade < ApplicationRecord
       total:          total || ZERO,
       market:         market.id,
       taker_type:     taker_type,
-      created_at:     created_at }
+      created_at:     created_at.iso8601 }
   end
 
   def record_complete_operations!
