@@ -189,7 +189,7 @@ class Trade < ApplicationRecord
                     amount:     amount,
                     total:      total,
                     taker_type: taker_type,
-                    created_at: created_at.to_i },
+                    created_at: created_at.iso8601 },
       tags:       { market: market.symbol } }
   end
 
