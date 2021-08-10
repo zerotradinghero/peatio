@@ -12,6 +12,12 @@ module API
               case action
                 when 'process'
                   withdraw.accept!
+                  # Process fiat withdraw immediately. Crypto withdraws will be processed by workers.
+                  if withdraw.currency.fiat?
+                    withdraw.process!
+                    withdraw.dispatch!
+                    withdraw.success!
+                  end
                 when 'cancel'
                   withdraw.cancel!
               end
@@ -103,8 +109,10 @@ module API
 
           currency = Currency.find(params[:currency])
           blockchain_key = beneficiary.present? ? beneficiary.blockchain_key : params[:blockchain_key]
-          blockchain_currency = BlockchainCurrency.find_by!(currency_id: params[:currency],
-                                                            blockchain_key: blockchain_key)
+
+          blockchain_currency = BlockchainCurrency.find_network(blockchain_key, params[:currency])
+          error!({ errors: ['management.withdraws.network_not_found'] }, 422) unless blockchain_currency.present?
+
           unless blockchain_currency.withdrawal_enabled?
             error!({ errors: ['management.currency.withdrawal_disabled'] }, 422)
           end
@@ -125,6 +133,7 @@ module API
           withdraw = "withdraws/#{currency.type}".camelize.constantize.new(declared_params)
 
           withdraw.save!
+          withdraw.with_lock { withdraw.accept! }
           perform_action(withdraw, params[:action]) if params[:action]
           present withdraw, with: API::V2::Management::Entities::Withdraw
         rescue ::Account::AccountError => e
