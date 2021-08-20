@@ -157,9 +157,9 @@ class Trade < ApplicationRecord
 
   def for_global
     { id:             id,
-      price:          price || ZERO,
-      amount:         amount || ZERO,
-      total:          total || ZERO,
+      price:          price.to_s || ZERO,
+      amount:         amount.to_s || ZERO,
+      total:          total.to_s || ZERO,
       market:         market.id,
       taker_type:     taker_type,
       created_at:     created_at.iso8601 }
