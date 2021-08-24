@@ -14,7 +14,7 @@ module Peatio
       end
 
       def publish(subj, attrs={})
-        connection.publish(subj, attrs)
+        connection.publish(subj, attrs.to_json)
       end
     end
   end
