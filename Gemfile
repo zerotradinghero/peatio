@@ -91,3 +91,5 @@ Dir.glob File.expand_path('../Gemfile.plugin', __FILE__) do |file|
 end
 
 gem "pg", "~> 1.2"
+
+gem "nats-pure", "~> 0.7.0"

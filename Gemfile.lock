@@ -256,6 +256,7 @@ GEM
     mustermann-grape (1.0.1)
       mustermann (>= 1.0.0)
     mysql2 (0.5.3)
+    nats-pure (0.7.0)
     net-http-persistent (3.0.1)
       connection_pool (~> 2.2)
     nio4r (2.5.7)
@@ -507,6 +508,7 @@ DEPENDENCIES
   method-not-implemented (~> 1.0.1)
   mocha (~> 1.8)
   mysql2 (~> 0.5.2)
+  nats-pure (~> 0.7.0)
   net-http-persistent (~> 3.0.1)
   peatio (~> 2.6.3)
   peatio-bitcoincash (~> 2.6.1)
@@ -542,4 +544,4 @@ RUBY VERSION
    ruby 2.6.6p146
 
 BUNDLED WITH
-   2.1.4
+   2.2.26
