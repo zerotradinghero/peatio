@@ -4,7 +4,13 @@ module Peatio
   module NATS
     class <<self
       def connection
-        @connection ||= ::NATS::IO::Client.new.connect(ENV["NATS_URL"])
+        if @connection
+          @connection
+        else
+          @connection = ::NATS::IO::Client.new
+          @connection.connect(ENV["NATS_URL"])
+          @connection
+        end
       end
 
       def publish(subj, attrs={})
