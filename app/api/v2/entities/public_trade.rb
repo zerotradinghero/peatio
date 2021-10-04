@@ -1,6 +1,8 @@
 # encoding: UTF-8
 # frozen_string_literal: true
 
+require 'time'
+
 module API
   module V2
     module Entities
@@ -51,7 +53,9 @@ module API
             type: String,
             desc: 'Trade create time in iso8601 format.'
           }
-        )
+        ) do |trade, _options|
+            Time.parse(trade.created_at).to_i
+          end
 
         expose(
           :taker_type,
