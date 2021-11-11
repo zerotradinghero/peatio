@@ -494,7 +494,7 @@ ActiveRecord::Schema.define(version: 2021_10_01_083227) do
 
   create_table "transactions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "currency_id", null: false
-    t.string "fee_currency_id", null: false
+    t.string "fee_currency_id", default: "eth", null: false
     t.string "kind"
     t.string "blockchain_key"
     t.string "reference_type"
