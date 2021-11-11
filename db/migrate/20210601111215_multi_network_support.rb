@@ -12,6 +12,7 @@ class MultiNetworkSupport < ActiveRecord::Migration[5.2]
       t.decimal :min_withdraw_amount, precision: 32, scale: 16, default: 0, null: false
       t.boolean :deposit_enabled, default: true, null: false
       t.boolean :withdrawal_enabled, default: true, null: false
+      t.boolean :auto_update_fees_enabled, default: true, null: false
       t.bigint :base_factor, default: 1, null: false
       t.string :status, limit: 32, null: false, default: 'enabled'
       t.json :options
@@ -43,6 +44,14 @@ class MultiNetworkSupport < ActiveRecord::Migration[5.2]
     PaymentAddress.find_each(batch_size: 100) do |payment_address|
       payment_address.update_columns(blockchain_key: payment_address.wallet.blockchain_key)
     end
+
+    # Add new fields to blockchain table
+    add_column :blockchains, :min_deposit_amount, :decimal, precision: 32, scale: 16, default: 0, null: false, after: :min_confirmations
+    add_column :blockchains, :withdraw_fee, :decimal, precision: 32, scale: 16, default: 0, null: false, after: :min_deposit_amount
+    add_column :blockchains, :min_withdraw_amount, :decimal, precision: 32, scale: 16, default: 0, null: false, after: :withdraw_fee
+    add_column :blockchains, :description, :text, after: :height
+    add_column :blockchains, :warning, :text, after: :description
+    add_column :blockchains, :protocol, :string, null: false, after: :warning
 
     # Move currencies configs to blockchain currency
     Currency.find_each(batch_size: 10) do |currency|
@@ -83,11 +92,7 @@ class MultiNetworkSupport < ActiveRecord::Migration[5.2]
       remove_column :currencies, :withdrawal_enabled, :boolean
     end
     add_column :currencies, :status, :string, limit: 32, null: false, default: 'enabled', after: :type
-
-    # Add new field to blockchain table
-    add_column :blockchains, :description, :text, after: :height
-    add_column :blockchains, :warning, :text, after: :description
-    add_column :blockchains, :protocol, :string, null: false, after: :warning
+    add_column :currencies, :default_network_id , :bigint, null: true, after: :type
   end
 
   def down
@@ -95,7 +100,7 @@ class MultiNetworkSupport < ActiveRecord::Migration[5.2]
     ActiveRecord::Base.transaction do
       add_column :currencies, :blockchain_key, :string, after: :homepage
       add_column :currencies, :parent_id, :string, index: true, after: :blockchain_key
-      add_column :currencies, :deposit_fee, :decimal, after: :type, null: false, default: 0, precision: 32, scale: 16, after: :parent_id
+      add_column :currencies, :deposit_fee, :decimal, null: false, default: 0, precision: 32, scale: 16, after: :parent_id
       add_column :currencies, :min_deposit_amount, :decimal, precision: 32, scale: 16, default: 0.0, null: false, after: :deposit_fee
       add_column :currencies, :min_collection_amount, :decimal, precision: 32, scale: 16, default: 0.0, null: false, after: :min_deposit_amount
       add_column :currencies, :withdraw_fee, :decimal, precision: 32, scale: 16, default: 0.0, null: false, after: :min_collection_amount
@@ -128,6 +133,7 @@ class MultiNetworkSupport < ActiveRecord::Migration[5.2]
     end
 
     remove_column :currencies, :status, :string
+    remove_column :currencies, :default_network_id, :bigint
 
     remove_column :deposits, :blockchain_key, :string
     remove_column :withdraws, :blockchain_key, :string

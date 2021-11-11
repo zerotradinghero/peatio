@@ -42,6 +42,15 @@ describe API::V2::Admin::Deposits, type: :request do
     end
 
     context 'ordering' do
+      it 'default descending by id' do
+        api_get url, token: token, params: { order_by: 'id' }
+
+        actual = JSON.parse(response.body)
+        expected = (coin_deposits + fiat_deposits).sort { |a, b| b.id <=> a.id }
+
+        expect(actual.map { |a| a['id'] }).to eq expected.map(&:id)
+      end
+
       it 'ascending by id' do
         api_get url, token: token, params: { order_by: 'id', ordering: 'asc' }
 
@@ -195,13 +204,6 @@ describe API::V2::Admin::Deposits, type: :request do
         expect(response).to be_successful
         expect(Deposit.find(response_body['id']).processing?).to be_truthy
       end
-
-      it 'sends event to deposit_collection daemon' do
-        api_post url, token: token, params: { action: 'fee_process', fees: true, id: coin.id }
-
-        expect(response).to be_successful
-        expect(Deposit.find(response_body['id']).fee_processing?).to be_truthy
-      end
     end
   end
 
@@ -234,7 +236,7 @@ describe API::V2::Admin::Deposits, type: :request do
     end
 
     it 'creates fiat deposit' do
-      api_post url, token: token, params: { uid: admin.uid, currency: fiat.code, amount: '13.4' }
+      api_post url, token: token, params: { uid: admin.uid, blockchain_key: 'fiat', currency: fiat.code, amount: '13.4' }
       result = JSON.parse(response.body)
 
       expect(response.status).to eq 201
@@ -245,12 +247,12 @@ describe API::V2::Admin::Deposits, type: :request do
       expect(result['amount']).to eq '13.4'
       expect(result['type']).to eq 'fiat'
       expect(result['state']).to eq 'submitted'
-      expect(result['blockchain_key']).to eq(nil)
+      expect(result['blockchain_key']).to eq('fiat')
       expect(result['transfer_type']).to eq 'fiat'
     end
 
     it 'return error in case of not permitted ability' do
-      api_post url, token: level_3_member_token, params: { uid: admin.uid, currency: fiat.code, amount: 12.1 }
+      api_post url, token: level_3_member_token, params: { uid: admin.uid, blockchain_key: 'fiat', currency: fiat.code, amount: 12.1 }
 
       expect(response.code).to eq '403'
       expect(response).to include_api_error('admin.ability.not_permitted')
@@ -291,7 +293,7 @@ describe API::V2::Admin::Deposits, type: :request do
     context 'successful' do
       context 'eth address' do
         let(:currency) { :eth }
-        let(:wallet) { Wallet.deposit_wallet(currency) }
+        let(:wallet) { Wallet.active_deposit_wallet(currency) }
         before { level_3_member.payment_address(wallet.id).update!(address: '2N2wNXrdo4oEngp498XGnGCbru29MycHogR') }
 
         it 'expose data about eth address' do

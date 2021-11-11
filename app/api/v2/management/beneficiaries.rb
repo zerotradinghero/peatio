@@ -49,44 +49,43 @@ module API
           end
           params do
             requires :currency,
-                    type: String,
-                    values: { value: -> { Currency.visible.codes(bothcase: true) }, message: 'management.currency.doesnt_exist' },
-                    as: :currency_id,
-                    desc: 'Beneficiary currency code.'
-            given currency_id: ->(currency_id) { currency_id.in?(Currency.coins.codes) } do
-              requires :blockchain_key,
-                      values: { value: -> { ::Blockchain.pluck(:key) }, message: 'management.beneficiary.blockchain_key_doesnt_exist' },
-                      allow_blank: false,
-                      desc: 'Blockchain key of the requested beneficiary'
-            end
+                     type: String,
+                     values: { value: -> { Currency.visible.codes(bothcase: true) }, message: 'management.currency.doesnt_exist' },
+                     as: :currency_id,
+                     desc: 'Beneficiary currency code.'
+            requires :blockchain_key,
+                     values: { value: -> { ::Blockchain.pluck(:key) }, message: 'management.beneficiary.blockchain_key_doesnt_exist' },
+                     allow_blank: false,
+                     desc: 'Blockchain key of the requested beneficiary'
             requires :name,
-                    type: String,
-                    allow_blank: false,
-                    values: { value: ->(v) { v.present? && v.size <= 64 }, message: 'management.beneficiary.too_long_name' },
-                    desc: 'Human rememberable name which refer beneficiary.'
+                     type: String,
+                     allow_blank: false,
+                     values: { value: ->(v) { v.present? && v.size <= 64 }, message: 'management.beneficiary.too_long_name' },
+                     desc: 'Human rememberable name which refer beneficiary.'
             optional :description,
-                    type: String,
-                    values: { value: ->(v) { v.size <= 255 }, message: 'management.beneficiary.too_long_description' },
-                    desc: 'Human rememberable description which refer beneficiary.'
+                     type: String,
+                     values: { value: ->(v) { v.size <= 255 }, message: 'management.beneficiary.too_long_description' },
+                     desc: 'Human rememberable description which refer beneficiary.'
             requires :data,
-                    type: { value: JSON, message: 'management.beneficiary.non_json_data' },
-                    allow_blank: false,
-                    desc: 'Beneficiary data in JSON format'
+                     type: { value: JSON, message: 'management.beneficiary.non_json_data' },
+                     allow_blank: false,
+                     desc: 'Beneficiary data in JSON format'
             requires :uid,
-                    type: String,
-                    desc: 'The shared user ID.'
+                     type: String,
+                     desc: 'The shared user ID.'
             optional :state,
-                    type: String,
-                    values: { value: -> { ::Beneficiary::STATES_AVAILABLE_FOR_MEMBER.map(&:to_s) }, message: 'management.beneficiary.invalid_state'},
-                    desc: 'Defines either beneficiary active - user can use it to withdraw money'\
-                          'or pending - requires beneficiary activation with pin.'
+                     type: String,
+                     values: { value: -> { ::Beneficiary::STATES_AVAILABLE_FOR_MEMBER.map(&:to_s) }, message: 'management.beneficiary.invalid_state'},
+                     desc: 'Defines either beneficiary active - user can use it to withdraw money'\
+                           'or pending - requires beneficiary activation with pin.'
           end
           post do
             declared_params = declared(params)
             member   = Member.find_by!(uid: params[:uid])
             currency = Currency.find_by!(id: params[:currency_id])
-            blockchain_currency = BlockchainCurrency.find_by!(currency_id: params[:currency_id],
-                                                              blockchain_key: params[:blockchain_key])
+            blockchain_currency = BlockchainCurrency.find_network(params[:blockchain_key], params[:currency_id])
+            error!({ errors: ['management.beneficiary.network_not_found'] }, 422) unless blockchain_currency.present?
+
             if !blockchain_currency.withdrawal_enabled?
               error!({ errors: ['management.currency.withdrawal_disabled'] }, 422)
             elsif currency.coin? && declared_params.dig(:data, :address).blank?
