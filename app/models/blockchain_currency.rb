@@ -33,12 +33,12 @@ class BlockchainCurrency < ApplicationRecord
 
   belongs_to :currency, required: true
   belongs_to :blockchain, foreign_key: :blockchain_key, primary_key: :key
+  belongs_to :parent, class_name: :BlockchainCurrency, foreign_key: %i[parent_id blockchain_key], primary_key: %i[currency_id blockchain_key]
 
   # == Validations ==========================================================
 
   validates :blockchain_key,
-            inclusion: { in: ->(_) { Blockchain.pluck(:key).map(&:to_s) } },
-            if: -> { currency.coin? }
+            inclusion: { in: ->(_) { Blockchain.pluck(:key).map(&:to_s) } }
 
   validates :parent_id, allow_blank: true,
             inclusion: { in: ->(_) { Currency.coins_without_tokens.pluck(:id).map(&:to_s) } },
@@ -81,8 +81,21 @@ class BlockchainCurrency < ApplicationRecord
     update_fees if auto_update_fees_enabled && currency.coin?
   end
 
+  after_create :link_as_default_network, if: -> { currency.default_network.blank? }
+
   # == Class Methods ========================================================
   
+  class << self
+    def find_network(blockchain_key, currency_id)
+      blockchain_currency = BlockchainCurrency.find_by(currency_id: currency_id, blockchain_key: blockchain_key)
+
+      currency = Currency.find_by(id: currency_id)
+      blockchain_currency = currency.default_network if currency.present? && blockchain_currency.blank?
+
+      blockchain_currency
+    end
+  end
+
   class << self
     def find_network(blockchain_key, currency_id)
       blockchain_currency = BlockchainCurrency.find_by(currency_id: currency_id, blockchain_key: blockchain_key)
@@ -138,7 +151,7 @@ class BlockchainCurrency < ApplicationRecord
   end
 
   def link_wallets
-    if parent_id.present?  
+    if parent_id.present?
       # Iterate through active deposit/withdraw wallets
       Wallet.active.where(blockchain_key: blockchain_key)
                    .where.not(kind: :fee).with_currency(parent_id).each do |wallet|
@@ -157,6 +170,10 @@ class BlockchainCurrency < ApplicationRecord
     )
   end
 
+  def link_as_default_network
+    currency.update_column(:default_network_id, id)
+  end
+
   private
 
   def round(d)
@@ -165,13 +182,13 @@ class BlockchainCurrency < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20210611085637
+# Schema version: 20211001083227
 #
 # Table name: blockchain_currencies
 #
 #  id                       :bigint           not null, primary key
 #  currency_id              :string(255)      not null
-#  blockchain_key           :string(255)
+#  blockchain_key           :string(255)      not null
 #  parent_id                :string(255)
 #  deposit_fee              :decimal(32, 16)  default(0.0), not null
 #  min_deposit_amount       :decimal(32, 16)  default(0.0), not null

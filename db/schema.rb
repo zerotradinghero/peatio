@@ -10,16 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_11_085637) do
+ActiveRecord::Schema.define(version: 2021_10_01_083227) do
 
-  create_table "accounts", primary_key: ["currency_id", "member_id"], options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "accounts", primary_key: ["currency_id", "member_id", "type"], options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "member_id", null: false
     t.string "currency_id", limit: 10, null: false
+    t.string "type", default: "spot", null: false
     t.decimal "balance", precision: 32, scale: 16, default: "0.0", null: false
     t.decimal "locked", precision: 32, scale: 16, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["currency_id", "member_id"], name: "index_accounts_on_currency_id_and_member_id", unique: true
+    t.index ["currency_id", "member_id", "type"], name: "index_accounts_on_currency_id_and_member_id_and_type_and_unique", unique: true
     t.index ["member_id"], name: "index_accounts_on_member_id"
   end
 
@@ -56,12 +57,13 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
   create_table "beneficiaries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "member_id", null: false
     t.string "currency_id", limit: 10, null: false
-    t.string "blockchain_key"
+    t.string "blockchain_key", null: false
     t.string "name", limit: 64, null: false
     t.string "description", default: ""
     t.string "data_encrypted", limit: 1024
     t.integer "pin", limit: 3, null: false, unsigned: true
     t.datetime "sent_at"
+    t.datetime "expire_at"
     t.integer "state", limit: 1, default: 0, null: false, unsigned: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -71,7 +73,7 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
 
   create_table "blockchain_currencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "currency_id", null: false
-    t.string "blockchain_key"
+    t.string "blockchain_key", null: false
     t.string "parent_id"
     t.decimal "deposit_fee", precision: 32, scale: 16, default: "0.0", null: false
     t.decimal "min_deposit_amount", precision: 32, scale: 16, default: "0.0", null: false
@@ -118,6 +120,7 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
     t.text "description"
     t.string "homepage"
     t.string "type", limit: 30, default: "coin", null: false
+    t.bigint "default_network_id"
     t.string "status", limit: 32, default: "enabled", null: false
     t.integer "position", null: false
     t.integer "precision", limit: 1, default: 8, null: false
@@ -139,10 +142,10 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
   create_table "deposits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "member_id", null: false
     t.string "currency_id", limit: 10, null: false
-    t.string "blockchain_key"
+    t.string "blockchain_key", null: false
     t.decimal "amount", precision: 32, scale: 16, null: false
     t.decimal "fee", precision: 32, scale: 16, null: false
-    t.string "address", limit: 95
+    t.string "address", limit: 105
     t.text "from_addresses"
     t.string "txid", limit: 128, collation: "utf8_bin"
     t.integer "txout"
@@ -251,10 +254,11 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
 
   create_table "members", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "uid", limit: 32, null: false
-    t.string "email", null: false
+    t.string "email"
     t.integer "level", null: false
     t.string "role", limit: 16, null: false
     t.string "group", limit: 32, default: "vip-0", null: false
+    t.boolean "beneficiaries_whitelisting"
     t.string "state", limit: 16, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -276,7 +280,7 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
     t.index ["code"], name: "index_operations_accounts_on_code", unique: true
     t.index ["currency_type"], name: "index_operations_accounts_on_currency_type"
     t.index ["scope"], name: "index_operations_accounts_on_scope"
-    t.index ["type", "kind", "currency_type"], name: "index_operations_accounts_on_type_and_kind_and_currency_type", unique: true
+    t.index ["type", "kind", "currency_type", "code"], name: "index_operations_accounts_on_type_kind_currency_type_code"
     t.index ["type"], name: "index_operations_accounts_on_type"
   end
 
@@ -287,6 +291,8 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
     t.string "ask", limit: 10, null: false
     t.string "market_id", limit: 20, null: false
     t.string "market_type", default: "spot", null: false
+    t.decimal "trigger_price", precision: 32, scale: 16
+    t.datetime "triggered_at"
     t.decimal "price", precision: 32, scale: 16
     t.decimal "stop_price", precision: 32, scale: 16
     t.decimal "volume", precision: 32, scale: 16, null: false
@@ -316,8 +322,8 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
   create_table "payment_addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "member_id"
     t.bigint "wallet_id"
-    t.string "blockchain_key"
-    t.string "address", limit: 95
+    t.string "blockchain_key", null: false
+    t.string "address", limit: 105
     t.boolean "remote", default: false, null: false
     t.string "secret_encrypted"
     t.string "details_encrypted", limit: 1024
@@ -417,12 +423,16 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
 
   create_table "transactions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "currency_id", null: false
+    t.string "fee_currency_id", null: false
+    t.string "kind"
+    t.string "blockchain_key"
     t.string "reference_type"
     t.bigint "reference_id"
     t.string "txid"
     t.string "from_address"
     t.string "to_address"
     t.decimal "amount", precision: 32, scale: 16, default: "0.0", null: false
+    t.decimal "fee", precision: 32, scale: 16
     t.integer "block_number"
     t.integer "txout"
     t.string "status"
@@ -444,24 +454,13 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
     t.index ["key"], name: "index_transfers_on_key", unique: true
   end
 
-  create_table "triggers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "order_id", null: false
-    t.integer "order_type", limit: 1, null: false, unsigned: true
-    t.binary "value", limit: 128, null: false
-    t.integer "state", limit: 1, default: 0, null: false, unsigned: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["order_id"], name: "index_triggers_on_order_id"
-    t.index ["order_type"], name: "index_triggers_on_order_type"
-    t.index ["state"], name: "index_triggers_on_state"
-  end
-
   create_table "wallets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "blockchain_key", limit: 32
     t.string "name", limit: 64
     t.string "address", null: false
     t.integer "kind", null: false
     t.string "gateway", limit: 20, default: "", null: false
+    t.json "plain_settings"
     t.string "settings_encrypted", limit: 1024
     t.json "balance"
     t.decimal "max_balance", precision: 32, scale: 16, default: "0.0", null: false
@@ -499,7 +498,7 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
     t.bigint "member_id", null: false
     t.bigint "beneficiary_id"
     t.string "currency_id", limit: 10, null: false
-    t.string "blockchain_key"
+    t.string "blockchain_key", null: false
     t.decimal "amount", precision: 32, scale: 16, null: false
     t.decimal "fee", precision: 32, scale: 16, null: false
     t.string "txid", limit: 128, collation: "utf8_bin"
@@ -509,7 +508,8 @@ ActiveRecord::Schema.define(version: 2021_06_11_085637) do
     t.string "type", limit: 30, null: false
     t.integer "transfer_type"
     t.string "tid", limit: 64, null: false, collation: "utf8_bin"
-    t.string "rid", limit: 256, null: false
+    t.string "rid", limit: 105, null: false
+    t.string "remote_id"
     t.string "note", limit: 256
     t.json "metadata"
     t.json "error"

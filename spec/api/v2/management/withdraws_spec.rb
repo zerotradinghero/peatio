@@ -205,6 +205,22 @@ describe API::V2::Management::Withdraws, type: :request do
         end
       end
 
+      context 'action: :review' do
+        it 'creates new withdraw with under_review state' do
+          data.merge!(action: 'review')
+          request
+          expect(response).to have_http_status(201)
+          record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+          expect(record.sum).to eq 0.1575
+          expect(record.aasm_state).to eq 'under_review'
+          expect(record.rid).to eq data[:rid]
+          expect(record.account).to eq account
+          expect(record.account.balance).to eq (1.2 - amount)
+          expect(record.account.locked).to eq amount
+          expect(record.blockchain_key).to eq blockchain_key
+        end
+      end
+
       context 'action: :process' do
         it 'creates new withdraw and immediately submits it' do
           data.merge!(action: 'process')
@@ -248,7 +264,7 @@ describe API::V2::Management::Withdraws, type: :request do
 
     context 'fiat withdraw' do
       let(:currency) { Currency.find(:usd) }
-      let(:blockchain_key) { nil }
+      let(:blockchain_key) { 'fiat' }
       let(:amount) { 5 }
       let(:balance) { 20 }
 
@@ -258,6 +274,17 @@ describe API::V2::Management::Withdraws, type: :request do
         expect(account.reload.balance).to eq(15)
         expect(account.reload.locked).to eq 5
         expect(Withdraw.last.aasm_state).to eq 'accepted'
+      end
+
+      context 'action: :review' do
+        it 'creates new withdraw with «under_review» state' do
+          data.merge!(action: :review)
+          request
+          expect(response).to have_http_status(201)
+          expect(account.reload.balance).to eq 15
+          expect(account.reload.locked).to eq 5
+          expect(Withdraw.last.aasm_state).to eq 'under_review'
+        end
       end
 
       context 'action: :process' do
@@ -301,12 +328,12 @@ describe API::V2::Management::Withdraws, type: :request do
     let(:signers) { %i[alex jeff] }
     let(:data) { { tid: record.tid } }
     let(:account) { member.get_account(currency) }
-    let(:record) { "Withdraws::#{currency.type.camelize}".constantize.create!(member: member, blockchain_key: 'btc-testnet', sum: amount, rid: Faker::Bank.iban, currency: currency) }
     let(:balance) { 800.77 }
     before { account.plus_funds(balance) }
 
     context 'crypto withdraws' do
       let(:currency) { Currency.find(:btc) }
+      let!(:record) { "Withdraws::Coin".constantize.create!(member: member, blockchain_key: 'btc-testnet', sum: amount, rid: Faker::Bank.iban, currency: currency) }
 
       context 'action: :process' do
         before { data[:action] = :process }
@@ -393,9 +420,43 @@ describe API::V2::Management::Withdraws, type: :request do
           expect(record.account.locked).to eq 0
         end
       end
+
+      context 'action: :reject' do
+        before { data[:action] = :reject }
+
+        it 'rejects accepted withdraws' do
+          record.accept!
+          expect(record.aasm_state).to eq 'accepted'
+          expect(account.reload.balance).to eq (balance - amount)
+          expect(account.reload.locked).to eq amount
+          request
+          expect(response).to have_http_status(200)
+          record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+          expect(record.aasm_state).to eq 'rejected'
+          expect(record.account.balance).to eq balance
+          expect(record.account.locked).to eq 0
+        end
+
+        it 'rejects withdraws with under_review state' do
+          record.accept!
+          record.process!
+          record.review!
+          expect(record.aasm_state).to eq 'under_review'
+          expect(account.reload.balance).to eq (balance - amount)
+          expect(account.reload.locked).to eq amount
+          request
+          expect(response).to have_http_status(200)
+          record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+          expect(record.aasm_state).to eq 'rejected'
+          expect(record.account.balance).to eq balance
+          expect(record.account.locked).to eq 0
+        end
+      end
     end
 
     context 'fiat withdraws' do
+      let!(:record) { "Withdraws::Fiat".constantize.create!(member: member, blockchain_key: 'fiat', sum: amount, rid: Faker::Bank.iban, currency: currency) }
+
       context 'action: :process' do
         before { data[:action] = :process }
 
@@ -477,6 +538,111 @@ describe API::V2::Management::Withdraws, type: :request do
           record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
           expect(record.aasm_state).to eq 'canceled'
           expect(record.account.balance).to eq balance
+          expect(record.account.locked).to eq 0
+        end
+      end
+
+      context 'action: :reject' do
+        before { data[:action] = :reject }
+
+        it 'rejects accepted withdraws' do
+          record.accept!
+          expect(record.aasm_state).to eq 'accepted'
+          expect(account.reload.balance).to eq (balance - amount)
+          expect(account.reload.locked).to eq amount
+          request
+          expect(response).to have_http_status(200)
+          record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+          expect(record.aasm_state).to eq 'rejected'
+          expect(record.account.balance).to eq balance
+          expect(record.account.locked).to eq 0
+        end
+
+        it 'rejects withdraws with under_review state' do
+          record.accept!
+          record.process!
+          record.review!
+          expect(record.aasm_state).to eq 'under_review'
+          expect(account.reload.balance).to eq (balance - amount)
+          expect(account.reload.locked).to eq amount
+          request
+          expect(response).to have_http_status(200)
+          record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+          expect(record.aasm_state).to eq 'rejected'
+          expect(record.account.balance).to eq balance
+          expect(record.account.locked).to eq 0
+        end
+      end
+
+      context 'action: :review' do
+        before { data[:action] = :review }
+
+        it 'sets under_review state for prepared withdraws' do
+          expect(record.aasm_state).to eq 'prepared'
+          expect(account.reload.balance).to eq balance
+          expect(account.reload.locked).to eq 0
+          request
+          expect(response).to have_http_status(200)
+          record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+          expect(record.aasm_state).to eq 'under_review'
+          expect(record.account.balance).to eq (balance - amount)
+          expect(record.account.locked).to eq amount
+        end
+
+        it 'sets under_review state for accepted withdraws' do
+          record.accept!
+          expect(record.aasm_state).to eq 'accepted'
+          expect(account.reload.balance).to eq (balance - amount)
+          expect(account.reload.locked).to eq amount
+          request
+          expect(response).to have_http_status(200)
+          record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+          expect(record.aasm_state).to eq 'under_review'
+          expect(record.account.balance).to eq (balance - amount)
+          expect(record.account.locked).to eq amount
+        end
+      end
+
+      context 'action: :success' do
+        before { data[:action] = :success }
+
+        it 'doesnt change prepared withdraws' do
+          expect(record.aasm_state).to eq 'prepared'
+          expect(account.reload.balance).to eq balance
+          expect(account.reload.locked).to eq 0
+          request
+          expect(response).to have_http_status(200)
+          record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+          expect(record.aasm_state).to eq 'prepared'
+          expect(record.account.balance).to eq balance
+          expect(record.account.locked).to eq 0
+        end
+
+        it 'doesnt change accepted withdraws' do
+          record.accept!
+          expect(record.aasm_state).to eq 'accepted'
+          expect(account.reload.balance).to eq (balance - amount)
+          expect(account.reload.locked).to eq amount
+          request
+          expect(response).to have_http_status(200)
+          record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+          expect(record.aasm_state).to eq 'accepted'
+          expect(record.account.balance).to eq (balance - amount)
+          expect(record.account.locked).to eq amount
+        end
+
+        it 'successfully withdraws in under_review state' do
+          record.accept!
+          record.process!
+          record.review!
+          expect(record.aasm_state).to eq 'under_review'
+          expect(account.reload.balance).to eq (balance - amount)
+          expect(account.reload.locked).to eq amount
+          request
+          expect(response).to have_http_status(200)
+          record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+          expect(record.aasm_state).to eq 'succeed'
+          expect(record.account.balance).to eq (balance - amount)
           expect(record.account.locked).to eq 0
         end
       end

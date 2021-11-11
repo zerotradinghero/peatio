@@ -21,7 +21,7 @@ describe API::V2::Admin::Wallets, type: :request do
     end
 
     it 'returns error in case of invalid id' do
-      api_get '/api/v2/admin/wallets/120', token: token
+      api_get '/api/v2/admin/wallets/0', token: token
 
       expect(response.code).to eq '404'
       expect(response).to include_api_error('record.not_found')
@@ -74,7 +74,7 @@ describe API::V2::Admin::Wallets, type: :request do
 
       expect(response.headers.fetch('Total')).to eq Wallet.count.to_s
       expect(result.size).to eq 6
-      expect(result.first['name']).to eq 'Ethereum Deposit Wallet'
+      expect(result.first['name']).to eq 'Bitcoin Deposit Wallet'
 
       api_get '/api/v2/admin/wallets', params: { limit: 6, page: 2 }, token: token
       result = JSON.parse(response.body)
@@ -83,7 +83,7 @@ describe API::V2::Admin::Wallets, type: :request do
 
       expect(response.headers.fetch('Total')).to eq Wallet.count.to_s
       expect(result.size).to eq 2
-      expect(result.first['name']).to eq 'Bitcoin Hot Wallet'
+      expect(result.first['name']).to eq 'Ethereum Hot Wallet'
     end
 
     it 'return error in case of not permitted ability' do
@@ -180,7 +180,8 @@ describe API::V2::Admin::Wallets, type: :request do
           
           expect(response).to be_successful
           result = JSON.parse(response.body)
-          expect(result).to eq expected_zero_result
+          expect(result[0].except('blockchains')).to eq expected_zero_result[0].except('blockchains')
+          expect(result[0]['blockchains'][0].except('balances')).to eq expected_zero_result[0]['blockchains'][0].except('balances')
         end
       end
 
@@ -196,7 +197,8 @@ describe API::V2::Admin::Wallets, type: :request do
 
           expect(response).to be_successful
           result = JSON.parse(response.body)
-          expect(result).to eq expected_zero_result
+          expect(result[0].except('blockchains')).to eq expected_zero_result[0].except('blockchains')
+          expect(result[0]['blockchains'][0].except('balances')).to eq expected_zero_result[0]['blockchains'][0].except('balances')
         end
       end
 
@@ -215,10 +217,16 @@ describe API::V2::Admin::Wallets, type: :request do
           expect(response).to be_successful
           result = JSON.parse(response.body)
 
-          expect(result[0]['blockchains'][0]['balances'][0].keys).to eq %w[kind balance updated_at]
-          expect(result[0]['blockchains'][0]['balances'][0]['balance']).to eq '44.0'
-          expect(result[0]['blockchains'][0]['balances'][1].keys).to eq %w[kind balance updated_at]
-          expect(result[0]['blockchains'][0]['balances'][1]['balance']).to eq '32.0'
+          balances = result[0]['blockchains'][0]['balances']
+          expect(balances[0].keys).to eq %w[kind balance updated_at]
+          expect(balances[1].keys).to eq %w[kind balance updated_at]
+
+          hot_balance = balances.find { |h| h['kind'] == 'hot' }
+          expect(hot_balance['balance']).to eq '44.0'
+
+          deposit_balance = balances.find { |h| h['kind'] == 'deposit' }
+          expect(deposit_balance['balance']).to eq '32.0'
+
           expect(result[0]['blockchains'][0]['total']).to eq '76.0'
           expect(result[0]['blockchains'][0]['estimated_total']).to eq '76.0'
           expect(result[0]['deposit_total_balance']).to eq '32.0'
@@ -243,10 +251,16 @@ describe API::V2::Admin::Wallets, type: :request do
 
           expect(response).to be_successful
           result = JSON.parse(response.body)
-          expect(result[0]['blockchains'][0]['balances'][0].keys).to eq %w[kind balance]
-          expect(result[0]['blockchains'][0]['balances'][0]['balance']).to eq '44.0'
-          expect(result[0]['blockchains'][0]['balances'][1].keys).to eq %w[kind balance]
-          expect(result[0]['blockchains'][0]['balances'][1]['balance']).to eq '32.0'
+
+          balances = result[0]['blockchains'][0]['balances']
+          expect(balances[0].keys).to eq %w[kind balance]
+          expect(balances[1].keys).to eq %w[kind balance]
+
+          hot_balance = balances.find { |h| h['kind'] == 'hot' }
+          expect(hot_balance['balance']).to eq '44.0'
+          deposit_balance = balances.find { |h| h['kind'] == 'deposit' }
+          expect(deposit_balance['balance']).to eq '32.0'
+
           expect(result[0]['blockchains'][0]['total']).to eq '76.0'
           expect(result[0]['blockchains'][0]['estimated_total']).to eq '76.0'
         end
@@ -278,7 +292,7 @@ describe API::V2::Admin::Wallets, type: :request do
 
   describe 'POST /api/v2/admin/wallets/new' do
     it 'create wallet' do
-      api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'deposit', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', gateway: 'geth', settings: { uri: 'http://127.0.0.1:18332'}}, token: token
+      api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'deposit', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', gateway: 'geth', plain_settings: {external_wallet_id: 1}, settings: { uri: 'http://127.0.0.1:18332'}}, token: token
       result = JSON.parse(response.body)
 
       expect(response).to be_successful
@@ -286,7 +300,7 @@ describe API::V2::Admin::Wallets, type: :request do
     end
 
     it 'create wallet' do
-      api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'deposit', currencies: ['eth','trst'], address: 'blank', blockchain_key: 'btc-testnet', gateway: 'geth', settings: { uri: 'http://127.0.0.1:18332'}}, token: token
+      api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'deposit', currencies: ['eth','trst'], address: 'blank', blockchain_key: 'btc-testnet', gateway: 'geth', plain_settings: {external_wallet_id: 1}, settings: { uri: 'http://127.0.0.1:18332'}}, token: token
       result = JSON.parse(response.body)
 
       expect(response).to be_successful
@@ -306,45 +320,74 @@ describe API::V2::Admin::Wallets, type: :request do
     end
 
     it 'validate status' do
-      api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'deposit', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', gateway: 'geth', settings: { uri: 'http://127.0.0.1:18332'}, status: 'disable' }, token: token
+      api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'deposit', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', gateway: 'geth', plain_settings: {external_wallet_id: 1}, settings: { uri: 'http://127.0.0.1:18332'}, status: 'disable' }, token: token
 
       expect(response.code).to eq '422'
       expect(response).to include_api_error('admin.wallet.invalid_status')
     end
 
     it 'validate gateway' do
-      api_post '/api/v2/admin/wallets/update', params: { name: 'Test', kind: 'deposit', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', settings: { uri: 'http://127.0.0.1:18332'}, gateway: 'test' }, token: token
+      api_post '/api/v2/admin/wallets/update', params: { name: 'Test', kind: 'deposit', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', plain_settings: {external_wallet_id: 1}, settings: { uri: 'http://127.0.0.1:18332'}, gateway: 'test' }, token: token
 
       expect(response.code).to eq '422'
       expect(response).to include_api_error('admin.wallet.gateway_doesnt_exist')
     end
 
     it 'validate kind' do
-      api_post '/api/v2/admin/wallets/update', params: { name: 'Test', kind: 'test', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', settings: { uri: 'http://127.0.0.1:18332'}, gateway: 'geth' }, token: token
+      api_post '/api/v2/admin/wallets/update', params: { name: 'Test', kind: 'test', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', plain_settings: {external_wallet_id: 1}, settings: { uri: 'http://127.0.0.1:18332'}, gateway: 'geth' }, token: token
 
       expect(response.code).to eq '422'
       expect(response).to include_api_error('admin.wallet.invalid_kind')
     end
 
     it 'validate currency_id' do
-      api_post '/api/v2/admin/wallets/update', params: { id: 1, name: 'Test', kind: 'deposit', address: 'blank', blockchain_key: 'btc-testnet', gateway: 'geth', settings: { uri: 'http://127.0.0.1:18332'}, currencies: 'test' }, token: token
+      api_post '/api/v2/admin/wallets/update', params: { id: 1, name: 'Test', kind: 'deposit', address: 'blank', blockchain_key: 'btc-testnet', gateway: 'geth', plain_settings: {external_wallet_id: 1}, settings: { uri: 'http://127.0.0.1:18332'}, currencies: 'test' }, token: token
 
       expect(response.code).to eq '422'
       expect(response).to include_api_error('admin.wallet.currency_doesnt_exist')
     end
 
     it 'validate uri' do
-      api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'hot', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', settings: { uri: 'invalid_uri'}, gateway: 'geth' }, token: token
+      api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'hot', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', plain_settings: {external_wallet_id: 1}, settings: { uri: 'invalid_uri'}, gateway: 'geth' }, token: token
 
       expect(response.code).to eq '422'
       expect(response).to include_api_error('admin.wallet.invalid_uri_setting')
     end
 
     it 'return error in case of not permitted ability' do
-      api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'deposit', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', gateway: 'geth', settings: { uri: 'http://127.0.0.1:18332'}}, token: level_3_member_token
+      api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'deposit', currencies: 'eth', address: 'blank', blockchain_key: 'btc-testnet', gateway: 'geth', plain_settings: {external_wallet_id: 1}, settings: { uri: 'http://127.0.0.1:18332'}}, token: level_3_member_token
 
       expect(response.code).to eq '403'
       expect(response).to include_api_error('admin.ability.not_permitted')
+    end
+
+    context 'validate wallet kind is supported by the gateway' do
+      class CustomWallet < Peatio::Wallet::Abstract
+        def initialize(_opts = {}); end
+        def configure(settings = {}); end
+
+        def support_wallet_kind?(kind)
+          kind == 'hot'
+        end
+      end
+
+      before(:all) do
+        Peatio::Wallet.registry[:custom] = CustomWallet
+      end
+
+      it do
+        api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'hot', currencies: ['eth','trst'], address: 'blank', blockchain_key: 'btc-testnet', gateway: 'custom', settings: { uri: 'http://127.0.0.1:18332'}}, token: token
+
+        expect(response).to be_successful
+        expect(response_body['gateway']).to eq 'custom'
+      end
+
+      it 'returns error' do
+        api_post '/api/v2/admin/wallets/new', params: { name: 'Test', kind: 'deposit', currencies: ['eth','trst'], address: 'blank', blockchain_key: 'btc-testnet', gateway: 'custom', settings: { uri: 'http://127.0.0.1:18332'}}, token: token
+
+        expect(response.code).to eq '422'
+        expect(response).to include_api_error("Gateway custom can't be used as a deposit wallet")
+      end
     end
   end
 

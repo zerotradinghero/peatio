@@ -3,6 +3,7 @@
 
 class Blockchain < ApplicationRecord
   GAS_SPEEDS = %w[standard safelow fast].freeze
+  STATES = %w[active idle disabled].freeze
 
   include Vault::EncryptedModel
 
@@ -16,10 +17,12 @@ class Blockchain < ApplicationRecord
 
   validates :key, :name, :client, :protocol, :min_deposit_amount, :min_withdraw_amount, :withdraw_fee, presence: true
   validates :key, :protocol, uniqueness: true
-  validates :status, inclusion: { in: %w[active disabled] }
+  validates :status, inclusion: { in: Blockchain::STATES }
   validates :height,
             :min_confirmations,
-            numericality: { greater_than_or_equal_to: 1, only_integer: true }
+            numericality: { greater_than_or_equal_to: 1, only_integer: true },
+            if: -> { client != Peatio::Blockchain.registry.adapters.key(Fiat).to_s }
+
   validates :server, url: { allow_blank: true }
   validates :client, inclusion: { in: -> (_) { clients.map(&:to_s) } }
   validates :collection_gas_speed, :withdrawal_gas_speed, inclusion: { in: GAS_SPEEDS }, allow_blank: true
@@ -30,6 +33,8 @@ class Blockchain < ApplicationRecord
             numericality: { greater_than_or_equal_to: 0 }
 
   before_create { self.key = self.key.strip.downcase }
+  before_validation :initialize_fiat_defaults, on: :create
+  after_save :update_networks_state
 
   scope :active,   -> { where(status: :active) }
 
@@ -46,6 +51,17 @@ class Blockchain < ApplicationRecord
 
   def status
     super&.inquiry
+  end
+
+  def update_networks_state
+    blockchain_currencies.update_all(status: :disabled) if status == 'disabled'
+  end
+
+  def initialize_fiat_defaults
+    if client == Peatio::Blockchain.registry.adapters.key(Fiat).to_s
+      self.status = 'idle'
+      self.height = 0
+    end
   end
 
   def blockchain_api

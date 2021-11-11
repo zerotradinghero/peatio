@@ -147,6 +147,7 @@ module Ethereum
         raise Ethereum::Client::Error, \
               "Withdrawal from #{@wallet.fetch(:address)} to #{transaction.to_address} failed."
       end
+
       # Make sure that we return currency_id
       transaction.currency_id = 'eth' if transaction.currency_id.blank?
       transaction.amount = convert_from_base_unit(amount, @currency.fetch(:base_factor))
@@ -187,6 +188,7 @@ module Ethereum
         raise Ethereum::Client::Error, \
               "Withdrawal from #{@wallet.fetch(:address)} to #{transaction.to_address} failed."
       end
+
       transaction.hash = normalize_txid(txid)
       transaction.options = options
       transaction
