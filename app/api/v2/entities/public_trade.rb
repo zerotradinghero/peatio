@@ -53,9 +53,7 @@ module API
             type: String,
             desc: 'Trade create time in iso8601 format.'
           }
-        ) do |trade, _options|
-            Time.parse(trade[:created_at].to_s).to_i
-          end
+        )
 
         expose(
           :taker_type,
