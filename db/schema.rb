@@ -191,6 +191,38 @@ ActiveRecord::Schema.define(version: 2021_10_01_083227) do
     t.index ["reference_type", "reference_id"], name: "index_expenses_on_reference_type_and_reference_id"
   end
 
+  create_table "release_commissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "account_type", limit: 10, null: false
+    t.bigint "member_id", null: false
+    t.decimal "earned_btc", precision: 32, scale: 16, null: false
+    t.integer "friend_trade", null: false
+    t.integer "friend", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_type"], name: "index_release_commissions_on_account_type"
+    t.index ["member_id"], name: "index_release_commissions_on_member_id"
+    t.index ["account_type", "member_id"], name: "index_release_commissions_on_account_type_and_member_id"
+  end
+
+  create_table "commissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "account_type", limit: 10, null: false
+    t.bigint "member_id", null: false
+    t.string "friend_uid", null: false
+    t.decimal "earn_amount", precision: 32, scale: 16, null: false
+    t.string "currency_id", limit: 10, null: false
+    t.bigint "parent_id", null: false
+    t.datetime "parent_created_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_type"], name: "index_commissions_on_account_type"
+    t.index ["member_id"], name: "index_commissions_on_member_id"
+    t.index ["currency_id"], name: "index_commissions_on_currency_id"
+    t.index ["account_type", "member_id"], name: "index_commissions_on_account_type_and_member_id"
+    t.index ["account_type", "currency_id"], name: "index_commissions_on_account_type_and_currency_id"
+    t.index ["member_id", "currency_id"], name: "index_commissions_on_member_id_and_currency_id"
+    t.index ["account_type", "member_id", "currency_id"], name: "index_commissions_on_account_type_and_member_id_and_currency_id"
+  end
+
   create_table "internal_transfers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "currency_id", null: false
     t.decimal "amount", precision: 32, scale: 16, null: false
@@ -252,6 +284,44 @@ ActiveRecord::Schema.define(version: 2021_10_01_083227) do
     t.index ["symbol", "type"], name: "index_markets_on_symbol_and_type", unique: true
   end
 
+  create_table "ieos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "currency_id", limit: 10, null: false
+    t.string "main_payment_currency", limit: 10, null: false
+    t.decimal "price", precision: 32, scale: 16, null: false
+    t.json "payment_currencies", null: false
+    t.decimal "min_amount", precision: 32, scale: 16, null: false
+    t.string "state", limit: 32, default: "enabled", null: false
+    t.datetime "start_time", null: false
+    t.datetime "end_time", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["currency_id"], name: "index_ieos_on_currency_id", unique: true
+    t.index ["main_payment_currency"], name: "index_ieos_on_main_payment_currency"
+    t.index ["state"], name: "index_ieos_on_state"
+  end
+
+  create_table "ieo_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.binary "uuid", limit: 16, null: false
+    t.bigint "ieo_id", null: false
+    t.bigint "member_id", null: false
+    t.string "bid", limit: 10, null: false
+    t.string "ask", limit: 10, null: false
+    t.decimal "price", precision: 32, scale: 16, null: false
+    t.decimal "quantity", precision: 32, scale: 16, null: false
+    t.decimal "bouns", precision: 32, scale: 16, null: false
+    t.integer "state", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["member_id"], name: "index_ieo_orders_on_member_id"
+    t.index ["state"], name: "index_ieo_orders_on_state"
+    t.index ["state", "bid", "ask"], name: "index_ieo_orders_on_state_and_bid_and_ask"
+    t.index ["state", "bid"], name: "index_ieo_orders_on_state_and_bid"
+    t.index ["state", "ask"], name: "index_ieo_orders_on_state_and_ask"
+    t.index ["state", "member_id"], name: "index_ieo_orders_on_state_and_member_id"
+    t.index ["updated_at"], name: "index_ieo_orders_on_updated_at"
+    t.index ["uuid"], name: "index_ieo_orders_on_uuid", unique: true
+  end
+
   create_table "members", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "uid", limit: 32, null: false
     t.string "email"
@@ -263,6 +333,7 @@ ActiveRecord::Schema.define(version: 2021_10_01_083227) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "username"
+    t.string "referral_uid", limit: 32
     t.index ["email"], name: "index_members_on_email", unique: true
     t.index ["uid"], name: "index_members_on_uid", unique: true
     t.index ["username"], name: "index_members_on_username", unique: true

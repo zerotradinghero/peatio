@@ -10,3 +10,5 @@ Peatio::Wallet.registry[:"geth-bsc"] = Ethereum::Bsc::Wallet
 Peatio::Wallet.registry[:"geth-heco"] = Ethereum::Heco::Wallet
 Peatio::Wallet.registry[:dogecoin] = Dogecoin::Wallet
 Peatio::Wallet.registry[:"geth-custom-eth"] = Ethereum::CustomEth::Wallet
+Peatio::Wallet.registry[:tron] = Tron::Wallet
+Peatio::Wallet.registry[:fork_bitcoin_old] = ForkBitcoinOld::Wallet
