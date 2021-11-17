@@ -207,6 +207,21 @@ describe API::V2::Account::Deposits, type: :request do
         expect(response).to include_api_error('account.currency.doesnt_exist')
       end
 
+      context 'unknown network' do
+        let(:currency) { Currency.find_by(id: 'btc') }
+
+        before do
+          currency.update(default_network_id: nil)
+        end
+
+        it 'validates currency network' do
+          api_get '/api/v2/account/deposit_address/btc', params: { blockchain_key: 'eth-kovan' }, token: token
+
+          expect(response).to have_http_status 422
+          expect(response).to include_api_error('account.deposit_address.network_not_found')
+        end
+      end
+
       it 'validates currency address format' do
         api_get '/api/v2/account/deposit_address/btc', params: { address_format: 'cash', blockchain_key: blockchain_key }, token: token
 
@@ -220,13 +235,14 @@ describe API::V2::Account::Deposits, type: :request do
         expect(response).to include_api_error('account.currency.doesnt_exist')
       end
 
+
       context 'unauthorized' do
         before do
           Ability.stubs(:user_permissions).returns([])
         end
 
         it 'renders unauthorized error' do
-          api_get '/api/v2/account/deposit_address/btc', token: token
+          api_get '/api/v2/account/deposit_address/btc', params: {blockchain_key: 'btc-testnet'}, token: token
           expect(response).to have_http_status 403
           expect(response).to include_api_error('user.ability.not_permitted')
         end
@@ -237,7 +253,7 @@ describe API::V2::Account::Deposits, type: :request do
       context 'eth address' do
         let(:currency) { :eth }
         let(:blockchain_key) { 'eth-rinkeby' }
-        let(:wallet) { Wallet.deposit.joins(:currencies).find_by(currencies: { id: currency }) }
+        let(:wallet) { Wallet.active_deposit_wallet(currency) }
         before { member.payment_address(wallet.id).update!(address: '2N2wNXrdo4oEngp498XGnGCbru29MycHogR') }
 
         it 'expose data about eth address' do

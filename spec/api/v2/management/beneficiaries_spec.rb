@@ -157,7 +157,7 @@ describe API::V2::Management::Beneficiaries, type: :request do
 
     context 'invalid params' do
       context 'missing required params' do
-        %i[currency name data uid blockchain_key].each do |rp|
+        %i[currency name data uid].each do |rp|
           context rp do
             it do
               beneficiary_data.except!(rp)
@@ -166,6 +166,20 @@ describe API::V2::Management::Beneficiaries, type: :request do
               expect(JSON.parse(response.body)['error']).to match(/#{rp} is missing/i)
             end
           end
+        end
+      end
+
+      context 'unknown network' do
+        let(:currency) { Currency.find_by(id: 'btc') }
+        before do
+          currency.update(default_network_id: nil)
+        end
+
+        it do
+          beneficiary_data.merge!(blockchain_key: 'eth-kovan')
+          request
+          expect(response.status).to eq 422
+          expect(response.body).to match(/management.beneficiary.network_not_found/i)
         end
       end
 
@@ -336,6 +350,7 @@ describe API::V2::Management::Beneficiaries, type: :request do
               currency: :usd,
               uid: member.uid,
               name: Faker::Bank.name,
+              blockchain_key: 'fiat',
               description: Faker::Company.catch_phrase,
               data: generate(:fiat_beneficiary_data)
             }
@@ -346,7 +361,7 @@ describe API::V2::Management::Beneficiaries, type: :request do
               beneficiary_data[:data].except!(:address)
               request
               expect(response.status).to eq 201
-              expect(response_body['blockchain_key']).to eq nil
+              expect(response_body['blockchain_key']).to eq 'fiat'
               expect(response_body['data']).to eq beneficiary_data[:data].with_indifferent_access
             end
           end
@@ -365,6 +380,7 @@ describe API::V2::Management::Beneficiaries, type: :request do
               before do
                 create(:beneficiary,
                        member: member,
+                       blockchain_key: 'fiat',
                        currency_id: beneficiary_data[:currency],
                        data: beneficiary_data[:data])
               end

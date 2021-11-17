@@ -5,3 +5,6 @@ Peatio::Blockchain.registry[:"geth-bsc"] = Ethereum::Bsc::Blockchain
 Peatio::Blockchain.registry[:"geth-heco"] = Ethereum::Heco::Blockchain
 Peatio::Blockchain.registry[:dogecoin] = Dogecoin::Blockchain
 Peatio::Blockchain.registry[:"geth-custom-eth"] = Ethereum::CustomEth::Blockchain
+Peatio::Blockchain.registry[:fiat] = Peatio::Fiat
+Peatio::Blockchain.registry[:tron] = Tron::Blockchain
+Peatio::Blockchain.registry[:fork_bitcoin_old] = ForkBitcoinOld::Blockchain
