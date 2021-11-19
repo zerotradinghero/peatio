@@ -3,12 +3,7 @@ API for Peatio application.
 
 ## Version: 3.1.0
 
-**Contact information:**  
-openware.com  
-<https://www.openware.com>  
-hello@openware.com  
-
-**License:** <https://github.com/openware/peatio/blob/master/LICENSE.md>
+**License:** <https://github.com/openware/trade/blob/master/LICENSE.md>
 
 ### Security
 **Bearer**  
@@ -18,7 +13,7 @@ hello@openware.com
 |Name|JWT|
 |In|header|
 
-### /api/v2/peatio/public/withdraw_limits
+### /api/v2/trade/public/withdraw_limits
 
 #### GET
 ##### Description
@@ -42,7 +37,7 @@ Returns withdraw limits table as paginated collection
 | ---- | ----------- | ------ |
 | 200 | Returns withdraw limits table as paginated collection | [ [WithdrawLimit](#withdrawlimit) ] |
 
-### /api/v2/peatio/public/webhooks/{adapter}/{event}
+### /api/v2/trade/public/webhooks/{adapter}/{event}
 
 #### POST
 ##### Description
@@ -62,7 +57,7 @@ Webhook controller
 | ---- | ----------- |
 | 201 | Webhook controller |
 
-### /api/v2/peatio/public/trading_fees
+### /api/v2/trade/public/trading_fees
 
 #### GET
 ##### Description
@@ -87,7 +82,7 @@ Returns trading_fees table as paginated collection
 | ---- | ----------- | ------ |
 | 200 | Returns trading_fees table as paginated collection | [ [TradingFee](#tradingfee) ] |
 
-### /api/v2/peatio/public/health/ready
+### /api/v2/trade/public/health/ready
 
 #### GET
 ##### Description
@@ -100,7 +95,7 @@ Get application readiness status
 | ---- | ----------- |
 | 200 | Get application readiness status |
 
-### /api/v2/peatio/public/health/alive
+### /api/v2/trade/public/health/alive
 
 #### GET
 ##### Description
@@ -113,7 +108,7 @@ Get application liveness status
 | ---- | ----------- |
 | 200 | Get application liveness status |
 
-### /api/v2/peatio/public/version
+### /api/v2/trade/public/version
 
 #### GET
 ##### Description
@@ -126,7 +121,7 @@ Get running Peatio version and build details.
 | ---- | ----------- |
 | 200 | Get running Peatio version and build details. |
 
-### /api/v2/peatio/public/timestamp
+### /api/v2/trade/public/timestamp
 
 #### GET
 ##### Description
@@ -139,7 +134,7 @@ Get server current time, in seconds since Unix epoch.
 | ---- | ----------- |
 | 200 | Get server current time, in seconds since Unix epoch. |
 
-### /api/v2/peatio/public/member-levels
+### /api/v2/trade/public/member-levels
 
 #### GET
 ##### Description
@@ -152,7 +147,7 @@ Returns hash of minimum levels and the privileges they provide.
 | ---- | ----------- |
 | 200 | Returns hash of minimum levels and the privileges they provide. |
 
-### /api/v2/peatio/public/markets/{market}/tickers
+### /api/v2/trade/public/markets/{market}/tickers
 
 #### GET
 ##### Description
@@ -171,7 +166,7 @@ Get ticker of specific market.
 | ---- | ----------- | ------ |
 | 200 | Get ticker of specific market. | [Ticker](#ticker) |
 
-### /api/v2/peatio/public/markets/tickers
+### /api/v2/trade/public/markets/tickers
 
 #### GET
 ##### Description
@@ -184,7 +179,7 @@ Get ticker of all markets (For response doc see /:market/tickers/ response).
 | ---- | ----------- | ------ |
 | 200 | Get ticker of all markets (For response doc see /:market/tickers/ response). | [Ticker](#ticker) |
 
-### /api/v2/peatio/public/markets/{market}/k-line
+### /api/v2/trade/public/markets/{market}/k-line
 
 #### GET
 ##### Description
@@ -207,7 +202,7 @@ Get OHLC(k line) of specific market.
 | ---- | ----------- |
 | 200 | Get OHLC(k line) of specific market. |
 
-### /api/v2/peatio/public/markets/{market}/depth
+### /api/v2/trade/public/markets/{market}/depth
 
 #### GET
 ##### Description
@@ -227,7 +222,7 @@ Get depth or specified market. Both asks and bids are sorted from highest price 
 | ---- | ----------- |
 | 200 | Get depth or specified market. Both asks and bids are sorted from highest price to lowest. |
 
-### /api/v2/peatio/public/markets/{market}/trades
+### /api/v2/trade/public/markets/{market}/trades
 
 #### GET
 ##### Description
@@ -249,7 +244,7 @@ Get recent trades on market, each trade is included only once. Trades are sorted
 | ---- | ----------- | ------ |
 | 200 | Get recent trades on market, each trade is included only once. Trades are sorted in reverse creation order. | [ [Trade](#trade) ] |
 
-### /api/v2/peatio/public/markets/{market}/order-book
+### /api/v2/trade/public/markets/{market}/order-book
 
 #### GET
 ##### Description
@@ -270,7 +265,7 @@ Get the order book of specified market.
 | ---- | ----------- | ------ |
 | 200 | Get the order book of specified market. | [ [OrderBook](#orderbook) ] |
 
-### /api/v2/peatio/public/markets
+### /api/v2/trade/public/markets
 
 #### GET
 ##### Description
@@ -300,7 +295,7 @@ Get all available markets.
 | ---- | ----------- | ------ |
 | 200 | Get all available markets. | [ [Market](#market) ] |
 
-### /api/v2/peatio/public/currencies
+### /api/v2/trade/public/currencies
 
 #### GET
 ##### Description
@@ -324,7 +319,7 @@ Get list of currencies
 | ---- | ----------- | ------ |
 | 200 | Get list of currencies | [ [Currency](#currency) ] |
 
-### /api/v2/peatio/public/currencies/{id}
+### /api/v2/trade/public/currencies/{id}
 
 #### GET
 ##### Description
@@ -343,7 +338,7 @@ Get a currency
 | ---- | ----------- | ------ |
 | 200 | Get a currency | [Currency](#currency) |
 
-### /api/v2/peatio/account/internal_transfers
+### /api/v2/trade/account/internal_transfers
 
 #### POST
 ##### Description
@@ -384,7 +379,7 @@ List your internal transfers as paginated collection.
 | ---- | ----------- | ------ |
 | 200 | List your internal transfers as paginated collection. | [ [InternalTransfer](#internaltransfer) ] |
 
-### /api/v2/peatio/account/stats/pnl
+### /api/v2/trade/account/stats/pnl
 
 #### GET
 ##### Description
@@ -403,7 +398,7 @@ Get assets pnl calculated into one currency
 | ---- | ----------- |
 | 200 | Get assets pnl calculated into one currency |
 
-### /api/v2/peatio/account/transactions
+### /api/v2/trade/account/transactions
 
 #### GET
 ##### Description
@@ -430,7 +425,7 @@ Get your transactions history.
 | ---- | ----------- |
 | 200 | Get your transactions history. |
 
-### /api/v2/peatio/account/withdraws
+### /api/v2/trade/account/withdraws
 
 #### POST
 ##### Description
@@ -476,7 +471,7 @@ List your withdraws as paginated collection.
 | ---- | ----------- | ------ |
 | 200 | List your withdraws as paginated collection. | [ [Withdraw](#withdraw) ] |
 
-### /api/v2/peatio/account/withdraws/sums
+### /api/v2/trade/account/withdraws/sums
 
 #### GET
 ##### Description
@@ -489,7 +484,7 @@ Returns withdrawal sums for last 4 hours and 1 month
 | ---- | ----------- |
 | 200 | Returns withdrawal sums for last 4 hours and 1 month |
 
-### /api/v2/peatio/account/beneficiaries/{id}
+### /api/v2/trade/account/beneficiaries/{id}
 
 #### DELETE
 ##### Description
@@ -525,7 +520,7 @@ Get beneficiary by ID
 | ---- | ----------- | ------ |
 | 200 | Get beneficiary by ID | [Beneficiary](#beneficiary) |
 
-### /api/v2/peatio/account/beneficiaries/{id}/activate
+### /api/v2/trade/account/beneficiaries/{id}/activate
 
 #### PATCH
 ##### Description
@@ -545,7 +540,7 @@ Activates beneficiary with pin
 | ---- | ----------- | ------ |
 | 200 | Activates beneficiary with pin | [Beneficiary](#beneficiary) |
 
-### /api/v2/peatio/account/beneficiaries/{id}/resend_pin
+### /api/v2/trade/account/beneficiaries/{id}/resend_pin
 
 #### PATCH
 ##### Description
@@ -564,7 +559,7 @@ Resend beneficiary pin
 | ---- | ----------- |
 | 200 | Resend beneficiary pin |
 
-### /api/v2/peatio/account/beneficiaries
+### /api/v2/trade/account/beneficiaries
 
 #### POST
 ##### Description
@@ -606,7 +601,7 @@ Get list of user beneficiaries
 | ---- | ----------- | ------ |
 | 200 | Get list of user beneficiaries | [ [Beneficiary](#beneficiary) ] |
 
-### /api/v2/peatio/account/deposit_address/{currency}
+### /api/v2/trade/account/deposit_address/{currency}
 
 #### GET
 ##### Description
@@ -626,7 +621,7 @@ Returns deposit address for account you want to deposit to by currency. The addr
 | ---- | ----------- | ------ |
 | 200 | Returns deposit address for account you want to deposit to by currency. The address may be blank because address generation process is still in progress. If this case you should try again later. | [Deposit](#deposit) |
 
-### /api/v2/peatio/account/deposits/{txid}
+### /api/v2/trade/account/deposits/{txid}
 
 #### GET
 ##### Description
@@ -645,7 +640,7 @@ Get details of specific deposit.
 | ---- | ----------- | ------ |
 | 200 | Get details of specific deposit. | [Deposit](#deposit) |
 
-### /api/v2/peatio/account/deposits
+### /api/v2/trade/account/deposits
 
 #### GET
 ##### Description
@@ -670,7 +665,7 @@ Get your deposits history.
 | ---- | ----------- | ------ |
 | 200 | Get your deposits history. | [ [Deposit](#deposit) ] |
 
-### /api/v2/peatio/account/balances/{currency}
+### /api/v2/trade/account/balances/{currency}
 
 #### GET
 ##### Description
@@ -689,7 +684,7 @@ Get user account by currency
 | ---- | ----------- | ------ |
 | 200 | Get user account by currency | [Account](#account) |
 
-### /api/v2/peatio/account/balances
+### /api/v2/trade/account/balances
 
 #### GET
 ##### Description
@@ -713,7 +708,7 @@ Get list of user accounts
 | ---- | ----------- | ------ |
 | 200 | Get list of user accounts | [ [Account](#account) ] |
 
-### /api/v2/peatio/market/trades
+### /api/v2/trade/market/trades
 
 #### GET
 ##### Description
@@ -739,7 +734,7 @@ Get your executed trades. Trades are sorted in reverse creation order.
 | ---- | ----------- | ------ |
 | 200 | Get your executed trades. Trades are sorted in reverse creation order. | [ [Trade](#trade) ] |
 
-### /api/v2/peatio/market/orders/cancel
+### /api/v2/trade/market/orders/cancel
 
 #### POST
 ##### Description
@@ -760,7 +755,7 @@ Cancel all my orders.
 | ---- | ----------- | ------ |
 | 201 | Cancel all my orders. | [Order](#order) |
 
-### /api/v2/peatio/market/orders/{id}/cancel
+### /api/v2/trade/market/orders/{id}/cancel
 
 #### POST
 ##### Description
@@ -779,7 +774,7 @@ Cancel an order.
 | ---- | ----------- |
 | 201 | Cancel an order. |
 
-### /api/v2/peatio/market/orders
+### /api/v2/trade/market/orders
 
 #### POST
 ##### Description
@@ -830,7 +825,7 @@ Get your orders, result is paginated.
 | ---- | ----------- | ------ |
 | 200 | Get your orders, result is paginated. | [ [Order](#order) ] |
 
-### /api/v2/peatio/market/orders/{id}
+### /api/v2/trade/market/orders/{id}
 
 #### GET
 ##### Description
@@ -849,7 +844,7 @@ Get information of specified order.
 | ---- | ----------- | ------ |
 | 200 | Get information of specified order. | [Order](#order) |
 
-### /api/v2/peatio/coinmarketcap/orderbook/{market_pair}
+### /api/v2/trade/coinmarketcap/orderbook/{market_pair}
 
 #### GET
 ##### Description
@@ -869,7 +864,7 @@ Get depth or specified market
 | ---- | ----------- |
 | 200 | Get depth or specified market |
 
-### /api/v2/peatio/coinmarketcap/trades/{market_pair}
+### /api/v2/trade/coinmarketcap/trades/{market_pair}
 
 #### GET
 ##### Description
@@ -888,7 +883,7 @@ Get recent trades on market
 | ---- | ----------- | ------ |
 | 200 | Get recent trades on market | [Trade](#trade) |
 
-### /api/v2/peatio/coinmarketcap/ticker
+### /api/v2/trade/coinmarketcap/ticker
 
 #### GET
 ##### Description
@@ -901,7 +896,7 @@ Get 24-hour pricing and volume summary for each market pair
 | ---- | ----------- | ------ |
 | 200 | Get 24-hour pricing and volume summary for each market pair | [Ticker](#ticker) |
 
-### /api/v2/peatio/coinmarketcap/assets
+### /api/v2/trade/coinmarketcap/assets
 
 #### GET
 ##### Description
@@ -914,7 +909,7 @@ Details on crypto currencies available on the exchange
 | ---- | ----------- |
 | 200 | Details on crypto currencies available on the exchange |
 
-### /api/v2/peatio/coinmarketcap/summary
+### /api/v2/trade/coinmarketcap/summary
 
 #### GET
 ##### Description
@@ -927,7 +922,7 @@ Overview of market data for all tickers and all market pairs on the exchange
 | ---- | ----------- |
 | 200 | Overview of market data for all tickers and all market pairs on the exchange |
 
-### /api/v2/peatio/coingecko/historical_trades
+### /api/v2/trade/coingecko/historical_trades
 
 #### GET
 ##### Description
@@ -950,7 +945,7 @@ Get recent trades on market
 | ---- | ----------- |
 | 200 | Get recent trades on market |
 
-### /api/v2/peatio/coingecko/orderbook
+### /api/v2/trade/coingecko/orderbook
 
 #### GET
 ##### Description
@@ -970,7 +965,7 @@ Get depth or specified market
 | ---- | ----------- |
 | 200 | Get depth or specified market |
 
-### /api/v2/peatio/coingecko/tickers
+### /api/v2/trade/coingecko/tickers
 
 #### GET
 ##### Description
@@ -983,7 +978,7 @@ Get list of all available trading pairs
 | ---- | ----------- | ------ |
 | 200 | Get list of all available trading pairs | [Ticker](#ticker) |
 
-### /api/v2/peatio/coingecko/pairs
+### /api/v2/trade/coingecko/pairs
 
 #### GET
 ##### Description
