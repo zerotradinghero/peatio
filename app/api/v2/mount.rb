@@ -33,11 +33,17 @@ module API
       include Constraints
       include ExceptionHandlers
 
-      mount Public::Mount        => :public
       mount Account::Mount       => :account
-      mount Market::Mount        => :market
       mount CoinMarketCap::Mount => :coinmarketcap
-      mount CoinGecko::Mount => :coingecko
+      mount CoinGecko::Mount     => :coingecko
+      mount Market::Mount        => :market
+      mount Public::Mount        => :public
+      mount P2p::Mount           => :p2p
+
+      # Mount Management API after swagger. To separate swagger Management API doc.
+      # TODO: Find better solution for separating swagger Management API.
+      mount Admin::Mount      => :admin
+      mount Management::Mount => :management
 
       # The documentation is accessible at http://localhost:3000/swagger?url=/api/v2/swagger
       # Add swagger documentation for Peatio User API
@@ -56,17 +62,18 @@ module API
                                   license_url:   'https://github.com/openware/peatio/blob/master/LICENSE.md'
                                 },
                                 models: [
-                                  API::V2::Entities::Currency,
-                                  API::V2::Entities::BlockchainCurrency,
                                   API::V2::Entities::Account,
+                                  API::V2::Entities::Advertis,
+                                  API::V2::Entities::BlockchainCurrency,
+                                  API::V2::Entities::Currency,
                                   API::V2::Entities::Deposit,
-                                  API::V2::Entities::Transactions,
                                   API::V2::Entities::Market,
                                   API::V2::Entities::Member,
-                                  API::V2::Entities::OrderBook,
                                   API::V2::Entities::Order,
-                                  API::V2::Entities::Trade,
+                                  API::V2::Entities::OrderBook,
                                   API::V2::Entities::Withdraw,
+                                  API::V2::Entities::Trade,
+                                  API::V2::Entities::Transactions,
                                   API::V2::Entities::Ticker,
                                   API::V2::Entities::Ticker::TickerEntry
                                 ],
@@ -77,11 +84,6 @@ module API
                                     in:   "header"
                                   }
                                 }
-
-      # Mount Management API after swagger. To separate swagger Management API doc.
-      # TODO: Find better solution for separating swagger Management API.
-      mount Management::Mount => :management
-      mount Admin::Mount      => :admin
     end
   end
 end
