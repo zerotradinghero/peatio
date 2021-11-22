@@ -3,6 +3,7 @@
 class P2pOrder < ApplicationRecord
   belongs_to :advertisement
   belongs_to :payment_method
+  belongs_to :advertisement_payment_methods
 
   enum status: [:ordered, :paid, :complete, :cancel]
   enum p2p_orders_type: [:sell, :buy]
@@ -18,5 +19,4 @@ class P2pOrder < ApplicationRecord
     end
     order
   end
-
 end
