@@ -6,6 +6,8 @@ class CreatePaymentMethods < ActiveRecord::Migration[5.2]
       t.integer :payment_type, default: 0
       t.string :account_name
       t.bigint :member_id
+
+      t.timestamps
     end
   end
 end
