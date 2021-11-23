@@ -63,7 +63,7 @@ module API
                                 },
                                 models: [
                                   API::V2::Entities::Account,
-                                  API::V2::Entities::Advertis,
+                                  API::V2::Entities::Advertisement,
                                   API::V2::Entities::BlockchainCurrency,
                                   API::V2::Entities::Currency,
                                   API::V2::Entities::Deposit,
