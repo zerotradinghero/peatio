@@ -6,7 +6,9 @@ class CreateP2pOrders < ActiveRecord::Migration[5.2]
       t.integer :p2p_orders_type
       t.decimal :price
       t.decimal :ammount
-      t.bigint :advertis_payment_method_id
+      t.bigint :advertisement_payment_method_id
+
+      t.timestamps
     end
   end
 end
