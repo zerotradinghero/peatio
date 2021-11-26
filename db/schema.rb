@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_01_083227) do
+ActiveRecord::Schema.define(version: 2021_11_25_141025) do
 
   create_table "accounts", primary_key: ["currency_id", "member_id", "type"], options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "member_id", null: false
@@ -288,11 +288,15 @@ ActiveRecord::Schema.define(version: 2021_10_01_083227) do
     t.string "currency_id", limit: 10, null: false
     t.string "main_payment_currency", limit: 10, null: false
     t.decimal "price", precision: 32, scale: 16, null: false
-    t.json "payment_currencies", null: false
+    t.decimal "executed_quantity", precision: 32, scale: 16, null: false
+    t.decimal "origin_quantity", precision: 32, scale: 16, null: false
+    t.decimal "limit_per_user", precision: 32, scale: 16, null: false
     t.decimal "min_amount", precision: 32, scale: 16, null: false
     t.string "state", limit: 32, default: "enabled", null: false
     t.datetime "start_time", null: false
     t.datetime "end_time", null: false
+    t.string "banner_url", null: false
+    t.string "data", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["currency_id"], name: "index_ieos_on_currency_id", unique: true
@@ -300,15 +304,21 @@ ActiveRecord::Schema.define(version: 2021_10_01_083227) do
     t.index ["state"], name: "index_ieos_on_state"
   end
 
+  create_table "ieo_payment_currencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "currency_id", limit: 10, null: false
+    t.bigint "ieo_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["currency_id", "ieo_id"], name: "index_ieo_orders_on_currency_id_and_ieo_id", unique: true
+  end
+
   create_table "ieo_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.binary "uuid", limit: 16, null: false
     t.bigint "ieo_id", null: false
     t.bigint "member_id", null: false
-    t.string "bid", limit: 10, null: false
-    t.string "ask", limit: 10, null: false
+    t.string "currency_id", limit: 10, null: false
     t.decimal "price", precision: 32, scale: 16, null: false
     t.decimal "quantity", precision: 32, scale: 16, null: false
-    t.decimal "bouns", precision: 32, scale: 16, null: false
     t.integer "state", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

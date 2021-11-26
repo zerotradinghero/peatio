@@ -63,7 +63,7 @@ module Tron
       # To prevent this system will raise an error
       min_collection_amount = @currency.fetch(:min_collection_amount).to_d
       if amount > min_collection_amount
-        raise Ethereum::Client::Error, \
+        raise Tron::Client::Error, \
               "Fee amount(#{amount}) is greater than min collection amount(#{min_collection_amount})."
       end
 
