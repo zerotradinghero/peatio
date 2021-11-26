@@ -16,6 +16,7 @@ module API
         mount Public::WithdrawLimits
         mount Public::GlobalPrice
         mount Public::Config
+        mount Public::Advertises
       end
     end
   end
