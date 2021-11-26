@@ -2,7 +2,7 @@
 
 module API
   module V2
-    module P2p
+    module Public
       module Entities
         class Member < API::V2::Entities::Base
           expose(

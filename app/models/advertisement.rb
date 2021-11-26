@@ -8,4 +8,5 @@ class Advertisement < ApplicationRecord
   belongs_to :creator, class_name: Member.name, foreign_key: :creator_id
 
   enum advertis_type: [:sell, :buy]
+  enum visible: [:disabled, :enabled]
 end

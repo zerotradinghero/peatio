@@ -5,6 +5,15 @@ module API
   module V2
     module Entities
       class Advertisement < Base
+        expose(
+          :id,
+          documentation: {
+            type: Integer,
+            desc: "Price for each unit. e.g."\
+                  "If you want to sell/buy 1 btc at 3000 usd, the price is '3000.0'"
+          }
+        )
+
       	expose(
           :price,
           documentation: {
@@ -56,7 +65,7 @@ module API
 
         expose(
           :currency,
-          :using => API::V2::P2p::Entities::Currency,
+          :using => API::V2::Public::Entities::Currency,
           documentation: {
             desc: 'Currency.'
           }
@@ -64,11 +73,24 @@ module API
 
         expose(
           :creator,
-          :using => API::V2::P2p::Entities::Member,
+          :using => API::V2::Public::Entities::Member,
           documentation: {
             desc: 'name of creator.'
           }
         )
+
+        expose(
+          :payment_methods,
+          using: API::V2::Public::Entities::PaymentMethod,
+          documentation: {
+            type: 'API::V2::Public::Entities::PaymentMethod',
+            is_array: true,
+            uniq: true,
+            desc: 'Payment info of member'
+          },
+          ) do |c|
+          c.payment_methods
+        end
 
       end
     end
