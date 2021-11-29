@@ -12,14 +12,14 @@ module API
                    type: String,
                    values: { value: %w(sell buy), message: 'p2p.p2p_order.invalid_p2p_order_type' },
                    desc: -> { V2::Entities::P2pOrder.documentation[:p2p_orders_type] }
-          requires :price,
-                   type: BigDecimal,
-                   values: { value: -> (v){ v.try(:positive?) }, message: 'p2p.p2p_order.non_positive_price' },
-                   desc: -> { V2::Entities::P2pOrder.documentation[:price] }
           requires :advertisement_id,
                    type: Integer,
                    values: { value: -> (v){ (Advertisement.find_by id: v).present? }, message: 'p2p.p2p_order.non_advertisement' },
                    desc: -> { V2::Entities::P2pOrder.documentation[:advertisement_id] }
+          requires :number_of_coin,
+                   type: BigDecimal,
+                   values: { value: -> (v){ v.try(:positive?) }, message: 'p2p.p2p_order.non_positive_number_of_coin' },
+                   desc: -> { V2::Entities::P2pOrder.documentation[:number_of_coin] }
         end
       end
     end
