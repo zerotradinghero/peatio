@@ -14,9 +14,8 @@ module API::V2
       end
       post '/p2p_orders' do
         user_authorize! :create, ::P2pOrder
-
         order = P2pOrder.create_order(params)
-        present order, with: API::V2::Entities::Order
+        present order, with: API::V2::Entities::P2pOrder
       end
     end
   end

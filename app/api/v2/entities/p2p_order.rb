@@ -13,6 +13,55 @@ module API
           }
         )
 
+        expose(
+          :p2p_orders_type,
+          documentation: {
+            type: Integer,
+            desc: "type of p2p order."
+          }
+        )
+
+        expose(
+          :price,
+          documentation: {
+            type: BigDecimal,
+            desc: "price of p2p order."
+          }
+        )
+
+        expose(
+          :ammount,
+          documentation: {
+            type: BigDecimal,
+            desc: "amount of p2p order."
+          }
+        )
+
+        expose(
+          :number_of_coin,
+          documentation: {
+            type: BigDecimal,
+            desc: "number_of_coin of p2p order."
+          }
+        )
+
+        expose(
+          :order_number,
+          documentation: {
+            type: String,
+            desc: "order number of p2p order."
+          }
+        )
+
+        expose(
+          :advertisement ,
+          :using => API::V2::Entities::Advertisement,
+          documentation: {
+            desc: 'name of creator.'
+          }
+        )
+
+
       end
     end
   end
