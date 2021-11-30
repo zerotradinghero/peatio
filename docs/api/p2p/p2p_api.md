@@ -9,14 +9,98 @@ Show all advertis with type(sell/buy)
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema | Example
-| ---- | ---------- | ----------- | -------- | ---- | ----
-| advertis_type | url | type of advertis | Yes | string | sell/buy
-
 ##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 |  [{"price":"100000.0","advertis_type":"sell","avaiable_coin":"10000.0","upper_limit":"12345677.0","lower_limit":"123.0","description":"test"}]| ---
 
+### api/v2/trade/p2p/p2p_order/:id
+#### POST
 
+##### Description
+
+Update status of P2pOrder(ordered/paid/complete/cancel)
+
+##### Parameters
+
+```ruby
+{
+    "status": "complete"
+}
+```
+##### Responses
+
+success: 
+```ruby
+success
+```
+
+errors:
+```ruby
+update fail!
+```
+
+### api/v2/trade/p2p/p2p_orders
+#### POST
+
+##### Description
+
+Create P2pOrder
+
+##### Parameters
+
+```ruby
+{
+    "p2p_orders_type": "sell",
+    "advertisement_id": "1",
+    "number_of_coin": "123123"
+}
+```
+
+##### Responses
+success:
+
+```ruby
+
+{
+    "id": 5,
+    "p2p_orders_type": "sell",
+    "price": "10000.0",
+    "ammount": "1231230000.0",
+    "number_of_coin": "123123.0",
+    "order_number": "69695b6037b1",
+    "advertisement": {
+        "id": 1,
+        "price": "10000.0",
+        "advertis_type": "buy",
+        "avaiable_coin": "1111.0",
+        "upper_limit": "1000000.0",
+        "lower_limit": "1000.0",
+        "description": "test",
+        "currency": {
+            "id": "btc",
+            "name": "Bitcoin",
+            "description": null,
+            "homepage": null,
+            "price": "1.0",
+            "type": "coin",
+            "precision": 8,
+            "position": 3
+        },
+        "creator": {
+            "username": null
+        },
+        "payment_methods": []
+    }
+}
+
+```
+
+errors:
+```ruby
+    [
+        "p2p.p2porder.missing_number_of_coin",
+        "p2p.p2p_order.non_positive_number_of_coin"
+    ]
+```
