@@ -17,6 +17,22 @@ module API::V2
         order = P2pOrder.create_order(params)
         present order, with: API::V2::Entities::P2pOrder
       end
+
+      desc 'Edit P2p order',
+           is_array: true,
+           success: API::V2::Entities::P2pOrder
+      params do
+        use :p2p_edit
+      end
+
+      post '/p2p_order/:id' do
+        order = P2pOrder.find_by id: params[:id]
+        if order.update(params)
+          present :success
+        else
+          present "update fail!"
+        end
+      end
     end
   end
 end

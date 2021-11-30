@@ -14,12 +14,19 @@ module API
                    desc: -> { V2::Entities::P2pOrder.documentation[:p2p_orders_type] }
           requires :advertisement_id,
                    type: Integer,
-                   values: { value: -> (v){ (Advertisement.find_by id: v).present? }, message: 'p2p.p2p_order.non_advertisement' },
+                   values: { value: -> (v) { (Advertisement.find_by id: v).present? }, message: 'p2p.p2p_order.non_advertisement' },
                    desc: -> { V2::Entities::P2pOrder.documentation[:advertisement_id] }
           requires :number_of_coin,
                    type: BigDecimal,
-                   values: { value: -> (v){ v.try(:positive?) }, message: 'p2p.p2p_order.non_positive_number_of_coin' },
+                   values: { value: -> (v) { v.try(:positive?) }, message: 'p2p.p2p_order.non_positive_number_of_coin' },
                    desc: -> { V2::Entities::P2pOrder.documentation[:number_of_coin] }
+        end
+
+        params :p2p_edit do
+          requires :status,
+                   type: String,
+                   values: { value: %w(ordered paid complete cancel), message: 'p2p.p2p_order.invalid_p2p_status' },
+                   desc: -> { V2::Entities::P2pOrder.documentation[:status] }
         end
       end
     end
