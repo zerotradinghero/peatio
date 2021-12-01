@@ -3,10 +3,8 @@
 module API::V2
   module P2p
     class Mount < Grape::API
-      before { authenticate! }
-      before { set_ets_context! }
 
-      mount P2p::Advertises
+      mount P2p::P2pOrders
     end
   end
 end
