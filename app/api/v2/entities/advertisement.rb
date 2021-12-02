@@ -88,7 +88,7 @@ module API
 
         expose(
           :payment_methods,
-          using: API::V2::Public::Entities::PaymentMethod,
+          using: API::V2::P2p::Entities::PaymentMethod,
           documentation: {
             type: 'API::V2::Public::Entities::PaymentMethod',
             is_array: true,
