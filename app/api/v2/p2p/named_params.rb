@@ -24,10 +24,13 @@ module API
         end
 
         params :p2p_edit do
-          requires :status,
+          optional :status,
                    type: String,
                    values: { value: %w(ordered paid complete cancel), message: 'p2p.p2p_order.invalid_p2p_status' },
                    desc: -> { V2::Entities::P2pOrder.documentation[:status] }
+
+          optional :payment_method_id,
+                   type: Integer
         end
 
         # Create Advertisement
