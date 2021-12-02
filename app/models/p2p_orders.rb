@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class P2pOrder < ApplicationRecord
-  belongs_to :advertisement_payment_methods
   belongs_to :advertisement
+  belongs_to :payment_method
 
   enum status: [:ordered, :paid, :complete, :cancel]
   enum p2p_orders_type: [:sell, :buy]

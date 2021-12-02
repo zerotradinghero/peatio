@@ -14,6 +14,13 @@ module API
         )
 
         expose(
+          :status ,
+          documentation: {
+            desc: 'status of p2p order.'
+          }
+        )
+
+        expose(
           :p2p_orders_type,
           documentation: {
             type: Integer,
@@ -54,13 +61,20 @@ module API
         )
 
         expose(
+          :payment_method ,
+          :using => API::V2::P2p::Entities::PaymentMethod,
+          documentation: {
+            desc: 'payment of creator.'
+          }
+        )
+
+        expose(
           :advertisement ,
           :using => API::V2::Entities::Advertisement,
           documentation: {
             desc: 'name of creator.'
           }
         )
-
 
       end
     end

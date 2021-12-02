@@ -26,14 +26,65 @@ Update status of P2pOrder(ordered/paid/complete/cancel)
 
 ```ruby
 {
-    "status": "complete"
+  "status": "paid",
+  "payment_method_id": 1
 }
 ```
 ##### Responses
 
 success: 
 ```ruby
-success
+{
+  "id": 13,
+  "status": "paid",
+  "p2p_orders_type": "sell",
+  "price": "1000000000000000.0",
+  "ammount": "123123000000000000000.0",
+  "number_of_coin": "123123.0",
+  "order_number": "ec2ab88d5ff3",
+  "payment_method": {
+    "payment_type": "bank_transfer",
+    "account_number": "123456789",
+    "bank_name": "thai",
+    "account_name": "hoangthai"
+  },
+  "advertisement": {
+    "id": 12,
+    "price": "1000000000000000.0",
+    "advertis_type": "sell",
+    "avaiable_coin": "1.0",
+    "upper_limit": "50000.0",
+    "lower_limit": "30000.0",
+    "description": "mua tien ao",
+    "currency": {
+      "id": "btc",
+      "name": "Bitcoin",
+      "description": null,
+      "homepage": null,
+      "price": "1.0",
+      "type": "coin",
+      "precision": 8,
+      "position": 3
+    },
+    "creator": {
+      "username": null
+    },
+    "payment_methods": [
+      {
+        "payment_type": "bank_transfer",
+        "account_number": "123456789",
+        "bank_name": "thai",
+        "account_name": "hoangthai"
+      },
+      {
+        "payment_type": "",
+        "account_number": "123456",
+        "bank_name": "vietcombank",
+        "account_name": "thaidang"
+      }
+    ]
+  }
+}
 ```
 
 errors:
