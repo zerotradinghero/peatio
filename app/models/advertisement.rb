@@ -6,7 +6,9 @@ class Advertisement < ApplicationRecord
   has_many :p2p_orders, through: :advertisement_payment_methods
   belongs_to :currency, required: true
   belongs_to :creator, class_name: Member.name, foreign_key: :creator_id
+  belongs_to :currency_payment, class_name: Currency.name, foreign_key: :currency_payment_id
 
   enum advertis_type: [:sell, :buy]
   enum visible: [:disabled, :enabled]
+  enum price_type: [:fixed, :floating]
 end
