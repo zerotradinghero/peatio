@@ -13,7 +13,10 @@ class P2pOrder < ApplicationRecord
     order.price = advertis.price
     order.ammount = order.number_of_coin * order.price
     order.order_number = SecureRandom.hex(6)
-    order.save
+    if order.save
+      account = advertis.creator.accounts.where(currency_id: advertis.currency_id).first
+      account.lock_funds(order.number_of_coin)
+    end
     order
   end
 
