@@ -54,6 +54,14 @@ module API
         )
 
         expose(
+          :created_at,
+          documentation: {
+            type: String,
+            desc: "created at of p2p order."
+          }
+        )
+
+        expose(
           :advertisement ,
           :using => API::V2::Entities::Advertisement,
           documentation: {

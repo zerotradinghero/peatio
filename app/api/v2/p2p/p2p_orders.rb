@@ -33,6 +33,18 @@ module API::V2
           present "update fail!"
         end
       end
+
+      desc 'Show P2p order',
+             is_array: true,
+             success: API::V2::Entities::P2pOrder
+      get '/p2p_order/:id' do
+        order = P2pOrder.find_by id: params[:id]
+        unless order
+          return present 'id not found!'
+        end
+        present order, with: API::V2::Entities::P2pOrder
+      end
+
     end
   end
 end
