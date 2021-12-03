@@ -27,8 +27,15 @@ module API::V2
 
       post '/p2p_order/:id' do
         order = P2pOrder.find_by id: params[:id]
+        if order.blank?
+          return present "Order not found"
+        end
+        payment_method_ids = order.advertisement.advertisement_payment_methods.pluck(:payment_method_id)
+        unless payment_method_ids.include?(params[:payment_method_id])
+          return present "Invalid payment method"
+        end
         if order.update(params)
-          present :success
+          present order, with: API::V2::Entities::P2pOrder
         else
           present "update fail!"
         end
