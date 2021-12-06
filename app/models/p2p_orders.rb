@@ -7,8 +7,7 @@ class P2pOrder < ApplicationRecord
   enum status: [:ordered, :paid, :complete, :cancel]
   enum p2p_orders_type: [:sell, :buy]
 
-  def self.create_order(params)
-    advertis = Advertisement.find(params[:advertisement_id])
+  def self.create_order(params, advertis)
     order = new(params)
     order.price = advertis.price
     order.ammount = order.number_of_coin * order.price

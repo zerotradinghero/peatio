@@ -110,8 +110,8 @@ Create P2pOrder
 ```ruby
 {
   "p2p_orders_type": "sell",
-  "advertisement_id": "1",
-  "number_of_coin": "123123"
+  "advertisement_id": "21",
+  "number_of_coin": "1"
 }
 ```
 
@@ -187,7 +187,7 @@ Create Advertisements
     "description": "mua tien ao",
     "visible": "enabled",
     "price": "1000000000000000",
-    "expired_time": 15 #(Tính bằng phút)
+    "expired_time": 2 #(Tính bằng phút)
   },
   "payment_method_ids": [1, 3]
 }
