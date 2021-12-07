@@ -2,7 +2,7 @@
 
 module API
   module V2
-    module Public
+    module P2p
       module Entities
         class PaymentMethod < API::V2::Entities::Base
           expose(
