@@ -4,7 +4,10 @@ module API::V2
   module P2p
     class Mount < Grape::API
 
+      before { authenticate! }
+
       mount P2p::P2pOrders
+      mount P2p::Advertisements
     end
   end
 end
