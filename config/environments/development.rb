@@ -31,6 +31,9 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  #storage
+  config.active_storage.service = :local
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
@@ -52,4 +55,5 @@ Rails.application.configure do
     Bullet.bullet_logger = true
     Bullet.add_footer = true
   end
+
 end

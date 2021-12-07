@@ -62,6 +62,59 @@ module API::V2
       get '/admin/:id/p2p_orders' do
         P2pOrder.all.where(member_id: params[:member_id])
       end
+
+      desc 'Clain P2p order',
+           is_array: true,
+           success: API::V2::Entities::P2pOrder
+      params do
+        use :p2p_claim
+      end
+
+      post '/p2p_order/:id/claim' do
+        order = P2pOrder.find_by id: params[:id]
+        if order.update(params)
+          order.save
+          return present order, with: API::V2::P2p::Entities::P2pOrderClaim
+          # return present order
+          # if params[:images]
+          #   params[:images].each do |image|
+          #     file_path = "/public/" + i[:file_name]
+          #     image_path = Rails.root + file_path
+          #     image_file = File.new(image_path)
+          #     order.images.attach(image)
+          #     order.save
+          #   end
+          # end
+        end
+      end
+
+      desc 'Admin list clain P2pOrder',
+           is_array: true,
+           success: API::V2::P2p::Entities::P2pOrderClaim
+      params do
+        use :p2p_list_claim
+      end
+
+      get '/admin/p2p_order/claims' do
+        list_order_claim = P2pOrder.request
+        present list_order_claim, with: API::V2::P2p::Entities::P2pOrderClaim
+      end
+
+      desc 'Admin show clain P2pOrder',
+           is_array: true,
+           success: API::V2::P2p::Entities::P2pOrderClaim
+      params do
+        use :p2p_show_claim
+      end
+
+      get '/admin/p2p_orders/:id/claim' do
+        order = P2pOrder.find_by id: params[:id]
+        if order.claim_status
+          present order, with: API::V2::P2p::Entities::P2pOrderClaim
+        else
+          return present "Claim not found!"
+        end
+      end
     end
   end
 end

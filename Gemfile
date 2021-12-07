@@ -57,6 +57,9 @@ gem 'net-http-persistent', '~> 3.0.1'
 gem 'influxdb', '~> 0.7.0'
 gem 'safe_yaml', '~> 1.0.5', require: 'safe_yaml/load'
 gem 'composite_primary_keys', '~> 11.3.1'
+gem 'activestorage'
+gem 'image_processing', '~> 1.2'
+gem 'mini_magick'
 
 group :development, :test do
   gem 'irb'
