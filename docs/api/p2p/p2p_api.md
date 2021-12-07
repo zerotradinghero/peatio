@@ -159,9 +159,9 @@ errors:
 
 ```ruby
     [
-  "p2p.p2porder.missing_number_of_coin",
-  "p2p.p2p_order.non_positive_number_of_coin"
-]
+      "p2p.p2porder.missing_number_of_coin",
+      "p2p.p2p_order.non_positive_number_of_coin"
+    ]
 ```
 
 ### api/v2/trade/p2p/advertisements
@@ -244,8 +244,142 @@ errors:
 
 ```ruby
     [
-  "p2p.advertisement.missing_description",
-  "p2p.advertisement.missing_visible",
-  "p2p.advertisement.missing_price"
+      "p2p.advertisement.missing_description",
+      "p2p.advertisement.missing_visible",
+      "p2p.advertisement.missing_price"
+    ]
+```
+
+### /api/v2/trade/p2p/member/p2p_orders
+
+#### GET
+
+##### Description
+
+Member show list P2pOrder
+
+##### Parameters
+
+```ruby
+
+```
+
+##### Responses
+
+success:
+
+```ruby
+
+[
+  {
+    "id": 51,
+    "member_id": 2,
+    "status": "ordered",
+    "p2p_orders_type": "sell",
+    "price": "1000000000000000.0",
+    "ammount": "10000000000000.0",
+    "advertis_payment_method_id": null,
+    "order_number": "3ec5dabfb279",
+    "advertisement_id": 40,
+    "number_of_coin": "0.01",
+    "payment_method_id": null,
+    "created_at": "2021-12-06T12:17:19.983Z"
+  },
+  {
+    "id": 52,
+    "member_id": 2,
+    "status": "ordered",
+    "p2p_orders_type": "sell",
+    "price": "1000000000000000.0",
+    "ammount": "10000000000000.0",
+    "advertis_payment_method_id": null,
+    "order_number": "02872e0d6a23",
+    "advertisement_id": 40,
+    "number_of_coin": "0.01",
+    "payment_method_id": null,
+    "created_at": "2021-12-06T12:17:47.768Z"
+  },
+  {
+    "id": 53,
+    "member_id": 2,
+    "status": "ordered",
+    "p2p_orders_type": "sell",
+    "price": "1000000000000000.0",
+    "ammount": "10000000000000.0",
+    "advertis_payment_method_id": null,
+    "order_number": "77e7f1284987",
+    "advertisement_id": 40,
+    "number_of_coin": "0.01",
+    "payment_method_id": null,
+    "created_at": "2021-12-06T12:20:55.524Z"
+  }
 ]
+
+```
+
+### /api/v2/trade/p2p/admin/:id/p2p_orders
+
+#### GET
+
+##### Description
+
+Admin show list P2pOrder of Member
+
+##### Parameters
+
+```ruby
+
+```
+
+##### Responses
+
+success:
+
+```ruby
+
+[
+  {
+    "id": 51,
+    "member_id": 2,
+    "status": "ordered",
+    "p2p_orders_type": "sell",
+    "price": "1000000000000000.0",
+    "ammount": "10000000000000.0",
+    "advertis_payment_method_id": null,
+    "order_number": "3ec5dabfb279",
+    "advertisement_id": 40,
+    "number_of_coin": "0.01",
+    "payment_method_id": null,
+    "created_at": "2021-12-06T12:17:19.983Z"
+  },
+  {
+    "id": 52,
+    "member_id": 2,
+    "status": "ordered",
+    "p2p_orders_type": "sell",
+    "price": "1000000000000000.0",
+    "ammount": "10000000000000.0",
+    "advertis_payment_method_id": null,
+    "order_number": "02872e0d6a23",
+    "advertisement_id": 40,
+    "number_of_coin": "0.01",
+    "payment_method_id": null,
+    "created_at": "2021-12-06T12:17:47.768Z"
+  },
+  {
+    "id": 53,
+    "member_id": 2,
+    "status": "ordered",
+    "p2p_orders_type": "sell",
+    "price": "1000000000000000.0",
+    "ammount": "10000000000000.0",
+    "advertis_payment_method_id": null,
+    "order_number": "77e7f1284987",
+    "advertisement_id": 40,
+    "number_of_coin": "0.01",
+    "payment_method_id": null,
+    "created_at": "2021-12-06T12:20:55.524Z"
+  }
+]
+
 ```

@@ -19,6 +19,8 @@ module API::V2
           return present "Please enter a valid amount less than the amount #{advertis.coin_avaiable}"
         end
         order = P2pOrder.create_order(params, advertis)
+        order.member_id = current_user.id
+        order.save
         present order, with: API::V2::Entities::P2pOrder
       end
 
@@ -43,6 +45,22 @@ module API::V2
         else
           present "update fail!"
         end
+      end
+
+      desc 'List P2p order',
+           is_array: true,
+           success: API::V2::Entities::P2pOrder
+
+      get '/member/p2p_orders' do
+        P2pOrder.all.where(member_id: current_user.id)
+      end
+
+      desc 'Admin show list P2p order',
+           is_array: true,
+           success: API::V2::Entities::P2pOrder
+
+      get '/admin/:id/p2p_orders' do
+        P2pOrder.all.where(member_id: params[:member_id])
       end
     end
   end

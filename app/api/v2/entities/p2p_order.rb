@@ -76,6 +76,12 @@ module API
           }
         )
 
+        expose(
+          :member_id ,
+          documentation: {
+            desc: 'member_id of creator p2porder.'
+          }
+        )
       end
     end
   end
