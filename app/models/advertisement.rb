@@ -11,4 +11,8 @@ class Advertisement < ApplicationRecord
   enum advertis_type: [:sell, :buy]
   enum visible: [:disabled, :enabled]
   enum price_type: [:fixed, :floating]
+
+  def coin_avaiable
+    creator.accounts.where(currency_id: currency_id).first.try(:balance)
+  end
 end
