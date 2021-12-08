@@ -24,6 +24,13 @@ module API
         )
 
         expose(
+          :expired_time,
+          documentation: {
+            desc: 'expired_time'
+          }
+        )
+
+        expose(
           :advertis_type,
           documentation: {
             type: Integer,
@@ -91,6 +98,27 @@ module API
           ) do |c|
           c.payment_methods
         end
+
+        expose(
+          :currency_payment_id,
+          documentation: {
+            desc: 'currency payment id'
+          }
+        )
+
+        expose(
+          :price_type,
+          documentation: {
+            desc: 'currency'
+          }
+        )
+
+        expose(
+          :total_amount,
+          documentation: {
+            desc: 'total amount'
+          }
+        )
 
       end
     end
