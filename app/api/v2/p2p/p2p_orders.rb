@@ -15,15 +15,25 @@ module API::V2
       post '/p2p_orders' do
         user_authorize! :create, ::P2pOrder
         advertis = Advertisement.find_by id: params[:advertisement_id]
-        if params[:number_of_coin] > advertis.coin_avaiable
-          return present "Please enter a valid amount less than the amount #{advertis.coin_avaiable}"
-        end
-        order = P2pOrder.create_order(params, advertis)
-        order.member_id = current_user.id
-        order.save
-        present order, with: API::V2::Entities::P2pOrder
-      end
+        order = P2pOrder.build_order(params, advertis, current_user)
+        message = order.send_message("This order has been ordered", order.advertisement.creator)
 
+        present :response_message, message
+
+        unless order.save
+          return present "Order create unsuccessful"
+        end
+
+        if order.sell?
+          return present "Please enter a valid amount less than the amount #{advertis.coin_avaiable}" if params[:number_of_coin] > advertis.coin_avaiable
+          account = advertis.creator.accounts.where(currency_id: advertis.currency_id).first
+        elsif order.buy?
+          account = order.member.accounts.where(currency_id: advertis.currency_id).first
+        end
+        account.lock_funds(order.number_of_coin)
+
+        present :order, order, with: API::V2::Entities::P2pOrder
+      end
       desc 'Edit P2p order',
            is_array: true,
            success: API::V2::Entities::P2pOrder
@@ -41,7 +51,8 @@ module API::V2
           return present "Invalid payment method"
         end
         if order.update(params)
-          present order, with: API::V2::Entities::P2pOrder
+          present :response_message, order.send_message_status
+          present :order, order, with: API::V2::Entities::P2pOrder
         else
           present "update fail!"
         end
@@ -113,6 +124,29 @@ module API::V2
           present order, with: API::V2::P2p::Entities::P2pOrderClaim
         else
           return present "Claim not found!"
+        end
+      end
+
+      desc 'Admin approve order',
+           is_array: true,
+           success: API::V2::P2p::Entities::P2pOrderClaim
+      params do
+        use :p2p_admin_approve
+      end
+
+      post '/admin/p2p_orders/:id/approve' do
+        order = P2pOrder.find_by id: params[:id]
+        if order.status == 'paid'
+          if order.update(params)
+            present :complete_order, order.successful_p2porder_transfer
+            order.update(status: :complete)
+            present :response_message, order.send_message_status
+            present :order, order
+          else
+            present "update fail!"
+          end
+        else
+          present "order has not been paid"
         end
       end
     end

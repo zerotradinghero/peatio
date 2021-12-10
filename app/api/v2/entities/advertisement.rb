@@ -39,7 +39,7 @@ module API
         )
 
         expose(
-          :avaiable_coin,
+          :coin_avaiable,
           documentation: {
             type: BigDecimal,
             desc: "sell/buy how many coin?"

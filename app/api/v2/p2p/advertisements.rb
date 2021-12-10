@@ -28,7 +28,6 @@ module API::V2
 
         advertisement = Advertisement.new(params[:advertisement])
         advertisement.creator_id = current_user.id
-        advertisement.avaiable_coin = balance
         params[:payment_method_ids].each do |payment_method_id|
           unless PaymentMethod.find_by id: payment_method_id
             return present "payment method #{payment_method_id} not found"
