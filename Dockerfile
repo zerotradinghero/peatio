@@ -28,6 +28,9 @@ RUN groupadd -r --gid ${GID} app \
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install default-libmysqlclient-dev -y nano
 
+# Install minimagic
+RUN apt-get update -y && apt-get install imagemagick libvips -y
+
 # Install Kaigara
 RUN curl -Lo /usr/bin/kaigara https://github.com/openware/kaigara/releases/download/${KAIGARA_VERSION}/kaigara \
   && chmod +x /usr/bin/kaigara

@@ -3,9 +3,12 @@
 class P2pOrder < ApplicationRecord
   belongs_to :advertisement
   belongs_to :payment_method
+  belongs_to :advertisement_payment_methods
+  has_many_attached :images
 
   enum status: [:ordered, :paid, :complete, :cancel]
   enum p2p_orders_type: [:sell, :buy]
+  enum claim_status: [:request, :approve, :canceled]
 
   def self.create_order(params, advertis)
     order = new(params)
@@ -18,5 +21,4 @@ class P2pOrder < ApplicationRecord
     end
     order
   end
-
 end

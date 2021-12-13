@@ -89,6 +89,32 @@ module API
                    type: Array
 
         end
+
+        params :p2p_claim do
+          requires :claim_status,
+                   type: Integer,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:claim_status] }
+
+          requires :claim_title,
+                   type: String,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:claim_title] }
+
+          requires :claim_description,
+                   type: String,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:claim_description] }
+
+          optional :images,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:images] }
+        end
+
+        params :p2p_list_claim do
+
+        end
+
+        params :p2p_show_claim do
+
+        end
+
       end
     end
   end

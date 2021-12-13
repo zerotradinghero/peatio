@@ -383,3 +383,34 @@ success:
 ]
 
 ```
+
+### api/v2/trade/p2p/p2p_order/:id/claim
+
+#### POST
+
+##### Description
+
+Create POST claim P2pOrder
+
+##### Parameters
+
+```ruby
+{
+  "claim_title": "Others",
+  "claim_description": "have not recieved the money",
+  "claim_status": 0
+}
+```
+
+##### Responses
+
+```ruby
+{
+  "id": 82,
+  "claim_title": "Others",
+  "claim_description": "have not recieved the money",
+  "claim_status": "request",
+  "order_number": "e946803f8a40",
+  "created_at": "2021-12-06T15:07:33.264Z"
+}
+```

@@ -82,6 +82,34 @@ module API
             desc: 'member_id of creator p2porder.'
           }
         )
+
+        expose(
+          :claim_status ,
+          documentation: {
+            desc: 'claim_status.'
+          }
+        )
+
+        expose(
+          :claim_description ,
+          documentation: {
+            desc: 'claim_description.'
+          }
+        )
+
+        expose(
+          :claim_title ,
+          documentation: {
+            desc: 'claim_title.'
+          }
+        )
+
+        expose(
+          :images ,
+          documentation: {
+            desc: 'images.'
+          }
+        )
       end
     end
   end
