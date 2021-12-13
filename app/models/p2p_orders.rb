@@ -63,4 +63,21 @@ class P2pOrder < ApplicationRecord
       user_advertisement.add_fund(number_of_coin)
     end
   end
+
+  def reason_claim
+    if sell?
+      [
+        "I made the payment, but the seller did not release the cryptocurrencies",
+        "Pay the seller extra money",
+        "Others"
+      ]
+    else
+      [
+        "I received the payment from the buyer, but the amount is not correct",
+        "The buyer marked as paid but I did not receive the payment to my account",
+        "I received payment from a third party account",
+        "Others"
+      ]
+    end
+  end
 end

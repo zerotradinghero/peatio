@@ -58,14 +58,65 @@ module API::V2
         end
       end
 
+
       desc 'List P2p order',
            is_array: true,
            success: API::V2::Entities::P2pOrder
-
       get '/member/p2p_orders' do
         P2pOrder.all.where(member_id: current_user.id)
       end
 
+      desc 'Show P2p order',
+             is_array: true,
+             success: API::V2::Entities::P2pOrder
+      get '/p2p_order/:id' do
+        order = P2pOrder.find_by id: params[:id]
+        unless order
+          return present 'id not found!'
+        end
+        present order, with: API::V2::Entities::P2pOrder
+      end
+
+      desc 'GET form P2p order claim',
+           is_array: true,
+           success: API::V2::Entities::P2pOrder
+      get '/p2p_order/:id/claim' do
+        order = P2pOrder.find_by id: params[:id]
+        unless order
+          return present 'id not found!'
+        end
+        present order, with: API::V2::Entities::P2pOrder
+      end
+
+      desc 'Clain P2p order',
+           is_array: true,
+           success: API::V2::Entities::P2pOrder
+      post '/p2p_order/:id/claim' do
+        order = P2pOrder.find_by id: params[:id]
+        unless order
+          return present "order not found!"
+        end
+        params[:images].each do |index, image|
+          order.images.attach(image)
+          return present order.images.attached?
+        end
+
+        # if order.update(params)
+        #   if params[:images]
+        #     params[:images].each do |i|
+        #       return present i
+        #       # file_path = "/public/" + i[:file_name]
+        #       # image_path = Rails.root + file_path
+        #       # image_file = File.new(image_path)
+        #       order.images.attach(i)
+        #       order.save
+        #     end
+        #   end
+        # end
+
+        # @order.images.attach(params[:images])
+
+      end
       desc 'Admin show list P2p order',
            is_array: true,
            success: API::V2::Entities::P2pOrder
