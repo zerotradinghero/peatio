@@ -6,6 +6,14 @@ module API
       module Entities
         class PaymentMethod < API::V2::Entities::Base
           expose(
+            :id,
+            documentation: {
+              desc: 'ID of payment',
+              type: Integer
+            }
+          )
+
+          expose(
             :payment_type,
             documentation: {
               desc: 'Type of payment',

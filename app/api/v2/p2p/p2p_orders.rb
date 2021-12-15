@@ -88,35 +88,6 @@ module API::V2
         present order, with: API::V2::Entities::P2pOrder
       end
 
-      desc 'Clain P2p order',
-           is_array: true,
-           success: API::V2::Entities::P2pOrder
-      post '/p2p_order/:id/claim' do
-        order = P2pOrder.find_by id: params[:id]
-        unless order
-          return present "order not found!"
-        end
-        params[:images].each do |index, image|
-          order.images.attach(image)
-          return present order.images.attached?
-        end
-
-        # if order.update(params)
-        #   if params[:images]
-        #     params[:images].each do |i|
-        #       return present i
-        #       # file_path = "/public/" + i[:file_name]
-        #       # image_path = Rails.root + file_path
-        #       # image_file = File.new(image_path)
-        #       order.images.attach(i)
-        #       order.save
-        #     end
-        #   end
-        # end
-
-        # @order.images.attach(params[:images])
-
-      end
       desc 'Admin show list P2p order',
            is_array: true,
            success: API::V2::Entities::P2pOrder
@@ -127,7 +98,7 @@ module API::V2
 
       desc 'Clain P2p order',
            is_array: true,
-           success: API::V2::Entities::P2pOrder
+           success: API::V2::P2p::Entities::P2pOrderClaim
       params do
         use :p2p_claim
       end
@@ -135,6 +106,7 @@ module API::V2
       post '/p2p_order/:id/claim' do
         order = P2pOrder.find_by id: params[:id]
         if order.update(params)
+          order.claim_status = "request"
           order.save
           return present order, with: API::V2::P2p::Entities::P2pOrderClaim
           # return present order

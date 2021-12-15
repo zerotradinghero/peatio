@@ -13,6 +13,6 @@ class Advertisement < ApplicationRecord
   enum price_type: [:fixed, :floating]
 
   def coin_avaiable
-    creator.accounts.where(currency_id: currency_id).first.try(:balance)
+    creator.accounts.where(currency_id: currency_id).first.try(:balance) || 0
   end
 end

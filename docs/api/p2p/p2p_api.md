@@ -1,6 +1,6 @@
 # P2p API v2
 
-### api/v2/trade/p2p/advertises
+### api/v2/trade/public/advertises
 
 #### GET
 
@@ -9,12 +9,125 @@
 Show all advertis with type(sell/buy)
 
 ##### Parameters
+```
+{ 
+    advertis_type: buy #(buy/sell)
+    page:1
+    currency_id: usdt #(btc, usdt, eth...)
+    limit: 30
+```
 
 ##### Responses
+```azure
+[
+    {
+        "id": 69,
+        "price": "23640.0",
+        "expired_time": 15,
+        "advertis_type": "buy",
+        "avaiable_coin": "10000000.0",
+        "upper_limit": "62.0",
+        "lower_limit": "6.0",
+        "description": "",
+        "currency": {
+            "id": "usdt",
+            "name": "Tether",
+            "description": null,
+            "homepage": null,
+            "price": "1.0",
+            "type": "coin",
+            "precision": 8,
+            "position": 1
+        },
+        "creator": {
+            "username": null
+        },
+        "payment_methods": [
+            {
+                "id": 1,
+                "payment_type": "bank_transfer",
+                "account_number": "12345667",
+                "bank_name": "vcb",
+                "account_name": "Nguyen Thi Ha"
+            }
+        ],
+        "currency_payment_id": "vnd",
+        "price_type": "fixed",
+        "total_amount": "5.0"
+    },
+    {
+        "id": 73,
+        "price": "23640.0",
+        "expired_time": 15,
+        "advertis_type": "buy",
+        "avaiable_coin": "9999918.0",
+        "upper_limit": "4.0",
+        "lower_limit": "3.0",
+        "description": "",
+        "currency": {
+            "id": "usdt",
+            "name": "Tether",
+            "description": null,
+            "homepage": null,
+            "price": "1.0",
+            "type": "coin",
+            "precision": 8,
+            "position": 1
+        },
+        "creator": {
+            "username": null
+        },
+        "payment_methods": [
+            {
+                "id": 1,
+                "payment_type": "bank_transfer",
+                "account_number": "12345667",
+                "bank_name": "vcb",
+                "account_name": "Nguyen Thi Ha"
+            }
+        ],
+        "currency_payment_id": "vnd",
+        "price_type": "fixed",
+        "total_amount": "9999917.0"
+    },
+    {
+        "id": 74,
+        "price": "23640.0",
+        "expired_time": 15,
+        "advertis_type": "buy",
+        "avaiable_coin": "9999918.0",
+        "upper_limit": "5.0",
+        "lower_limit": "4.0",
+        "description": "test abc 1",
+        "currency": {
+            "id": "usdt",
+            "name": "Tether",
+            "description": null,
+            "homepage": null,
+            "price": "1.0",
+            "type": "coin",
+            "precision": 8,
+            "position": 1
+        },
+        "creator": {
+            "username": null
+        },
+        "payment_methods": [
+            {
+                "id": 1,
+                "payment_type": "bank_transfer",
+                "account_number": "12345667",
+                "bank_name": "vcb",
+                "account_name": "Nguyen Thi Ha"
+            }
+        ],
+        "currency_payment_id": "vnd",
+        "price_type": "fixed",
+        "total_amount": "3.0"
+    }
+]
+```
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 |  [{"price":"100000.0","advertis_type":"sell","avaiable_coin":"10000.0","upper_limit":"12345677.0","lower_limit":"123.0","description":"test"}]| ---
 
 ### api/v2/trade/p2p/p2p_order/:id
 

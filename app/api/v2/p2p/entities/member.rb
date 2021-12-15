@@ -22,6 +22,17 @@ module API
           )
 
           expose(
+            :accounts,
+            using: API::V2::P2p::Entities::Account,
+            documentation: {
+              type: 'API::V2::P2p::Entities::Account',
+              is_array: true,
+              uniq: true,
+              desc: 'Balancer of member'
+            }
+          )
+
+          expose(
             :payment_methods,
             using: API::V2::P2p::Entities::PaymentMethod,
             documentation: {

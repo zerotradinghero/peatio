@@ -46,6 +46,14 @@ module API
           )
 
           expose(
+            :images,
+            documentation: {
+              desc: 'images at of P2pOrder',
+              type: String
+            }
+          )
+
+          expose(
             :created_at,
             documentation: {
               desc: 'created at of P2pOrder',
