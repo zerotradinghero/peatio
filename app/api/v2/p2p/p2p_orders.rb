@@ -50,6 +50,10 @@ module API::V2
         unless payment_method_ids.include?(params[:payment_method_id])
           return present "Invalid payment method"
         end
+        if order.cancel? && params[:status] == "transfer"
+          return present "cannot update because order is exp!"
+        end
+
         if order.update(params)
           present :response_message, order.send_message_status
           present :order, order, with: API::V2::Entities::P2pOrder

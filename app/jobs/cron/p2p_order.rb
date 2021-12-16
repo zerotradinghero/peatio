@@ -11,6 +11,7 @@ module Jobs
             account.unlock_funds(ord.number_of_coin)
           end
         end
+        Rails.logger.info { "-------JOB update p2p order status: #{Time.now}------------" }
         sleep(5)
       end
     end

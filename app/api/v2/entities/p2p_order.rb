@@ -84,6 +84,13 @@ module API
         )
 
         expose(
+          :created_at ,
+          documentation: {
+            desc: 'created at of p2porder.'
+          }
+        )
+
+        expose(
           :claim_status,
           documentation: {
             desc: 'claim_status of p2porder.'
