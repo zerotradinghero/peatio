@@ -126,16 +126,16 @@ module API::V2
         # end
         order.save
         # return present order, with: API::V2::P2p::Entities::P2pOrderClaim
-          # return present order
-          # if params[:images]
-          #   params[:images].each do |image|
-          #     file_path = "/public/" + i[:file_name]
-          #     image_path = Rails.root + file_path
-          #     image_file = File.new(image_path)
-          #     order.images.attach(image)
-          #     order.save
-          #   end
-          # end
+        # return present order
+        # if params[:images]
+        #   params[:images].each do |image|
+        #     file_path = "/public/" + i[:file_name]
+        #     image_path = Rails.root + file_path
+        #     image_file = File.new(image_path)
+        #     order.images.attach(image)
+        #     order.save
+        #   end
+        # end
       end
 
       desc 'Admin list clain P2pOrder',

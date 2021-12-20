@@ -820,6 +820,39 @@ Admin list claim P2pOrder
 ]
 ```
 
+### /api/v2/trade/p2p/admin/p2p_orders/:id/claim
+
+#### GET
+
+##### Description
+
+Admin show claim P2pOrder
+
+##### Parameters
+
+```ruby
+
+```
+
+##### Responses
+
+```ruby
+{
+    "id": 176,
+    "claim_title": "Others",
+    "claim_description": "Pay the seller extra money",
+    "claim_status": "request",
+    "order_number": "75c245a1b0be",
+    "created_at": "2021-12-15T09:18:01.619Z"
+}
+```
+
+##### Errors
+
+```ruby
+  "Claim not found!"
+```
+
 ### api/v2/trade/p2p/admin/p2p_orders/:id/approve
 
 #### POST
