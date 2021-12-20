@@ -71,7 +71,7 @@ module API::V2
       end
       get '/member/p2p_orders' do
         present paginate(Rails.cache.fetch("member_order_list_#{current_user.id}", expires_in: 600) do
-          order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id)
+          order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id).order('p2p_orders.created_at DESC')
           order.to_a
         end), with: API::V2::Entities::P2pOrder
       end
@@ -118,8 +118,12 @@ module API::V2
         order.claim_title = params[:claim_title]
         order.claim_description = params[:claim_description]
         order.claim_status = "request"
-        order.save
-        return present order, with: API::V2::P2p::Entities::P2pOrderClaim
+        params[:claim_images].each do |image|
+          order.images.attach(image)
+          return present order.images.attached?
+        end
+        # order.save
+        # return present order, with: API::V2::P2p::Entities::P2pOrderClaim
           # return present order
           # if params[:images]
           #   params[:images].each do |image|

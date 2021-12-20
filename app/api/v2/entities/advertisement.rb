@@ -79,7 +79,7 @@ module API
         )
 
         expose(
-          :creator_id,
+          :creator,
           documentation: {
             desc: 'name of creator.'
           }

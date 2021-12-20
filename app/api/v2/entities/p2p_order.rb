@@ -80,7 +80,7 @@ module API
           :advertisement,
           :using => API::V2::Entities::Advertisement,
           documentation: {
-            desc: 'name of creator.'
+            desc: 'aertisment of p2p order.'
           }
         )
 
@@ -125,15 +125,6 @@ module API
             desc: "claim reason."
           }
         )
-
-        expose(
-          :advertisement,
-          documentation: {
-            uniq: true,
-            desc: 'creator info of member'
-          }
-        )
-
         # expose(
         #   :images,
         #   documentation: {
