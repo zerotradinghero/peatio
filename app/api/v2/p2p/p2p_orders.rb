@@ -5,6 +5,7 @@ module API::V2
   module P2p
     class P2pOrders < Grape::API
       helpers ::API::V2::P2p::NamedParams
+      helpers ::API::V2::ParamHelpers
 
       desc 'Create P2p order',
            is_array: true,
@@ -62,17 +63,22 @@ module API::V2
         end
       end
 
-
       desc 'List P2p order',
            is_array: true,
            success: API::V2::Entities::P2pOrder
+      params do
+        use :pagination
+      end
       get '/member/p2p_orders' do
-        present P2pOrder.all.where(member_id: current_user.id).order('created_at DESC'), with: API::V2::Entities::P2pOrder
+        present paginate(Rails.cache.fetch("member_order_list_#{current_user.id}", expires_in: 600) do
+          order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id)
+          order.to_a
+        end), with: API::V2::Entities::P2pOrder
       end
 
       desc 'Show P2p order',
-             is_array: true,
-             success: API::V2::Entities::P2pOrder
+           is_array: true,
+           success: API::V2::Entities::P2pOrder
       get '/p2p_order/:id' do
         order = P2pOrder.find_by id: params[:id]
         unless order

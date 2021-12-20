@@ -79,8 +79,7 @@ module API
         )
 
         expose(
-          :creator,
-          :using => API::V2::Public::Entities::Member,
+          :creator_id,
           documentation: {
             desc: 'name of creator.'
           }

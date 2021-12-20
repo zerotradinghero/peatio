@@ -126,6 +126,14 @@ module API
           }
         )
 
+        expose(
+          :advertisement,
+          documentation: {
+            uniq: true,
+            desc: 'creator info of member'
+          }
+        )
+
         # expose(
         #   :images,
         #   documentation: {
