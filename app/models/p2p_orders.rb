@@ -62,6 +62,7 @@ class P2pOrder < ApplicationRecord
       user_order.sub_fund(number_of_coin)
       user_advertisement.add_fund(number_of_coin)
     end
+    update(status: :complete)
   end
 
   def reason_claim
@@ -79,5 +80,13 @@ class P2pOrder < ApplicationRecord
         "Others"
       ]
     end
+  end
+
+  def total
+    ammount
+  end
+
+  def amount
+    ammount
   end
 end

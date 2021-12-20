@@ -37,7 +37,15 @@ module API
         )
 
         expose(
-          :ammount,
+          :amount,
+          documentation: {
+            type: BigDecimal,
+            desc: "amount of p2p order."
+          }
+        )
+
+        expose(
+          :total,
           documentation: {
             type: BigDecimal,
             desc: "amount of p2p order."

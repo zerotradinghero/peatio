@@ -67,7 +67,7 @@ module API::V2
            is_array: true,
            success: API::V2::Entities::P2pOrder
       get '/member/p2p_orders' do
-        P2pOrder.all.where(member_id: current_user.id)
+        present P2pOrder.all.where(member_id: current_user.id).order('created_at DESC'), with: API::V2::Entities::P2pOrder
       end
 
       desc 'Show P2p order',
@@ -109,10 +109,11 @@ module API::V2
 
       post '/p2p_order/:id/claim' do
         order = P2pOrder.find_by id: params[:id]
-        if order.update(params)
-          order.claim_status = "request"
-          order.save
-          return present order, with: API::V2::P2p::Entities::P2pOrderClaim
+        order.claim_title = params[:claim_title]
+        order.claim_description = params[:claim_description]
+        order.claim_status = "request"
+        order.save
+        return present order, with: API::V2::P2p::Entities::P2pOrderClaim
           # return present order
           # if params[:images]
           #   params[:images].each do |image|
@@ -123,7 +124,6 @@ module API::V2
           #     order.save
           #   end
           # end
-        end
       end
 
       desc 'Admin list clain P2pOrder',

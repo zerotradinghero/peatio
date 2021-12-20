@@ -36,7 +36,7 @@ module API::V2
 
         present paginate(Rails.cache.fetch("advertis_#{params}", expires_in: 600) do
 
-          result = Advertisement.send(params[:advertis_type]).enabled
+          result = Advertisement.send(params[:advertis_type]).enabled.order('created_at DESC')
           result = result.where(currency_id: params[:currency_id]) if params[:currency_id].present?
           result = result.ransack(search_attrs)
           result.result.load.to_a
