@@ -72,7 +72,7 @@ module API::V2
       end
       get '/member/p2p_orders' do
         present paginate(Rails.cache.fetch("member_order_list_#{current_user.id}", expires_in: 600) do
-          order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id).order('p2p_orders.created_at DESC')
+          order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id).order(created_at: :desc)
           order.to_a
         end), with: API::V2::Entities::P2pOrder
       end
