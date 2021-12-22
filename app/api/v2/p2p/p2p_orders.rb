@@ -27,11 +27,13 @@ module API::V2
 
         if order.sell?
           return present "Please enter a valid amount less than the amount #{advertis.coin_avaiable}" if params[:number_of_coin] > advertis.coin_avaiable
-          account = advertis.creator.accounts.where(currency_id: advertis.currency_id).first
-        elsif order.buy?
-          account = order.member.accounts.where(currency_id: advertis.currency_id).first
         end
-        account.lock_funds(order.number_of_coin)
+
+        #   account = advertis.creator.accounts.where(currency_id: advertis.currency_id).first
+        # elsif order.buy?
+        #   account = order.member.accounts.where(currency_id: advertis.currency_id).first
+        # end
+        # account.lock_funds(order.number_of_coin)
 
         present :order, order, with: API::V2::Entities::P2pOrder
       end
@@ -118,11 +120,11 @@ module API::V2
         order.claim_title = params[:claim_title]
         order.claim_description = params[:claim_description]
         order.claim_status = "request"
-        params[:claim_images].each do |image|
-          order.images.attach(image)
-          return present order.images.attached?
-        end
-        # order.save
+        # params[:claim_images].each do |image|
+        #   order.images.attach(image)
+        #   return present order.images.attached?
+        # end
+        order.save
         # return present order, with: API::V2::P2p::Entities::P2pOrderClaim
           # return present order
           # if params[:images]

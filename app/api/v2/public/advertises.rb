@@ -42,7 +42,8 @@ module API::V2
           result = result.where(currency_id: params[:currency_id]) if params[:currency_id].present?
           result = result.where(currency_payment_id: params[:currency_payment_id]) if params[:currency_payment_id].present?
           result = result.ransack(search_attrs)
-          result.result.load.to_a
+          result = result.result.load.to_a.select{|adv| adv.coin_avaiable > 0}
+          result
         end), with: API::V2::Entities::Advertisement
       end
     end
