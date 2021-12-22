@@ -134,6 +134,7 @@ module API
           }
         )
 
+
         # expose(
         #   :images,
         #   documentation: {
