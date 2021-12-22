@@ -477,6 +477,24 @@ Create Advertisements
     "advertis_type": "sell",
     "currency_id": "btc",
     "currency_payment_id": "eth",
+    "price_type": "floating",
+    "total_amount": "100000",
+    "upper_limit": "50000",
+    "lower_limit": "30000",
+    "description": "mua tien ao",
+    "visible": "enabled",
+    "price_percent": "1000000000000000",
+    "expired_time": 2 #(Tính bằng phút)
+  },
+  "payment_method_ids": [1, 3]
+}
+}
+
+{
+  "advertisement": {
+    "advertis_type": "sell",
+    "currency_id": "btc",
+    "currency_payment_id": "eth",
     "price_type": "fixed",
     "total_amount": "100000",
     "upper_limit": "50000",

@@ -75,10 +75,14 @@ module API
                      values: { value: [0, 1], message: 'p2p.advertisement.invalid_visible' },
                      desc: -> { V2::Entities::P2pOrder.documentation[:visible] }
 
-            requires :price,
+            optional :price,
                      type: String,
                      desc: -> { V2::Entities::P2pOrder.documentation[:price] }
 
+            optional :price_percent,
+                     type: String,
+                     desc: -> { V2::Entities::P2pOrder.documentation[:price] }
+            
             requires :expired_time,
                      type: Integer,
                      desc: -> { V2::Entities::P2pOrder.documentation[:expired_time] }
