@@ -361,7 +361,8 @@ Create P2pOrder
 {
   "p2p_orders_type": "sell",
   "advertisement_id": "21",
-  "number_of_coin": "1"
+  "number_of_coin": "1",
+  "price": 1234 #(optional if advertisement is floating)
 }
 ```
 

@@ -21,6 +21,9 @@ module API
                    type: BigDecimal,
                    values: { value: -> (v) { v.try(:positive?) }, message: 'p2p.p2p_order.non_positive_number_of_coin' },
                    desc: -> { V2::Entities::P2pOrder.documentation[:number_of_coin] }
+          optional :price,
+                   type: BigDecimal,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:price] }
         end
 
         params :p2p_edit do
@@ -82,7 +85,7 @@ module API
             optional :price_percent,
                      type: String,
                      desc: -> { V2::Entities::P2pOrder.documentation[:price] }
-            
+
             requires :expired_time,
                      type: Integer,
                      desc: -> { V2::Entities::P2pOrder.documentation[:expired_time] }

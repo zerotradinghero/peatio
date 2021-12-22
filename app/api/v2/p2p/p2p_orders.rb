@@ -15,35 +15,30 @@ module API::V2
       end
       post '/p2p_orders' do
         user_authorize! :create, ::P2pOrder
+
         advertis = Advertisement.find_by id: params[:advertisement_id]
+
+        if params[:p2p_orders_type] == "sell"
+          return present "Please enter a valid amount less than the amount #{advertis.coin_avaiable}" if params[:number_of_coin] > advertis.coin_avaiable
+        end
+
         order = P2pOrder.build_order(params, advertis, current_user)
         message = order.send_message("This order has been ordered", order.advertisement.creator)
-
         present :response_message, message
 
         unless order.save
           return present "Order create unsuccessful"
         end
 
-        if order.sell?
-          return present "Please enter a valid amount less than the amount #{advertis.coin_avaiable}" if params[:number_of_coin] > advertis.coin_avaiable
-        end
-
-        #   account = advertis.creator.accounts.where(currency_id: advertis.currency_id).first
-        # elsif order.buy?
-        #   account = order.member.accounts.where(currency_id: advertis.currency_id).first
-        # end
-        # account.lock_funds(order.number_of_coin)
-
         present :order, order, with: API::V2::Entities::P2pOrder
       end
+
       desc 'Edit P2p order',
            is_array: true,
            success: API::V2::Entities::P2pOrder
       params do
         use :p2p_edit
       end
-
       post '/p2p_order/:id' do
         order = P2pOrder.find_by id: params[:id]
         if order.blank?

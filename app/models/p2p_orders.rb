@@ -13,7 +13,7 @@ class P2pOrder < ApplicationRecord
 
   def self.build_order(params, advertis, current_user)
     order = new(params)
-    order.price = advertis.price
+    order.price = advertis.price if advertis.fixed?
     order.ammount = order.number_of_coin * order.price
     order.order_number = SecureRandom.hex(6)
     order.member_id = current_user.id

@@ -37,6 +37,14 @@ module API
         )
 
         expose(
+          :price_percent,
+          documentation: {
+            type: BigDecimal,
+            desc: "price_percent of p2p order."
+          }
+        )
+
+        expose(
           :amount,
           documentation: {
             type: BigDecimal,
