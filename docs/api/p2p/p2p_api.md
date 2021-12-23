@@ -427,27 +427,14 @@ success:
     "claim_status": null,
     "claim_description": null,
     "claim_title": null,
-    "images": {
-      "name": "images",
-      "record": {
-        "id": 100,
-        "member_id": 2,
-        "status": "ordered",
-        "p2p_orders_type": "sell",
-        "price": "1000000000000000.0",
-        "ammount": "100000000000000.0",
-        "advertis_payment_method_id": null,
-        "order_number": "f93df7b25bbf",
-        "advertisement_id": 44,
-        "number_of_coin": "0.1",
-        "payment_method_id": null,
-        "created_at": "2021-12-13T09:28:00.691Z",
-        "claim_title": null,
-        "claim_status": null,
-        "claim_description": null
+    "attachments": [
+      {
+        image: "data_image"
       },
-      "dependent": "purge_later"
-    }
+      {
+        image: "data_image"
+      }
+    ]
   }
 }
 
@@ -714,7 +701,8 @@ Create POST claim P2pOrder
 {
   "claim_title": "Others",
   "claim_description": "have not recieved the money",
-  "claim_status": 0
+  "claim_status": 0,
+  "claim_images": []
 }
 ```
 
@@ -755,27 +743,14 @@ Admin list claim P2pOrder
     "claim_description": "have not recieved the money",
     "claim_status": "request",
     "order_number": "99e5401308a2",
-    "images": {
-      "name": "images",
-      "record": {
-        "id": 140,
-        "member_id": 2,
-        "status": "paid",
-        "p2p_orders_type": "sell",
-        "price": "1000000000000000.0",
-        "ammount": "1000000000000000.0",
-        "advertis_payment_method_id": null,
-        "order_number": "99e5401308a2",
-        "advertisement_id": 56,
-        "number_of_coin": "1.0",
-        "payment_method_id": 1,
-        "created_at": "2021-12-14T10:53:20.939Z",
-        "claim_title": "Others",
-        "claim_status": "request",
-        "claim_description": "have not recieved the money"
+    "attachments": [
+      {
+        image: "data_image"
       },
-      "dependent": "purge_later"
-    },
+      {
+        image: "data_image"
+      }
+    ],
     "created_at": "2021-12-14T10:53:20.939Z"
   },
   {
@@ -784,27 +759,14 @@ Admin list claim P2pOrder
     "claim_description": "I made the payment, but the seller did not release the cryptocurrencies",
     "claim_status": "request",
     "order_number": "dac608bf12cb",
-    "images": {
-      "name": "images",
-      "record": {
-        "id": 141,
-        "member_id": 2,
-        "status": "paid",
-        "p2p_orders_type": "sell",
-        "price": "1000000000000000.0",
-        "ammount": "5000000000000000.0",
-        "advertis_payment_method_id": null,
-        "order_number": "dac608bf12cb",
-        "advertisement_id": 57,
-        "number_of_coin": "5.0",
-        "payment_method_id": 1,
-        "created_at": "2021-12-14T10:54:22.462Z",
-        "claim_title": "Others",
-        "claim_status": "request",
-        "claim_description": "I made the payment, but the seller did not release the cryptocurrencies"
+    "attachments": [
+      {
+        image: "data_image"
       },
-      "dependent": "purge_later"
-    },
+      {
+        image: "data_image"
+      }
+    ],
     "created_at": "2021-12-14T10:54:22.462Z"
   },
   {
@@ -813,27 +775,14 @@ Admin list claim P2pOrder
     "claim_description": "Pay the seller extra money",
     "claim_status": "request",
     "order_number": "a1d574d2c7bc",
-    "images": {
-      "name": "images",
-      "record": {
-        "id": 142,
-        "member_id": 3,
-        "status": "paid",
-        "p2p_orders_type": "sell",
-        "price": "1000000000000000.0",
-        "ammount": "5000000000000000.0",
-        "advertis_payment_method_id": null,
-        "order_number": "a1d574d2c7bc",
-        "advertisement_id": 60,
-        "number_of_coin": "5.0",
-        "payment_method_id": 1,
-        "created_at": "2021-12-14T10:56:16.177Z",
-        "claim_title": "Others",
-        "claim_status": "request",
-        "claim_description": "Pay the seller extra money"
+    "attachments": [
+      {
+        image: "data_image"
       },
-      "dependent": "purge_later"
-    },
+      {
+        image: "data_image"
+      }
+    ],
     "created_at": "2021-12-14T10:56:16.177Z"
   }
 ]
@@ -862,6 +811,14 @@ Admin show claim P2pOrder
     "claim_description": "Pay the seller extra money",
     "claim_status": "request",
     "order_number": "75c245a1b0be",
+    "attachments": [
+      {
+        image: "data_image"
+      },
+      {
+        image: "data_image"
+      }
+    ],
     "created_at": "2021-12-15T09:18:01.619Z"
 }
 ```

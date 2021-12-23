@@ -1,5 +1,6 @@
 # encoding: UTF-8
 # frozen_string_literal: true
+require "stringio"
 
 module API::V2
   module P2p
@@ -45,7 +46,7 @@ module API::V2
           return present "Order not found"
         end
         payment_method_ids = order.advertisement.advertisement_payment_methods.pluck(:payment_method_id)
-        unless payment_method_ids.include?(params[:payment_method_id])
+        if params[:payment_method_id].present? && !payment_method_ids.include?(params[:payment_method_id])
           return present "Invalid payment method"
         end
         if order.cancel? && params[:status] == "transfer"
@@ -115,22 +116,11 @@ module API::V2
         order.claim_title = params[:claim_title]
         order.claim_description = params[:claim_description]
         order.claim_status = "request"
-        # params[:claim_images].each do |image|
-        #   order.images.attach(image)
-        #   return present order.images.attached?
-        # end
         order.save
-        # return present order, with: API::V2::P2p::Entities::P2pOrderClaim
-        # return present order
-        # if params[:images]
-        #   params[:images].each do |image|
-        #     file_path = "/public/" + i[:file_name]
-        #     image_path = Rails.root + file_path
-        #     image_file = File.new(image_path)
-        #     order.images.attach(image)
-        #     order.save
-        #   end
-        # end
+        params[:claim_images].each do |image|
+          order.attachments.new(image: image).save
+        end
+        # present "Create claim success!"
       end
 
       desc 'Admin list clain P2pOrder',

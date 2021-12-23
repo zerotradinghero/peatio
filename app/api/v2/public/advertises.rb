@@ -36,7 +36,7 @@ module API::V2
       get '/advertises' do
         search_attrs = {m: 'or'}
 
-        present paginate(Rails.cache.fetch("advertis_#{params}", expires_in: 600) do
+        present paginate(Rails.cache.fetch("advertis_#{params}", expires_in: 6) do
 
           result = Advertisement.send(params[:advertis_type] || "sell").enabled.order('created_at DESC')
           result = result.where(currency_id: params[:currency_id]) if params[:currency_id].present?

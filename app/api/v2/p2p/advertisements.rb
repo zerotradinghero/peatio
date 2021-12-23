@@ -37,7 +37,7 @@ module API::V2
       get '/advertises' do
         search_attrs = {m: 'or'}
 
-        present paginate(Rails.cache.fetch("advertis_#{params}", expires_in: 600) do
+        present paginate(Rails.cache.fetch("advertis_#{params}_p2p", expires_in: 6) do
 
           result = Advertisement.send(params[:advertis_type] || "sell").enabled.order('created_at DESC')
           result = result.where(currency_id: params[:currency_id]) if params[:currency_id].present?
@@ -59,6 +59,10 @@ module API::V2
         balance = current_user.accounts.where(currency_id: params[:advertisement][:currency_id]).first.try(:balance)
         if balance.to_f < 0
           return present "balance not enough"
+        end
+
+        if params[:payment_method_ids].count > 5
+          return present "payment method limit 5"
         end
 
         unless Currency.find_by id: params[:advertisement][:currency_id]
