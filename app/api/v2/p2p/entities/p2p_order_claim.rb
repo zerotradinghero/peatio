@@ -46,6 +46,18 @@ module API
           )
 
           expose(
+            :attachments,
+            using: API::V2::P2p::Entities::Attachment,
+            documentation: {
+              type: 'API::V2::P2p::Entities::Attachment',
+              is_array: true,
+              uniq: true,
+              desc: 'images at of P2pOrder',
+              type: String
+            }
+          )
+
+          expose(
             :created_at,
             documentation: {
               desc: 'created at of P2pOrder',

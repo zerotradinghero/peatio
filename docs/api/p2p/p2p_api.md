@@ -1,6 +1,6 @@
 # P2p API v2
 
-### api/v2/trade/p2p/advertises
+### api/v2/trade/public/advertises
 
 #### GET
 
@@ -9,12 +9,254 @@
 Show all advertis with type(sell/buy)
 
 ##### Parameters
+```
+{ 
+    advertis_type: buy #(buy/sell)
+    page:1
+    currency_id: usdt #(btc, usdt, eth...)
+    limit: 30
+```
 
 ##### Responses
+```azure
+[
+    {
+        "id": 69,
+        "price": "23640.0",
+        "expired_time": 15,
+        "advertis_type": "buy",
+        "avaiable_coin": "10000000.0",
+        "upper_limit": "62.0",
+        "lower_limit": "6.0",
+        "description": "",
+        "currency": {
+            "id": "usdt",
+            "name": "Tether",
+            "description": null,
+            "homepage": null,
+            "price": "1.0",
+            "type": "coin",
+            "precision": 8,
+            "position": 1
+        },
+        "creator": {
+            "username": null
+        },
+        "payment_methods": [
+            {
+                "id": 1,
+                "payment_type": "bank_transfer",
+                "account_number": "12345667",
+                "bank_name": "vcb",
+                "account_name": "Nguyen Thi Ha"
+            }
+        ],
+        "currency_payment_id": "vnd",
+        "price_type": "fixed",
+        "total_amount": "5.0"
+    },
+    {
+        "id": 73,
+        "price": "23640.0",
+        "expired_time": 15,
+        "advertis_type": "buy",
+        "avaiable_coin": "9999918.0",
+        "upper_limit": "4.0",
+        "lower_limit": "3.0",
+        "description": "",
+        "currency": {
+            "id": "usdt",
+            "name": "Tether",
+            "description": null,
+            "homepage": null,
+            "price": "1.0",
+            "type": "coin",
+            "precision": 8,
+            "position": 1
+        },
+        "creator": {
+            "username": null
+        },
+        "payment_methods": [
+            {
+                "id": 1,
+                "payment_type": "bank_transfer",
+                "account_number": "12345667",
+                "bank_name": "vcb",
+                "account_name": "Nguyen Thi Ha"
+            }
+        ],
+        "currency_payment_id": "vnd",
+        "price_type": "fixed",
+        "total_amount": "9999917.0"
+    },
+    {
+        "id": 74,
+        "price": "23640.0",
+        "expired_time": 15,
+        "advertis_type": "buy",
+        "avaiable_coin": "9999918.0",
+        "upper_limit": "5.0",
+        "lower_limit": "4.0",
+        "description": "test abc 1",
+        "currency": {
+            "id": "usdt",
+            "name": "Tether",
+            "description": null,
+            "homepage": null,
+            "price": "1.0",
+            "type": "coin",
+            "precision": 8,
+            "position": 1
+        },
+        "creator": {
+            "username": null
+        },
+        "payment_methods": [
+            {
+                "id": 1,
+                "payment_type": "bank_transfer",
+                "account_number": "12345667",
+                "bank_name": "vcb",
+                "account_name": "Nguyen Thi Ha"
+            }
+        ],
+        "currency_payment_id": "vnd",
+        "price_type": "fixed",
+        "total_amount": "3.0"
+    }
+]
+```
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 |  [{"price":"100000.0","advertis_type":"sell","avaiable_coin":"10000.0","upper_limit":"12345677.0","lower_limit":"123.0","description":"test"}]| ---
+### api/v2/trade/p2p/advertises (use after login)
+
+#### GET
+
+##### Description
+
+Show all advertis with type(sell/buy)
+
+##### Parameters
+```
+{ 
+    advertis_type: buy #(buy/sell)
+    page:1
+    currency_id: usdt #(btc, usdt, eth...)
+    limit: 30
+    payment_method_type: 'bank_transfer' 
+```
+
+##### Responses
+```azure
+[
+    {
+        "id": 69,
+        "price": "23640.0",
+        "expired_time": 15,
+        "advertis_type": "buy",
+        "avaiable_coin": "10000000.0",
+        "upper_limit": "62.0",
+        "lower_limit": "6.0",
+        "description": "",
+        "currency": {
+            "id": "usdt",
+            "name": "Tether",
+            "description": null,
+            "homepage": null,
+            "price": "1.0",
+            "type": "coin",
+            "precision": 8,
+            "position": 1
+        },
+        "creator": {
+            "username": null
+        },
+        "payment_methods": [
+            {
+                "id": 1,
+                "payment_type": "bank_transfer",
+                "account_number": "12345667",
+                "bank_name": "vcb",
+                "account_name": "Nguyen Thi Ha"
+            }
+        ],
+        "currency_payment_id": "vnd",
+        "price_type": "fixed",
+        "total_amount": "5.0"
+    },
+    {
+        "id": 73,
+        "price": "23640.0",
+        "expired_time": 15,
+        "advertis_type": "buy",
+        "avaiable_coin": "9999918.0",
+        "upper_limit": "4.0",
+        "lower_limit": "3.0",
+        "description": "",
+        "currency": {
+            "id": "usdt",
+            "name": "Tether",
+            "description": null,
+            "homepage": null,
+            "price": "1.0",
+            "type": "coin",
+            "precision": 8,
+            "position": 1
+        },
+        "creator": {
+            "username": null
+        },
+        "payment_methods": [
+            {
+                "id": 1,
+                "payment_type": "bank_transfer",
+                "account_number": "12345667",
+                "bank_name": "vcb",
+                "account_name": "Nguyen Thi Ha"
+            }
+        ],
+        "currency_payment_id": "vnd",
+        "price_type": "fixed",
+        "total_amount": "9999917.0"
+    },
+    {
+        "id": 74,
+        "price": "23640.0",
+        "expired_time": 15,
+        "advertis_type": "buy",
+        "avaiable_coin": "9999918.0",
+        "upper_limit": "5.0",
+        "lower_limit": "4.0",
+        "description": "test abc 1",
+        "currency": {
+            "id": "usdt",
+            "name": "Tether",
+            "description": null,
+            "homepage": null,
+            "price": "1.0",
+            "type": "coin",
+            "precision": 8,
+            "position": 1
+        },
+        "creator": {
+            "username": null
+        },
+        "payment_methods": [
+            {
+                "id": 1,
+                "payment_type": "bank_transfer",
+                "account_number": "12345667",
+                "bank_name": "vcb",
+                "account_name": "Nguyen Thi Ha"
+            }
+        ],
+        "currency_payment_id": "vnd",
+        "price_type": "fixed",
+        "total_amount": "3.0"
+    }
+]
+```
+
 
 ### api/v2/trade/p2p/p2p_order/:id
 
@@ -119,7 +361,8 @@ Create P2pOrder
 {
   "p2p_orders_type": "sell",
   "advertisement_id": "21",
-  "number_of_coin": "1"
+  "number_of_coin": "1",
+  "price": 1234 #(optional if advertisement is floating)
 }
 ```
 
@@ -184,27 +427,14 @@ success:
     "claim_status": null,
     "claim_description": null,
     "claim_title": null,
-    "images": {
-      "name": "images",
-      "record": {
-        "id": 100,
-        "member_id": 2,
-        "status": "ordered",
-        "p2p_orders_type": "sell",
-        "price": "1000000000000000.0",
-        "ammount": "100000000000000.0",
-        "advertis_payment_method_id": null,
-        "order_number": "f93df7b25bbf",
-        "advertisement_id": 44,
-        "number_of_coin": "0.1",
-        "payment_method_id": null,
-        "created_at": "2021-12-13T09:28:00.691Z",
-        "claim_title": null,
-        "claim_status": null,
-        "claim_description": null
+    "attachments": [
+      {
+        image: "data_image"
       },
-      "dependent": "purge_later"
-    }
+      {
+        image: "data_image"
+      }
+    ]
   }
 }
 
@@ -230,6 +460,24 @@ Create Advertisements
 ##### Parameters
 
 ```ruby
+{
+  "advertisement": {
+    "advertis_type": "sell",
+    "currency_id": "btc",
+    "currency_payment_id": "eth",
+    "price_type": "floating",
+    "total_amount": "100000",
+    "upper_limit": "50000",
+    "lower_limit": "30000",
+    "description": "mua tien ao",
+    "visible": "enabled",
+    "price_percent": "1000000000000000",
+    "expired_time": 2 #(Tính bằng phút)
+  },
+  "payment_method_ids": [1, 3]
+}
+}
+
 {
   "advertisement": {
     "advertis_type": "sell",
@@ -453,7 +701,8 @@ Create POST claim P2pOrder
 {
   "claim_title": "Others",
   "claim_description": "have not recieved the money",
-  "claim_status": 0
+  "claim_status": 0,
+  "claim_images": []
 }
 ```
 
@@ -468,6 +717,116 @@ Create POST claim P2pOrder
   "order_number": "e946803f8a40",
   "created_at": "2021-12-06T15:07:33.264Z"
 }
+```
+
+### api/v2/trade/p2p/admin/p2p_order/claims
+
+#### GET
+
+##### Description
+
+Admin list claim P2pOrder
+
+##### Parameters
+
+```ruby
+
+```
+
+##### Responses
+
+```ruby
+[
+  {
+    "id": 140,
+    "claim_title": "Others",
+    "claim_description": "have not recieved the money",
+    "claim_status": "request",
+    "order_number": "99e5401308a2",
+    "attachments": [
+      {
+        image: "data_image"
+      },
+      {
+        image: "data_image"
+      }
+    ],
+    "created_at": "2021-12-14T10:53:20.939Z"
+  },
+  {
+    "id": 141,
+    "claim_title": "Others",
+    "claim_description": "I made the payment, but the seller did not release the cryptocurrencies",
+    "claim_status": "request",
+    "order_number": "dac608bf12cb",
+    "attachments": [
+      {
+        image: "data_image"
+      },
+      {
+        image: "data_image"
+      }
+    ],
+    "created_at": "2021-12-14T10:54:22.462Z"
+  },
+  {
+    "id": 142,
+    "claim_title": "Others",
+    "claim_description": "Pay the seller extra money",
+    "claim_status": "request",
+    "order_number": "a1d574d2c7bc",
+    "attachments": [
+      {
+        image: "data_image"
+      },
+      {
+        image: "data_image"
+      }
+    ],
+    "created_at": "2021-12-14T10:56:16.177Z"
+  }
+]
+```
+
+### /api/v2/trade/p2p/admin/p2p_orders/:id/claim
+
+#### GET
+
+##### Description
+
+Admin show claim P2pOrder
+
+##### Parameters
+
+```ruby
+
+```
+
+##### Responses
+
+```ruby
+{
+    "id": 176,
+    "claim_title": "Others",
+    "claim_description": "Pay the seller extra money",
+    "claim_status": "request",
+    "order_number": "75c245a1b0be",
+    "attachments": [
+      {
+        image: "data_image"
+      },
+      {
+        image: "data_image"
+      }
+    ],
+    "created_at": "2021-12-15T09:18:01.619Z"
+}
+```
+
+##### Errors
+
+```ruby
+  "Claim not found!"
 ```
 
 ### api/v2/trade/p2p/admin/p2p_orders/:id/approve

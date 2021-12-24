@@ -14,7 +14,7 @@ module API
         )
 
         expose(
-          :status ,
+          :status,
           documentation: {
             desc: 'status of p2p order.'
           }
@@ -37,7 +37,15 @@ module API
         )
 
         expose(
-          :ammount,
+          :amount,
+          documentation: {
+            type: BigDecimal,
+            desc: "amount of p2p order."
+          }
+        )
+
+        expose(
+          :total,
           documentation: {
             type: BigDecimal,
             desc: "amount of p2p order."
@@ -69,10 +77,10 @@ module API
         )
 
         expose(
-          :advertisement ,
+          :advertisement,
           :using => API::V2::Entities::Advertisement,
           documentation: {
-            desc: 'name of creator.'
+            desc: 'aertisment of p2p order.'
           }
         )
 
@@ -84,32 +92,46 @@ module API
         )
 
         expose(
-          :claim_status ,
+          :created_at ,
           documentation: {
-            desc: 'claim_status.'
+            desc: 'created at of p2porder.'
           }
         )
 
         expose(
-          :claim_description ,
+          :claim_status,
+          documentation: {
+            desc: 'claim_status of p2porder.'
+          }
+        )
+
+        expose(
+          :claim_description,
           documentation: {
             desc: 'claim_description.'
           }
         )
 
         expose(
-          :claim_title ,
+          :claim_title,
           documentation: {
             desc: 'claim_title.'
           }
         )
 
         expose(
-          :images ,
+          :reason_claim,
           documentation: {
-            desc: 'images.'
+            desc: "claim reason."
           }
         )
+        # expose(
+        #   :images,
+        #   documentation: {
+        #     desc: 'images.'
+        #   }
+        # )
+
       end
     end
   end

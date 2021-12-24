@@ -5,7 +5,9 @@ class P2pOrder < ApplicationRecord
   belongs_to :payment_method
   belongs_to :advertisement_payment_methods
   belongs_to :member, class_name: Member.name, foreign_key: :member_id
-  has_many_attached :images
+  # has_many_attached :images
+
+  has_many :attachments, as: :object
 
   enum status: [:ordered, :transfer, :paid, :complete, :cancel]
   enum p2p_orders_type: [:sell, :buy]
@@ -13,8 +15,8 @@ class P2pOrder < ApplicationRecord
 
   def self.build_order(params, advertis, current_user)
     order = new(params)
-    order.price = advertis.price
-    order.ammount = order.number_of_coin * order.price
+    order.price = advertis.price if advertis.fixed?
+    order.ammount = order.number_of_coin * order.price * ((advertis.price_percent || 100)/100)
     order.order_number = SecureRandom.hex(6)
     order.member_id = current_user.id
     order
@@ -62,5 +64,32 @@ class P2pOrder < ApplicationRecord
       user_order.sub_fund(number_of_coin)
       user_advertisement.add_fund(number_of_coin)
     end
+    update(status: :complete)
   end
+
+  def reason_claim
+    if sell?
+      [
+        "Tôi đã thanh toán, nhưng người bán không chuyển tiền điện tử",
+        "Trả thêm tiền cho người bán",
+        "Khác"
+      ]
+    else
+      [
+        "Tôi đã nhận được thanh toán từ người mua, nhưng số tiền không chính xác",
+        "Người mua đã xác nhận là đã thanh toán nhưng tôi không nhận được thanh toán vào tài khoản của mình",
+        "Tôi đã nhận được thanh toán từ tài khoản của bên thứ ba",
+        "Khác"
+      ]
+    end
+  end
+
+  def total
+    ammount
+  end
+
+  def amount
+    ammount
+  end
+
 end

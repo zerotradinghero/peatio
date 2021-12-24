@@ -17,6 +17,8 @@ module API::V2
                  desc: -> { API::V2::Entities::Advertisement.documentation[:advertis_type][:desc] }
         optional :currency_id,
                  type: String
+        optional :currency_payment_id,
+                 type: String
         optional :page,
                  type: String
         optional :search, type: JSON, default: {} do
@@ -34,12 +36,14 @@ module API::V2
       get '/advertises' do
         search_attrs = {m: 'or'}
 
-        present paginate(Rails.cache.fetch("advertis_#{params}", expires_in: 600) do
+        present paginate(Rails.cache.fetch("advertis_#{params}", expires_in: 6) do
 
-          result = Advertisement.send(params[:advertis_type]).enabled
+          result = Advertisement.send(params[:advertis_type] || "sell").enabled.order('created_at DESC')
           result = result.where(currency_id: params[:currency_id]) if params[:currency_id].present?
+          result = result.where(currency_payment_id: params[:currency_payment_id]) if params[:currency_payment_id].present?
           result = result.ransack(search_attrs)
-          result.result.load.to_a
+          result = result.result.load.to_a.select{|adv| adv.coin_avaiable > 0}
+          result
         end), with: API::V2::Entities::Advertisement
       end
     end

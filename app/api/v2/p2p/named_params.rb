@@ -21,6 +21,9 @@ module API
                    type: BigDecimal,
                    values: { value: -> (v) { v.try(:positive?) }, message: 'p2p.p2p_order.non_positive_number_of_coin' },
                    desc: -> { V2::Entities::P2pOrder.documentation[:number_of_coin] }
+          optional :price,
+                   type: BigDecimal,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:price] }
         end
 
         params :p2p_edit do
@@ -71,11 +74,15 @@ module API
                      desc: -> { V2::Entities::P2pOrder.documentation[:description] }
 
             requires :visible,
-                     type: String,
-                     values: { value: %w(disabled enabled), message: 'p2p.advertisement.invalid_visible' },
+                     type: Integer,
+                     values: { value: [0, 1], message: 'p2p.advertisement.invalid_visible' },
                      desc: -> { V2::Entities::P2pOrder.documentation[:visible] }
 
-            requires :price,
+            optional :price,
+                     type: String,
+                     desc: -> { V2::Entities::P2pOrder.documentation[:price] }
+
+            optional :price_percent,
                      type: String,
                      desc: -> { V2::Entities::P2pOrder.documentation[:price] }
 
@@ -91,7 +98,7 @@ module API
         end
 
         params :p2p_claim do
-          requires :claim_status,
+          optional :claim_status,
                    type: Integer,
                    desc: -> { V2::Entities::P2pOrder.documentation[:claim_status] }
 

@@ -71,6 +71,14 @@ module API
         )
 
         expose(
+          :price_percent,
+          documentation: {
+            type: BigDecimal,
+            desc: "price_percent of p2p order."
+          }
+        )
+
+        expose(
           :currency,
           :using => API::V2::Public::Entities::Currency,
           documentation: {
@@ -80,7 +88,6 @@ module API
 
         expose(
           :creator,
-          :using => API::V2::Public::Entities::Member,
           documentation: {
             desc: 'name of creator.'
           }

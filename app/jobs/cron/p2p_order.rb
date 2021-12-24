@@ -7,10 +7,9 @@ module Jobs
           if Time.now > order_expired_time
             ord.update(status: :cancel)
             ord.send_message_status
-            account = ord.advertisement.creator.accounts.where(currency_id: ord.advertisement.currency_id).first
-            account.unlock_funds(ord.number_of_coin)
           end
         end
+        Rails.logger.info { "-------JOB update p2p order status: #{Time.now}------------" }
         sleep(5)
       end
     end

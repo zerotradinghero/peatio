@@ -5,6 +5,49 @@ module API::V2
   module P2p
     class Advertisements < Grape::API
       helpers ::API::V2::P2p::NamedParams
+      helpers ::API::V2::ParamHelpers
+
+      desc 'Get all Advertis and search',
+           is_array: true,
+           success: API::V2::Entities::Advertisement
+      params do
+        use :pagination
+        optional :advertis_type,
+                 type: String,
+                 values: { value: %w[sell buy], message: 'public.advertis.invalid_type' },
+                 desc: -> { API::V2::Entities::Advertisement.documentation[:advertis_type][:desc] }
+        optional :currency_id,
+                 type: String
+        optional :currency_payment_id,
+                 type: String
+        optional :page,
+                 type: String
+        optional :search, type: JSON, default: {} do
+          optional :location,
+                   type: String,
+                   desc: 'Search by location using SQL LIKE'
+          optional :amount,
+                   type: BigDecimal,
+                   desc: 'Search by amount using SQL <='
+          optional :payment_method,
+                   type: String,
+                   desc: 'Search by payment method SQL'
+        end
+      end
+      get '/advertises' do
+        search_attrs = {m: 'or'}
+
+        present paginate(Rails.cache.fetch("advertis_#{params}_p2p", expires_in: 6) do
+
+          result = Advertisement.send(params[:advertis_type] || "sell").enabled.order('created_at DESC')
+          result = result.where(currency_id: params[:currency_id]) if params[:currency_id].present?
+          result = result.where(currency_payment_id: params[:currency_payment_id]) if params[:currency_payment_id].present?
+          result = result.ransack(search_attrs)
+          result = result.result.load.to_a.select{|adv| adv.coin_avaiable > 0 && adv.creator_id != current_user.id}
+          result
+        end), with: API::V2::Entities::Advertisement
+      end
+
 
       desc 'Create advertisement',
            is_array: true,
@@ -16,6 +59,10 @@ module API::V2
         balance = current_user.accounts.where(currency_id: params[:advertisement][:currency_id]).first.try(:balance)
         if balance.to_f < 0
           return present "balance not enough"
+        end
+
+        if params[:payment_method_ids].count > 5
+          return present "payment method limit 5"
         end
 
         unless Currency.find_by id: params[:advertisement][:currency_id]
@@ -37,6 +84,7 @@ module API::V2
 
         if advertisement.valid?
           advertisement.save
+
           present advertisement, with: API::V2::Entities::Advertisement
         else
           present advertisement.errors.full_messages.join(',')
