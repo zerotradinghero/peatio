@@ -28,7 +28,7 @@ Update status of P2pOrder(ordered/paid/complete/cancel)
 
 ```ruby
 {
-  "status": "paid",
+  "status": "paid", #(ordered transfer paid complete cancel)
   "payment_method_id": 1
 }
 ```
@@ -39,54 +39,62 @@ success:
 
 ```ruby
 {
-  "id": 13,
-  "status": "paid",
-  "p2p_orders_type": "sell",
-  "price": "1000000000000000.0",
-  "ammount": "123123000000000000000.0",
-  "number_of_coin": "123123.0",
-  "order_number": "ec2ab88d5ff3",
-  "payment_method": {
-    "payment_type": "bank_transfer",
-    "account_number": "123456789",
-    "bank_name": "thai",
-    "account_name": "hoangthai"
-  },
-  "advertisement": {
-    "id": 12,
+  "response_message": "{\"error\":\"management.phone.doesnt_exists\"}",
+  "order": {
+    "id": 97,
+    "status": "paid",
+    "p2p_orders_type": "sell",
     "price": "1000000000000000.0",
-    "advertis_type": "sell",
-    "avaiable_coin": "1.0",
-    "upper_limit": "50000.0",
-    "lower_limit": "30000.0",
-    "description": "mua tien ao",
-    "currency": {
-      "id": "btc",
-      "name": "Bitcoin",
-      "description": null,
-      "homepage": null,
-      "price": "1.0",
-      "type": "coin",
-      "precision": 8,
-      "position": 3
+    "ammount": "100000000000000.0",
+    "number_of_coin": "0.1",
+    "order_number": "ec93a475a8a0",
+    "payment_method": {
+      "payment_type": "bank_transfer",
+      "account_number": "123456789",
+      "bank_name": "thai",
+      "account_name": "hoangthai"
     },
-    "creator": {
-      "username": null
-    },
-    "payment_methods": [
-      {
-        "payment_type": "bank_transfer",
-        "account_number": "123456789",
-        "bank_name": "thai",
-        "account_name": "hoangthai"
+    "advertisement": {
+      "id": 40,
+      "price": "1000000000000000.0",
+      "expired_time": 2,
+      "advertis_type": "sell",
+      "avaiable_coin": "2.0",
+      "upper_limit": "50000.0",
+      "lower_limit": "30000.0",
+      "description": "mua tien ao",
+      "currency": {
+        "id": "btc",
+        "name": "Bitcoin",
+        "description": null,
+        "homepage": null,
+        "price": "1.0",
+        "type": "coin",
+        "precision": 8,
+        "position": 3
       },
-      {
-        "payment_type": "",
-        "account_number": "123456",
-        "bank_name": "vietcombank",
-        "account_name": "thaidang"
-      }
-    ]
+      "creator": {
+        "username": null
+      },
+      "payment_methods": [
+        {
+          "payment_type": "bank_transfer",
+          "account_number": "123456789",
+          "bank_name": "thai",
+          "account_name": "hoangthai"
+        },
+        {
+          "payment_type": "",
+          "account_number": "123456",
+          "bank_name": "vietcombank",
+          "account_name": "thaidang"
+        }
+      ],
+      "currency_payment_id": "eth",
+      "price_type": "fixed",
+      "total_amount": "100000.0"
+    },
+    "member_id": 2
   }
 }
 ```
@@ -122,34 +130,81 @@ success:
 ```ruby
 
 {
-  "id": 5,
-  "p2p_orders_type": "sell",
-  "price": "10000.0",
-  "ammount": "1231230000.0",
-  "number_of_coin": "123123.0",
-  "order_number": "69695b6037b1",
-  "advertisement": {
-    "id": 1,
-    "price": "10000.0",
-    "advertis_type": "buy",
-    "avaiable_coin": "1111.0",
-    "upper_limit": "1000000.0",
-    "lower_limit": "1000.0",
-    "description": "test",
-    "currency": {
-      "id": "btc",
-      "name": "Bitcoin",
-      "description": null,
-      "homepage": null,
-      "price": "1.0",
-      "type": "coin",
-      "precision": 8,
-      "position": 3
+  "response_message": "{\"error\":\"management.phone.doesnt_exists\"}",
+  "order": {
+    "id": 100,
+    "status": "ordered",
+    "p2p_orders_type": "sell",
+    "price": "1000000000000000.0",
+    "ammount": "100000000000000.0",
+    "number_of_coin": "0.1",
+    "order_number": "f93df7b25bbf",
+    "payment_method": null,
+    "advertisement": {
+      "id": 44,
+      "price": "1000000000000000.0",
+      "expired_time": 2,
+      "advertis_type": "sell",
+      "avaiable_coin": "6.82",
+      "upper_limit": "50000.0",
+      "lower_limit": "30000.0",
+      "description": "mua tien ao",
+      "currency": {
+        "id": "btc",
+        "name": "Bitcoin",
+        "description": null,
+        "homepage": null,
+        "price": "1.0",
+        "type": "coin",
+        "precision": 8,
+        "position": 3
+      },
+      "creator": {
+        "username": null
+      },
+      "payment_methods": [
+        {
+          "payment_type": "bank_transfer",
+          "account_number": "123456789",
+          "bank_name": "thai",
+          "account_name": "hoangthai"
+        },
+        {
+          "payment_type": "",
+          "account_number": "123456",
+          "bank_name": "vietcombank",
+          "account_name": "thaidang"
+        }
+      ],
+      "currency_payment_id": "eth",
+      "price_type": "fixed",
+      "total_amount": "100000.0"
     },
-    "creator": {
-      "username": null
-    },
-    "payment_methods": []
+    "member_id": 2,
+    "claim_status": null,
+    "claim_description": null,
+    "claim_title": null,
+    "images": {
+      "name": "images",
+      "record": {
+        "id": 100,
+        "member_id": 2,
+        "status": "ordered",
+        "p2p_orders_type": "sell",
+        "price": "1000000000000000.0",
+        "ammount": "100000000000000.0",
+        "advertis_payment_method_id": null,
+        "order_number": "f93df7b25bbf",
+        "advertisement_id": 44,
+        "number_of_coin": "0.1",
+        "payment_method_id": null,
+        "created_at": "2021-12-13T09:28:00.691Z",
+        "claim_title": null,
+        "claim_status": null,
+        "claim_description": null
+      },
+      "dependent": "purge_later"
+    }
   }
 }
 
@@ -412,5 +467,47 @@ Create POST claim P2pOrder
   "claim_status": "request",
   "order_number": "e946803f8a40",
   "created_at": "2021-12-06T15:07:33.264Z"
+}
+```
+
+### api/v2/trade/p2p/admin/p2p_orders/:id/approve
+
+#### POST
+
+##### Description
+
+Admin approve succes order
+
+##### Parameters
+
+```ruby
+{
+  "status": "complete"
+}
+```
+
+##### Responses
+
+```ruby
+{
+  "complete_order": true,
+  "response_message": "{\"error\":\"content is empty\"}",
+  "order": {
+    "status": "complete",
+    "id": 196,
+    "member_id": 3,
+    "p2p_orders_type": "buy",
+    "price": "1000000000000000.0",
+    "ammount": "40000000000000000.0",
+    "advertis_payment_method_id": null,
+    "order_number": "f1fdcf79e015",
+    "advertisement_id": 102,
+    "number_of_coin": "40.0",
+    "payment_method_id": 1,
+    "created_at": "2021-12-15T10:46:15.458Z",
+    "claim_title": null,
+    "claim_status": null,
+    "claim_description": null
+  }
 }
 ```

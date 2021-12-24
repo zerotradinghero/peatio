@@ -4,21 +4,63 @@ class P2pOrder < ApplicationRecord
   belongs_to :advertisement
   belongs_to :payment_method
   belongs_to :advertisement_payment_methods
+  belongs_to :member, class_name: Member.name, foreign_key: :member_id
   has_many_attached :images
 
-  enum status: [:ordered, :paid, :complete, :cancel]
+  enum status: [:ordered, :transfer, :paid, :complete, :cancel]
   enum p2p_orders_type: [:sell, :buy]
   enum claim_status: [:request, :approve, :canceled]
 
-  def self.create_order(params, advertis)
+  def self.build_order(params, advertis, current_user)
     order = new(params)
     order.price = advertis.price
     order.ammount = order.number_of_coin * order.price
     order.order_number = SecureRandom.hex(6)
-    if order.save
-      account = advertis.creator.accounts.where(currency_id: advertis.currency_id).first
-      account.lock_funds(order.number_of_coin)
-    end
+    order.member_id = current_user.id
     order
+  end
+
+  def send_message(message, member)
+    url = URI('http://barong:8001/api/v2/management/phones/send')
+
+    Net::HTTP.start(url.host, url.port, use_ssl: false) do |http|
+      request = Net::HTTP::Post.new(url, 'Content-Type' => 'application/json')
+      request.body = generate_jwt_management({ uid: member.uid, content: message })
+      response = http.request request
+      response.body
+    end
+  end
+
+  def send_message_status
+    if paid?
+      message = order_number + "is the paid"
+    elsif transfer?
+      message = order_number + "is the transfer"
+    elsif cancel?
+      message = order_number + "is the cancel"
+    end
+    send_message(message, advertisement.creator)
+  end
+
+  def successful_p2porder_transfer
+    user_advertisement = advertisement.creator.accounts.where(currency_id: advertisement.currency_id).first
+    user_order = member.accounts.where(currency_id: advertisement.currency_id).first
+
+    if sell?
+      unless user_order
+        user_order = Account.create(member_id: advertisement.creator, currency_id: advertisement.currency_id, type: "spot")
+      end
+
+      user_advertisement.sub_fund(number_of_coin)
+      user_order.add_fund(number_of_coin)
+
+    elsif buy?
+      if number_of_coin > user_order.try(:locked)
+        return puts "your total coin is not enough to buy"
+      end
+
+      user_order.sub_fund(number_of_coin)
+      user_advertisement.add_fund(number_of_coin)
+    end
   end
 end

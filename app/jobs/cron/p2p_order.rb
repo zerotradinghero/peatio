@@ -6,6 +6,7 @@ module Jobs
           order_expired_time = ord.created_at + ord.advertisement.expired_time.minutes
           if Time.now > order_expired_time
             ord.update(status: :cancel)
+            ord.send_message_status
             account = ord.advertisement.creator.accounts.where(currency_id: ord.advertisement.currency_id).first
             account.unlock_funds(ord.number_of_coin)
           end

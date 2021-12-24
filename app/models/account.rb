@@ -152,6 +152,18 @@ class Account < ApplicationRecord
   def amount
     balance + locked
   end
+
+  def sub_fund(amount)
+    if amount <= ZERO || amount > locked
+      raise AccountError, "Cannot sub funds (member id: #{member_id}, currency id: #{currency_id}, amount: #{amount}, locked: #{locked})."
+    end
+
+    update({ locked: locked - amount })
+  end
+
+  def add_fund(amount)
+    update({ balance: balance + amount })
+  end
 end
 
 # == Schema Information
