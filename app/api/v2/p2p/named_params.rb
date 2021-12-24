@@ -90,6 +90,14 @@ module API
                      type: Integer,
                      desc: -> { V2::Entities::P2pOrder.documentation[:expired_time] }
 
+            optional :member_registration_day,
+                     type: String,
+                     desc: -> { V2::Entities::P2pOrder.documentation[:member_registration_day] }
+
+            optional :member_coin_number,
+                     type: { value: BigDecimal },
+                     desc: -> { V2::Entities::P2pOrder.documentation[:member_coin_number] }
+
           end
 
           requires :payment_method_ids,

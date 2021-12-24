@@ -126,6 +126,18 @@ class Member < ApplicationRecord
     pa
   end
 
+  def is_quantified_to_trade?(creator)
+    member_avaiable_usdt > 0 && id != creator
+  end
+
+  def is_enough_time_registration?(time_date)
+    (Time.now.to_date - created_at.to_date).to_i > time_date
+  end
+
+  def is_hold_enough_coin?(coin_member)
+    member_avaiable_usdt.to_f >= coin_member
+  end
+
   private
 
   def downcase_email
@@ -215,6 +227,10 @@ class Member < ApplicationRecord
         all
       end.order(:id).reverse_order
     end
+  end
+
+  def member_avaiable_usdt
+    accounts.where(currency_id: "usdt").first.try(:balance)
   end
 end
 

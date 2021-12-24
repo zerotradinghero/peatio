@@ -127,6 +127,20 @@ module API
           }
         )
 
+        expose(
+          :member_registration_day,
+          documentation: {
+            desc: 'member_registration_day advertisement'
+          }
+        )
+
+        expose(
+          :member_coin_number,
+          documentation: {
+            desc: 'member_coin_number advertisement'
+          }
+        )
+
       end
     end
   end
