@@ -4,14 +4,17 @@ class P2pOrder < ApplicationRecord
   belongs_to :advertisement
   belongs_to :payment_method
   belongs_to :advertisement_payment_methods
-  belongs_to :member, class_name: Member.name, foreign_key: :member_id
-  # has_many_attached :images
-
-  has_many :attachments, as: :object
+  belongs_to :member
 
   enum status: [:ordered, :transfer, :paid, :complete, :cancel]
   enum p2p_orders_type: [:sell, :buy]
-  enum claim_status: [:request, :approve, :canceled]
+  before_update :update_coin
+
+  def update_coin
+    if status_changed? && paid?
+      successful_p2porder_transfer
+    end
+  end
 
   def self.build_order(params, advertis, current_user)
     order = new(params)
@@ -64,7 +67,7 @@ class P2pOrder < ApplicationRecord
       user_order.sub_fund(number_of_coin)
       user_advertisement.add_fund(number_of_coin)
     end
-    update(status: :complete)
+    update(status: :complete, claim_status: :approve)
   end
 
   def reason_claim

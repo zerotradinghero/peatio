@@ -8,7 +8,7 @@ module API
           expose(
             :id,
             documentation: {
-              desc: 'id of P2pOrder',
+              desc: 'id of Claim',
               type: String
             }
           )
@@ -16,7 +16,7 @@ module API
           expose(
             :claim_title,
             documentation: {
-              desc: 'claim title of P2pOrder',
+              desc: 'claim title of Claim',
               type: String
             }
           )
@@ -24,7 +24,7 @@ module API
           expose(
             :claim_description,
             documentation: {
-              desc: 'claim description of P2pOrder',
+              desc: 'claim description of Claim',
               type: String
             }
           )
@@ -52,7 +52,7 @@ module API
               type: 'API::V2::P2p::Entities::Attachment',
               is_array: true,
               uniq: true,
-              desc: 'images at of P2pOrder',
+              desc: 'images at of Claim',
               type: String
             }
           )
@@ -60,7 +60,7 @@ module API
           expose(
             :created_at,
             documentation: {
-              desc: 'created at of P2pOrder',
+              desc: 'created at of Claim',
               type: String
             }
           )

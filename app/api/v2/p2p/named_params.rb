@@ -122,14 +122,6 @@ module API
                    desc: -> { V2::Entities::P2pOrder.documentation[:images] }
         end
 
-        params :p2p_list_claim do
-
-        end
-
-        params :p2p_show_claim do
-
-        end
-
         params :p2p_admin_approve do
           optional :status,
                    type: String,

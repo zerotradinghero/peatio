@@ -1,6 +1,5 @@
 # encoding: UTF-8
 # frozen_string_literal: true
-require "stringio"
 
 module API::V2
   module P2p
@@ -68,13 +67,16 @@ module API::V2
            is_array: true,
            success: API::V2::Entities::P2pOrder
       params do
-        use :pagination
+        use :p2p_orders
       end
       get '/member/p2p_orders' do
-        present paginate(Rails.cache.fetch("member_order_list_#{current_user.id}", expires_in: 600) do
-          order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id).order(created_at: :desc)
-          order.to_a
-        end), with: API::V2::Entities::P2pOrder
+        search_attrs = { m: 'and' }
+        search_attrs["status_in"] = params[:status] if params[:status].present?
+        search_attrs["order_number_eq"] = params[:order_number] if params[:order_number].present?
+        search_attrs["p2p_orders_type_eq"] = params[:p2p_orders_type] if params[:p2p_orders_type].present?
+        order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id).order(updated_at: :desc)
+        order = order.ransack(search_attrs).result
+        present order, with: API::V2::Entities::P2pOrder
       end
 
       desc 'Show P2p order',
@@ -97,61 +99,6 @@ module API::V2
           return present 'id not found!'
         end
         present order, with: API::V2::Entities::P2pOrder
-      end
-
-      desc 'Admin show list P2p order',
-           is_array: true,
-           success: API::V2::Entities::P2pOrder
-
-      get '/admin/:id/p2p_orders' do
-        P2pOrder.all.where(member_id: params[:member_id])
-      end
-
-      desc 'Clain P2p order',
-           is_array: true,
-           success: API::V2::P2p::Entities::P2pOrderClaim
-      params do
-        use :p2p_claim
-      end
-
-      post '/p2p_order/:id/claim' do
-        order = P2pOrder.find_by id: params[:id]
-        order.claim_title = params[:claim_title]
-        order.claim_description = params[:claim_description]
-        order.claim_status = "request"
-        order.save
-        params[:claim_images].each do |image|
-          order.attachments.new(image: image).save
-        end
-        # present "Create claim success!"
-      end
-
-      desc 'Admin list clain P2pOrder',
-           is_array: true,
-           success: API::V2::P2p::Entities::P2pOrderClaim
-      params do
-        use :p2p_list_claim
-      end
-
-      get '/admin/p2p_order/claims' do
-        list_order_claim = P2pOrder.request
-        present list_order_claim, with: API::V2::P2p::Entities::P2pOrderClaim
-      end
-
-      desc 'Admin show clain P2pOrder',
-           is_array: true,
-           success: API::V2::P2p::Entities::P2pOrderClaim
-      params do
-        use :p2p_show_claim
-      end
-
-      get '/admin/p2p_orders/:id/claim' do
-        order = P2pOrder.find_by id: params[:id]
-        if order.claim_status
-          present order, with: API::V2::P2p::Entities::P2pOrderClaim
-        else
-          return present "Claim not found!"
-        end
       end
 
       desc 'Admin approve order',
