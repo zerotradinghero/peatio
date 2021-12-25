@@ -17,9 +17,9 @@ class Advertisement < ApplicationRecord
 
   def update_block_coin
     if visible_changed? && disabled?
-      account.unlock_funds(total_amount) if sell?
+      account.unlock_funds(coin_avaiable) if sell?
     else
-      account.lock_funds(total_amount) if sell?
+      account.lock_funds(coin_avaiable) if sell?
     end
   end
 

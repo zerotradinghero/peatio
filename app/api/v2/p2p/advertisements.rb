@@ -62,42 +62,44 @@ module API::V2
         use :param_advertisement
       end
       post '/advertisements' do
-        balance = current_user.accounts.where(currency_id: params[:advertisement][:currency_id]).first.try(:balance)
-        if balance.to_f < 0
-          return present "balance not enough"
+        ads = Advertisement.new(params[:advertisement])
+
+        if ads.sell?
+          balance = current_user.accounts.where(currency_id: ads.currency_id).first.try(:balance)
+          if balance.to_f < 0
+            return error!({ errors: ['advertis.ability.balance_not_enough'] }, 412)
+          end
         end
 
         if params[:payment_method_ids].count > 5
-          return present "payment method limit 5"
+          return error!({ errors: ['advertis.ability.payment_method_limit'] }, 412)
         end
 
-        unless Currency.find_by id: params[:advertisement][:currency_id]
-          return present "currency not found!"
+        unless Currency.find_by id: ads.currency_id
+          return error!({ errors: ['currency_id.doesnt_exist'] }, 404)
         end
 
-        unless Currency.find_by id: params[:advertisement][:currency_payment_id]
-          return present "currency payment not found!"
+        unless Currency.find_by id: ads.currency_payment_id
+          return error!({ errors: ['currency_payment_id.doesnt_exist'] }, 404)
         end
 
-        advertisement = Advertisement.new(params[:advertisement])
-        advertisement.creator_id = current_user.id
+        ads.creator_id = current_user.id
         params[:payment_method_ids].each do |payment_method_id|
-          unless PaymentMethod.find_by id: payment_method_id
-            return present "payment method #{payment_method_id} not found"
+          unless PaymentMethod.find_by(id: payment_method_id, member_id: current_user.id)
+            return error!({ errors: ['payment_method.doesnt_exist'] }, 404)
           end
-          advertisement.advertisement_payment_methods << AdvertisementPaymentMethod.new(payment_method_id: payment_method_id)
+          ads.advertisement_payment_methods << AdvertisementPaymentMethod.new(payment_method_id: payment_method_id)
         end
 
-        if !current_user.is_kyc?
-          return present "you must verify your identity"
-        end
+        # if !current_user.is_kyc?
+        #   return present "you must verify your identity"
+        # end
 
-        if advertisement.valid?
-          advertisement.save
-
-          present advertisement, with: API::V2::Entities::Advertisement
+        if ads.valid?
+          ads.save
+          present ads, with: API::V2::Entities::Advertisement
         else
-          present advertisement.errors.full_messages.join(',')
+          return error!({ errors: ['advertisement.create_errors'] }, 412)
         end
       end
 
@@ -137,9 +139,59 @@ module API::V2
       get '/my_advertise/:id' do
         ads = Advertisement.find_by(id: params[:id], creator_id: current_user.id)
         unless ads
-          return present "ads not found!"
+          return error!({ errors: ['advertis.ability.not_found'] }, 404)
         end
         present ads, with: API::V2::Entities::Advertisement
+      end
+      #-----------------------------------------------------------------------------------------------------------------
+
+      desc 'Update advertisement',
+           is_array: true,
+           success: API::V2::Entities::Advertisement
+      params do
+        use :param_advertisement
+      end
+      post '/my_advertise/:id' do
+        ads = Advertisement.find_by(id: params[:id], creator_id: current_user.id)
+        unless ads
+          return error!({ errors: ['advertis.ability.not_found'] }, 404)
+        end
+        ads_new = Advertisement.new(params[:advertisement])
+
+        if ads_new.sell?
+          balance = current_user.accounts.where(currency_id: ads_new.currency_id).first.try(:balance)
+          if (balance.to_f + ads.coin_avaiable) < ads_new.coin_avaiable
+            return error!({ errors: ['account.balance.not_enough'] }, 412)
+          end
+        end
+
+        if params[:payment_method_ids].count > 5
+          return error!({ errors: ['payment_method.limit'] }, 412)
+        end
+
+        unless Currency.find_by id: ads_new.currency_id
+          return error!({ errors: ['currency_id.doesnt_exist'] }, 404)
+        end
+
+        unless Currency.find_by id: ads_new.currency_payment_id
+          return error!({ errors: ['currency_payment_id.doesnt_exist'] }, 404)
+        end
+
+        ads_new.creator_id = current_user.id
+        params[:payment_method_ids].each do |payment_method_id|
+          unless PaymentMethod.find_by(id: payment_method_id, member_id: current_user.id)
+            return error!({ errors: ['payment_method.doesnt_exist'] }, 404)
+          end
+          ads_new.advertisement_payment_methods << AdvertisementPaymentMethod.new(payment_method_id: payment_method_id)
+        end
+
+        if ads_new.valid?
+          ads.update(visible: :disabled)
+          ads_new.save
+          present ads_new, with: API::V2::Entities::Advertisement
+        else
+          return error!({ errors: ['advertisement.update_errors'] }, 412)
+        end
       end
     end
   end
