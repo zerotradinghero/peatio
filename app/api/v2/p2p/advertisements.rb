@@ -1,5 +1,6 @@
 # encoding: UTF-8
 # frozen_string_literal: true
+require "date"
 
 module API::V2
   module P2p
@@ -53,6 +54,7 @@ module API::V2
         end), with: API::V2::Entities::Advertisement
       end
 
+      #--------------------------------------------------------------------------------------------------------------
       desc 'Create advertisement',
            is_array: true,
            success: API::V2::Entities::Advertisement
@@ -97,9 +99,60 @@ module API::V2
         else
           present advertisement.errors.full_messages.join(',')
         end
-
       end
 
+      #----------------------------------------------------------------------------------------------------------------------
+
+      desc 'Get all Advertis and search',
+           is_array: true,
+           success: API::V2::Entities::Advertisement
+      params do
+        use :pagination
+      end
+      get '/my_advertises' do
+        search_attrs = {m: 'and', "creator_id_eq": current_user.id}
+        search_attrs["advertis_type_eq"] = params[:advertis_type] if params[:advertis_type].present?
+        search_attrs["price_type_eq"] = params[:price_type] if params[:price_type].present?
+        search_attrs["currency_id_eq"] = params[:currency_id] if params[:currency_id].present?
+        search_attrs["currency_payment_id_eq"] = params[:currency_payment_id] if params[:currency_payment_id].present?
+        search_attrs["visible_eq"] = params[:visible] if params[:visible].present?
+
+        start_date = Date.parse(params[:start_date]|| (Time.now - 10.years).to_s).to_s
+        end_date = Date.parse(params[:end_date]|| (Time.now + 1.day).to_s).to_s
+
+        present paginate(Rails.cache.fetch("myadvertis_#{params}", expires_in: 6) do
+          result = Advertisement.where("created_at >= ? and created_at <= ?", start_date, end_date)
+                                .order('created_at DESC')
+          result = result.ransack(search_attrs)
+          result = result.result.load.to_a
+          result
+        end), with: API::V2::Entities::Advertisement
+      end
+
+      #----------------------------------------------------------------------------------------------------------------------
+
+      desc 'Show a Advertis',
+           is_array: true,
+           success: API::V2::Entities::Advertisement
+      get '/my_advertises/:id' do
+        search_attrs = {m: 'and', "creator_id_eq": current_user.id}
+        search_attrs["advertis_type_eq"] = params[:advertis_type] if params[:advertis_type].present?
+        search_attrs["price_type_eq"] = params[:price_type] if params[:price_type].present?
+        search_attrs["currency_id_eq"] = params[:currency_id] if params[:currency_id].present?
+        search_attrs["currency_payment_id_eq"] = params[:currency_payment_id] if params[:currency_payment_id].present?
+        search_attrs["visible_eq"] = params[:visible] if params[:visible].present?
+
+        start_date = Date.parse(params[:start_date]|| (Time.now - 10.years).to_s).to_s
+        end_date = Date.parse(params[:end_date]|| (Time.now + 1.day).to_s).to_s
+
+        present paginate(Rails.cache.fetch("myadvertis_#{params}", expires_in: 6) do
+          result = Advertisement.where("created_at >= ? and created_at <= ?", start_date, end_date)
+                                .order('created_at DESC')
+          result = result.ransack(search_attrs)
+          result = result.result.load.to_a
+          result
+        end), with: API::V2::Entities::Advertisement
+      end
     end
   end
 end

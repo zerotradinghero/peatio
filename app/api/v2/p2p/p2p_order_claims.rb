@@ -48,14 +48,11 @@ module API::V2
         return present "Claim not found!" unless claim
         present claim, with: API::V2::P2p::Entities::P2pOrderClaim
       end
+
       #---------------------------------------------------------------------
       desc 'Update Claim',
            is_array: true,
            success: API::V2::P2p::Entities::P2pOrderClaim
-      params do
-        # use :p2p_show_claim
-      end
-
       put '/claim/:claim_id' do
         claim = P2pOrderClaim.find_by id: params[:claim_id]
         return present "Claim not found!" unless claim
