@@ -35,7 +35,7 @@ module API::V2
         end
       end
       get '/advertises' do
-        search_attrs = {m: 'or'}
+        search_attrs = { m: 'or' }
 
         present paginate(Rails.cache.fetch("advertis_#{params}_p2p", expires_in: 6) do
 
@@ -43,11 +43,15 @@ module API::V2
           result = result.where(currency_id: params[:currency_id]) if params[:currency_id].present?
           result = result.where(currency_payment_id: params[:currency_payment_id]) if params[:currency_payment_id].present?
           result = result.ransack(search_attrs)
-          result = result.result.load.to_a.select{|adv| adv.coin_avaiable > 0 && adv.creator_id != current_user.id}
+          if Advertisement.buy
+            result = result.result.load.to_a.select { |adv| current_user.is_quantified_to_trade?(adv.creator_id) && current_user.is_enough_time_registration?(adv.member_registration_day.to_i) &&
+              current_user.is_hold_enough_coin?(adv.member_coin_number.to_i) && current_user.is_kyc? }
+          else
+            result = result.result.load.to_a.select { |adv| current_user.is_quantified_to_trade?(adv.creator_id) }
+          end
           result
         end), with: API::V2::Entities::Advertisement
       end
-
 
       desc 'Create advertisement',
            is_array: true,
@@ -80,6 +84,10 @@ module API::V2
             return present "payment method #{payment_method_id} not found"
           end
           advertisement.advertisement_payment_methods << AdvertisementPaymentMethod.new(payment_method_id: payment_method_id)
+        end
+
+        if !current_user.is_kyc?
+          return present "you must verify your identity"
         end
 
         if advertisement.valid?

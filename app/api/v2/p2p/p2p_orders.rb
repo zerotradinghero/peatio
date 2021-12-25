@@ -23,6 +23,9 @@ module API::V2
           return present "Please enter a valid amount less than the amount #{advertis.coin_avaiable}" if params[:number_of_coin] > advertis.coin_avaiable
         end
 
+        return present "Can't create order due to unverified identity" if !current_user.is_kyc?
+        return present "Can't create order due to lack of use date" if current_user.is_enough_time_registration?(advertis.member_registration_day.to_i)
+        return present "Can't create order due to insufficient coins" if current_user.is_hold_enough_coin?(advertis.member_coin_number.to_i)
         order = P2pOrder.build_order(params, advertis, current_user)
         message = order.send_message("This order has been ordered", order.advertisement.creator)
         present :response_message, message

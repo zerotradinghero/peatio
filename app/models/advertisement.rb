@@ -15,7 +15,6 @@ class Advertisement < ApplicationRecord
   after_create :block_coin_after_create
   after_update :update_block_coin
 
-
   def update_block_coin
     if visible_changed? && disabled?
       account.unlock_funds(total_amount) if sell?
@@ -39,5 +38,4 @@ class Advertisement < ApplicationRecord
   def block_coin_after_create
     account.lock_funds!(total_amount) if sell?
   end
-
 end
