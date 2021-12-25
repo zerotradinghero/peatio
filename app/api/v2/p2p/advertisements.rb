@@ -140,7 +140,6 @@ module API::V2
       get '/my_advertise/:id' do
         ads = Advertisement.find_by(id: params[:id], creator_id: current_user.id)
         unless ads
-<<<<<<< HEAD
           return error!({ errors: ['advertis.ability.not_found'] }, 404)
         end
         present ads, with: API::V2::Entities::Advertisement
