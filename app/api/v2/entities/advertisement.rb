@@ -121,6 +121,20 @@ module API
         )
 
         expose(
+          :visible,
+          documentation: {
+            desc: 'visible of ads'
+          }
+        )
+
+        expose(
+          :created_at,
+          documentation: {
+            desc: 'visible of ads'
+          }
+        )
+
+        expose(
           :total_amount,
           documentation: {
             desc: 'total amount'
