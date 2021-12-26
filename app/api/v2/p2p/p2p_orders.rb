@@ -17,25 +17,26 @@ module API::V2
         user_authorize! :create, ::P2pOrder
 
         advertis = Advertisement.find_by id: params[:advertisement_id]
+        order = P2pOrder.build_order(params, advertis, current_user)
 
-        if params[:p2p_orders_type] == "sell"
-          return present "Please enter a valid amount less than the amount #{advertis.coin_avaiable}" if params[:number_of_coin] > advertis.coin_avaiable
+        if order.sell?
+          return error!({ errors: ['advertisements.coin_not_enough'] }, 412) if order.number_of_coin > advertis.coin_avaiable
         end
 
-        return present "Can't create order due to unverified identity" if !current_user.is_kyc?
-        return present "Can't create order due to lack of use date" if current_user.is_enough_time_registration?(advertis.member_registration_day.to_i)
-        return present "Can't create order due to insufficient coins" if current_user.is_hold_enough_coin?(advertis.member_coin_number.to_i)
-        order = P2pOrder.build_order(params, advertis, current_user)
-        message = order.send_message("This order has been ordered", order.advertisement.creator)
-        present :response_message, message
+        return error!({ errors: ['member.unverified_identity'] }, 412) unless current_user.is_kyc?
+        return error!({ errors: ['member.lack_of_use_date'] }, 412) if current_user.is_enough_time_registration?(advertis.member_registration_day.to_i)
+        return error!({ errors: ['member.insufficient_coins'] }, 412) if current_user.is_hold_enough_coin?(advertis.member_coin_number.to_i)
 
         unless order.save
-          return present "Order create unsuccessful"
+          return error!({ errors: ['p2p_order.created_unsuccess'] }, 412)
         end
 
+        message = order.send_message("This order has been ordered", order.advertisement.creator)
+        present :response_message, message
         present :order, order, with: API::V2::Entities::P2pOrder
       end
 
+      #-----------------------------------------------------------------------------------------------------------------
       desc 'Edit P2p order',
            is_array: true,
            success: API::V2::Entities::P2pOrder
@@ -63,6 +64,7 @@ module API::V2
         end
       end
 
+      #-----------------------------------------------------------------------------------------------------------------
       desc 'List P2p order',
            is_array: true,
            success: API::V2::Entities::P2pOrder
@@ -71,7 +73,7 @@ module API::V2
       end
       get '/member/p2p_orders' do
         search_attrs = { m: 'and' }
-        search_attrs["status_in"] = params[:status] if params[:status].present?
+        search_attrs["status_in"] = params[:status].split(",") if params[:status].present?
         search_attrs["order_number_eq"] = params[:order_number] if params[:order_number].present?
         search_attrs["p2p_orders_type_eq"] = params[:p2p_orders_type] if params[:p2p_orders_type].present?
         order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id).order(updated_at: :desc)

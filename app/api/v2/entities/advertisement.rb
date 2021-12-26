@@ -123,6 +123,7 @@ module API
         expose(
           :visible,
           documentation: {
+            type: Integer,
             desc: 'visible of ads'
           }
         )
@@ -154,6 +155,12 @@ module API
             desc: 'member_coin_number advertisement'
           }
         )
+
+        private
+
+        def visible
+          object["visible"].to_i
+        end
 
       end
     end

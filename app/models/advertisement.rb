@@ -38,4 +38,5 @@ class Advertisement < ApplicationRecord
   def block_coin_after_create
     account.lock_funds!(total_amount) if sell?
   end
+
 end

@@ -10,7 +10,7 @@ Member list P2pOrder
 
 ```ruby
 {
-  status: [0,1,2], # 0: ordered, 1: transfer, 2: paid, 3: complete, 4:cancel, nil: all
+  status: "1,2,3", # 0: ordered, 1: transfer, 2: paid, 3: complete, 4:cancel, nil: all
   p2p_orders_type: 0, # 0:sell, 1:buy, nil: all
   order_number: "4a3318e6f7c7" # no data: nil 
 }

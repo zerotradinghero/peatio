@@ -62,6 +62,15 @@ module API::V2
         use :param_advertisement
       end
       post '/advertisements' do
+
+        unless current_user.is_kyc?
+          return error!({ errors: ['member.is_kyc_false'] }, 412)
+        end
+
+        if params[:payment_method_ids].count > 5
+          return error!({ errors: ['advertis.ability.payment_method_limit'] }, 412)
+        end
+
         ads = Advertisement.new(params[:advertisement])
 
         if ads.sell?
@@ -69,10 +78,6 @@ module API::V2
           if balance.to_f < 0
             return error!({ errors: ['advertis.ability.balance_not_enough'] }, 412)
           end
-        end
-
-        if params[:payment_method_ids].count > 5
-          return error!({ errors: ['advertis.ability.payment_method_limit'] }, 412)
         end
 
         unless Currency.find_by id: ads.currency_id
@@ -90,10 +95,6 @@ module API::V2
           end
           ads.advertisement_payment_methods << AdvertisementPaymentMethod.new(payment_method_id: payment_method_id)
         end
-
-        # if !current_user.is_kyc?
-        #   return present "you must verify your identity"
-        # end
 
         if ads.valid?
           ads.save
@@ -143,6 +144,7 @@ module API::V2
         end
         present ads, with: API::V2::Entities::Advertisement
       end
+
       #-----------------------------------------------------------------------------------------------------------------
 
       desc 'Update advertisement',
