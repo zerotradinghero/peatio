@@ -9,6 +9,7 @@ class P2pOrder < ApplicationRecord
   enum status: [:ordered, :transfer, :paid, :complete, :cancel]
   enum p2p_orders_type: [:sell, :buy]
   before_update :update_coin
+  after_create :block_coin_sell
 
   def update_coin
     if status_changed? && paid?
@@ -16,11 +17,20 @@ class P2pOrder < ApplicationRecord
     end
   end
 
+  def account
+    member.accounts.where(currency_id: advertisement.currency_id).first
+  end
+
+  def block_coin_sell
+    account.lock_funds!(number_of_coin) if sell?
+  end
+
   def self.build_order(params, advertis, current_user)
     order = new(params)
     order.price = advertis.price if advertis.fixed?
     order.ammount = order.number_of_coin * order.price * ((advertis.price_percent || 100)/100)
     order.order_number = SecureRandom.hex(6)
+    order.p2p_order_type = (advertis.sell? ? "buy" : "sell")
     order.member_id = current_user.id
     order
   end

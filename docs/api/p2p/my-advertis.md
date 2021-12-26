@@ -1,3 +1,116 @@
+### api/v2/trade/p2p/advertisements
+
+#### POST
+
+##### Description
+
+Create Advertisements
+
+##### Parameters
+
+```ruby
+{
+  "advertisement": {
+    "advertis_type": "sell",
+    "currency_id": "btc",
+    "currency_payment_id": "eth",
+    "price_type": "floating",
+    "total_amount": "100000",
+    "upper_limit": "50000",
+    "lower_limit": "30000",
+    "description": "mua tien ao",
+    "visible": "enabled",
+    "price_percent": "1000000000000000",
+    "expired_time": 2, #(Tính bằng phút)
+    "member_registration_day": 10,
+    "member_coin_number": 10,
+    "is_kyc": 1
+  },
+  "payment_method_ids": [1, 3]
+}
+
+{
+  "advertisement": {
+    "advertis_type": "sell",
+    "currency_id": "btc",
+    "currency_payment_id": "eth",
+    "price_type": "fixed",
+    "total_amount": "100000",
+    "upper_limit": "50000",
+    "lower_limit": "30000",
+    "description": "mua tien ao",
+    "visible": "enabled",
+    "price": "1000000000000000",
+    "expired_time": 2, #(Tính bằng phút)
+    "member_registration_day": 10,
+    "member_coin_number": 10,
+    "is_kyc": 1
+  },
+  "payment_method_ids": [1, 3]
+}
+```
+
+##### Responses
+
+success:
+
+```ruby
+{
+  "id": 21,
+  "price": "1000000000000000.0",
+  "expired_time": 15,
+  "advertis_type": "sell",
+  "avaiable_coin": "0.96",
+  "upper_limit": "50000.0",
+  "lower_limit": "30000.0",
+  "description": "mua tien ao",
+  "currency": {
+    "id": "btc",
+    "name": "Bitcoin",
+    "description": null,
+    "homepage": null,
+    "price": "1.0",
+    "type": "coin",
+    "precision": 8,
+    "position": 3
+  },
+  "creator": {
+    "username": null
+  },
+  "payment_methods": [
+    {
+      "payment_type": "bank_transfer",
+      "account_number": "123456789",
+      "bank_name": "thai",
+      "account_name": "hoangthai"
+    },
+    {
+      "payment_type": "",
+      "account_number": "123456",
+      "bank_name": "vietcombank",
+      "account_name": "thaidang"
+    }
+  ],
+  "currency_payment_id": "eth",
+  "price_type": "fixed",
+  "total_amount": "100000.0"
+}
+```
+
+errors:
+
+```ruby
+    [
+      "p2p.advertisement.missing_description",
+      "p2p.advertisement.missing_visible",
+      "p2p.advertisement.missing_price"
+    ]
+```
+
+## ---------------------------------------------------------------------
+
+
+
 ## /api/v2/trade/p2p/my_advertises
 
 #### GET
