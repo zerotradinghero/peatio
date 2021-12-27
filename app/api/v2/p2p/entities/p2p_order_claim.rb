@@ -14,14 +14,6 @@ module API
           )
 
           expose(
-            :creator_adv_id,
-            documentation: {
-              desc: 'creator_adv_id of P2pOrderClaim',
-              type: Integer
-            }
-          )
-
-          expose(
             :p2p_order_id,
             documentation: {
               desc: 'p2p_order_id of P2pOrderClaim',
@@ -70,6 +62,14 @@ module API
           )
 
           expose(
+            :claim_type,
+            documentation: {
+              desc: 'claim_type of P2pOrderClaim',
+              type: String
+            }
+          )
+
+          expose(
             :attachments,
             using: API::V2::P2p::Entities::Attachment,
             documentation: {
@@ -88,6 +88,12 @@ module API
               type: String
             }
           )
+
+          private
+
+          def claim_type
+            object["claim_type"].to_i
+          end
         end
       end
     end
