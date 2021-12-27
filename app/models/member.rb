@@ -230,7 +230,7 @@ class Member < ApplicationRecord
   end
 
   def member_avaiable_usdt
-    accounts.where(currency_id: "usdt").first.try(:balance)
+    accounts.where(currency_id: "usdt", type: "spot").first.try(:balance).to_f
   end
 end
 

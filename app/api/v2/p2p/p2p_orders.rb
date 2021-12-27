@@ -24,8 +24,8 @@ module API::V2
         end
 
         return error!({ errors: ['member.unverified_identity'] }, 412) unless current_user.is_kyc?
-        return error!({ errors: ['member.lack_of_use_date'] }, 412) if current_user.is_enough_time_registration?(advertis.member_registration_day.to_i)
-        return error!({ errors: ['member.insufficient_coins'] }, 412) if current_user.is_hold_enough_coin?(advertis.member_coin_number.to_i)
+        return error!({ errors: ['member.lack_of_use_date'] }, 412) unless current_user.is_enough_time_registration?(advertis.member_registration_day.to_i)
+        return error!({ errors: ['member.insufficient_coins'] }, 412) unless current_user.is_hold_enough_coin?(advertis.member_coin_number.to_i)
 
         unless order.save
           return error!({ errors: ['p2p_order.created_unsuccess'] }, 412)
