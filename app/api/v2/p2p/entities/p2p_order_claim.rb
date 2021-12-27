@@ -69,6 +69,10 @@ module API
             }
           )
 
+          expose(:reason_claim)
+          expose(:note)
+          expose(:member_uid)
+
           expose(
             :attachments,
             using: API::V2::P2p::Entities::Attachment,

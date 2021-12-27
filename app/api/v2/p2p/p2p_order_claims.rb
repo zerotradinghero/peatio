@@ -18,7 +18,7 @@ module API::V2
       post '/p2p_order/:id/claim' do
         order = P2pOrder.find_by id: params[:id]
         unless order
-          return error!({ errors: ['p2p_order_claim.not_found!'] }, 404)
+          return error!({ errors: ['p2p_order.not_found!'] }, 404)
         end
         if P2pOrderClaim.create_claim(order, params)
           present "Create claim order success!"
@@ -76,13 +76,19 @@ module API::V2
         claim = P2pOrderClaim.find_by id: params[:id]
         return error!({ errors: ['p2p_order_claim.not_found!'] }, 404) unless claim
 
-        claim.reason = params[:reason]
-        claim.description = params[:description]
-        claim.status = params[:status]
-        params[:images].each do |image|
-          claim.attachments.update(image: image)
-        end
-        if claim.save
+        claim.reason = params[:reason] if params[:reason]
+        claim.description = params[:description] if params[:description]
+        claim.status = params[:status].to_i if params[:status]
+        claim.member_admin_id = params[:member_admin_id] if params[:member_admin_id]
+        claim.note = params[:note] if params[:note]
+        if claim.valid?
+          if params[:reason].present?
+            claim.attachments.destroy_all
+            (params[:claim_images] || []).each do |image|
+              claim.attachments.new(image: image)
+            end
+          end
+          claim.save
           present claim, with: API::V2::P2p::Entities::P2pOrderClaim
         else
           return error!({ errors: ['p2p_order_claim.create_failed!'] }, 412)

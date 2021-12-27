@@ -30,7 +30,7 @@ class P2pOrder < ApplicationRecord
     order.price = advertis.price if advertis.fixed?
     order.ammount = order.number_of_coin * order.price * ((advertis.price_percent || 100)/100)
     order.order_number = SecureRandom.hex(6)
-    order.p2p_order_type = (advertis.sell? ? "buy" : "sell")
+    order.p2p_orders_type = (advertis.sell? ? "buy" : "sell")
     order.member_id = current_user.id
     order
   end
@@ -82,18 +82,18 @@ class P2pOrder < ApplicationRecord
 
   def reason_claim
     if sell?
-      [
-        "Tôi đã thanh toán, nhưng người bán không chuyển tiền điện tử",
-        "Trả thêm tiền cho người bán",
-        "Khác"
-      ]
+      {
+        1 => "Tôi đã thanh toán, nhưng người bán không chuyển tiền điện tử",
+        2 => "Trả thêm tiền cho người bán",
+        3 => "Khác"
+      }
     else
-      [
-        "Tôi đã nhận được thanh toán từ người mua, nhưng số tiền không chính xác",
-        "Người mua đã xác nhận là đã thanh toán nhưng tôi không nhận được thanh toán vào tài khoản của mình",
-        "Tôi đã nhận được thanh toán từ tài khoản của bên thứ ba",
-        "Khác"
-      ]
+      {
+        1 => "Tôi đã nhận được thanh toán từ người mua, nhưng số tiền không chính xác",
+        2 => "Người mua đã xác nhận là đã thanh toán nhưng tôi không nhận được thanh toán vào tài khoản của mình",
+        3 => "Tôi đã nhận được thanh toán từ tài khoản của bên thứ ba",
+        4 => "Khác"
+      }
     end
   end
 
@@ -103,6 +103,10 @@ class P2pOrder < ApplicationRecord
 
   def amount
     ammount
+  end
+
+  def price_percent
+    advertisement.price_percent
   end
 
 end
