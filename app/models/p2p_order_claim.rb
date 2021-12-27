@@ -11,6 +11,7 @@ class P2pOrderClaim < ApplicationRecord
   def self.create_claim(order, params)
     claim = P2pOrderClaim.new(p2p_order_id: order.id)
     claim.creator_adv_id = order.advertisement.creator_id
+    claim.member_id = order.member_id
     claim.reason = params[:reason]
     claim.description = params[:description]
     claim.status = "request"

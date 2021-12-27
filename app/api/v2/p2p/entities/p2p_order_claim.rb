@@ -8,39 +8,63 @@ module API
           expose(
             :id,
             documentation: {
-              desc: 'id of Claim',
-              type: String
-            }
-          )
-
-          expose(
-            :claim_title,
-            documentation: {
-              desc: 'claim title of Claim',
-              type: String
-            }
-          )
-
-          expose(
-            :claim_description,
-            documentation: {
-              desc: 'claim description of Claim',
-              type: String
-            }
-          )
-
-          expose(
-            :claim_status,
-            documentation: {
-              desc: 'claim status of P2pOrder',
+              desc: 'id of P2pOrderClaim',
               type: Integer
+            }
+          )
+
+          expose(
+            :creator_adv_id,
+            documentation: {
+              desc: 'creator_adv_id of P2pOrderClaim',
+              type: Integer
+            }
+          )
+
+          expose(
+            :p2p_order_id,
+            documentation: {
+              desc: 'p2p_order_id of P2pOrderClaim',
+              type: Integer
+            }
+          )
+
+          expose(
+            :status,
+            documentation: {
+              desc: 'status of P2pOrderClaim',
+              type: Integer
+            }
+          )
+
+          expose(
+            :member_id,
+            documentation: {
+              desc: 'member_id of P2pOrderClaim',
+              type: Integer
+            }
+          )
+
+          expose(
+            :reason,
+            documentation: {
+              desc: 'reason of P2pOrderClaim',
+              type: String
+            }
+          )
+
+          expose(
+            :description,
+            documentation: {
+              desc: 'description of P2pOrderClaim',
+              type: String
             }
           )
 
           expose(
             :order_number,
             documentation: {
-              desc: 'order_number of P2pOrder',
+              desc: 'order_number of P2pOrderClaim',
               type: String
             }
           )
@@ -60,7 +84,7 @@ module API
           expose(
             :created_at,
             documentation: {
-              desc: 'created at of Claim',
+              desc: 'created at of P2pOrderClaim',
               type: String
             }
           )

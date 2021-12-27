@@ -18,10 +18,14 @@ module API::V2
       post '/p2p_order/:id/claim' do
         order = P2pOrder.find_by id: params[:id]
         unless order
-          return present "p2p order not found!"
+          return error!({ errors: ['p2p_order_claim.not_found!'] }, 404)
         end
-        P2pOrderClaim.create_claim(order, params)
-        present "Create claim success!"
+        if P2pOrderClaim.create_claim(order, params)
+          present "Create claim order success!"
+        else
+          return error!({ errors: ['p2p_order_claim.create_failed!'] }, 412)
+        end
+
       end
 
       #----------------------------------------------------------
@@ -45,7 +49,7 @@ module API::V2
            success: API::V2::P2p::Entities::P2pOrderClaim
       get '/claim/:claim_id' do
         claim = P2pOrderClaim.find_by id: params[:claim_id]
-        return present "Claim not found!" unless claim
+        return error!({ errors: ['p2p_order_claim.not_found!'] }, 404) unless claim
         present claim, with: API::V2::P2p::Entities::P2pOrderClaim
       end
 
@@ -53,10 +57,25 @@ module API::V2
       desc 'Update Claim',
            is_array: true,
            success: API::V2::P2p::Entities::P2pOrderClaim
-      put '/claim/:claim_id' do
-        claim = P2pOrderClaim.find_by id: params[:claim_id]
-        return present "Claim not found!" unless claim
-        present claim, with: API::V2::P2p::Entities::P2pOrderClaim
+      params do
+        use :p2p_claim_update
+      end
+
+      post '/claim/:id' do
+        claim = P2pOrderClaim.find_by id: params[:id]
+        return error!({ errors: ['p2p_order_claim.not_found!'] }, 404) unless claim
+
+        claim.reason = params[:reason]
+        claim.description = params[:description]
+        claim.status = params[:status]
+        params[:images].each do |image|
+          claim.attachments.update(image: image)
+        end
+        if claim.save
+          present claim, with: API::V2::P2p::Entities::P2pOrderClaim
+        else
+          return error!({ errors: ['p2p_order_claim.create_failed!'] }, 412)
+        end
       end
 
       #--------------------------------------------------------------------------
