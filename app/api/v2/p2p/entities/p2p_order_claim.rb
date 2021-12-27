@@ -69,6 +69,8 @@ module API
             }
           )
 
+          expose(:reason_claim)
+
           expose(
             :attachments,
             using: API::V2::P2p::Entities::Attachment,

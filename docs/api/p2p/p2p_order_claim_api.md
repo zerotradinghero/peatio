@@ -35,10 +35,12 @@ Edit claim for p2porder
 
 ```ruby
 {
-  "reason": "Test",
-  "description": "is test",
-  "images": ["image, image1, image2"]
-
+  "reason": "Test", #option
+  "description": "is test", #option
+  "images": ["image, image1, image2"], #option
+  "member_admin_id": 1, #option
+  "note": "khong hop le", #option
+  "status": 1 #option
 }
 ```
 
@@ -72,7 +74,12 @@ List claim for p2porder
 ##### Parameters
 
 ```ruby
-
+{
+  "order_number": "iiosdfsdf",
+  "status": "1,2", # 0:request, 1:approve, 2:canceled
+  "claim_type": 1, # 0:buyer, 1:seller
+  "member_id": 1
+}
 ```
 
 ##### Responses
