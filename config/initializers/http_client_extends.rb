@@ -23,6 +23,11 @@ def http_client
 end
 
 # Example
-# http_client
-#   .public_send(:post,'http://barong:8001/api/v2/management/phones/send', generate_jwt_management({ :uid => 'UID123', :content => 'Hello World'}))
-#   .body
+# uri = URI('http://barong:8001/api/v2/management/phones/send')
+# Net::HTTP.start(uri.host, uri.port, :use_ssl => false) do |http|
+#   request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+#   request.body = generate_jwt_management({ :uid => 'UID123', :content => 'Hello World'})
+#   response = http.request request # Net::HTTPResponse object
+#   puts "response #{response.body}"
+# end
+

@@ -30,6 +30,14 @@ module API
         )
 
         expose(
+          :withdraw_limit,
+          documentation: {
+            type: String,
+            desc: 'Member\'s withdraw_limit.'
+          }
+        )
+
+        expose(
           :beneficiaries_whitelisting,
           documentation: {
             type: String,
