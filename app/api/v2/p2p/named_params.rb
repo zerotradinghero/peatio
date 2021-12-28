@@ -136,6 +136,44 @@ module API
                    values: { value: %w(complete cancel), message: 'p2p.p2p_order.invalid_p2p_status' },
                    desc: -> { V2::Entities::P2pOrder.documentation[:status] }
         end
+
+        params :p2p_payment_method do
+          requires :account_number,
+                   type: String,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:account_number] }
+
+          requires :account_name,
+                   type: String,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:account_name] }
+
+          requires :bank_name,
+                   type: String,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:bank_name] }
+
+          requires :payment_type,
+                   type: String,
+                   values: { value: %w("" bank_transfer other) },
+                   desc: -> { V2::Entities::P2pOrder.documentation[:payment_type] }
+        end
+
+        params :p2p_edit_payment_method do
+          optional :account_number,
+                   type: String,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:account_number] }
+
+          optional :account_name,
+                   type: String,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:account_name] }
+
+          optional :bank_name,
+                   type: String,
+                   desc: -> { V2::Entities::P2pOrder.documentation[:bank_name] }
+
+          optional :payment_type,
+                   type: String,
+                   values: { value: %w("" bank_transfer other) },
+                   desc: -> { V2::Entities::P2pOrder.documentation[:payment_type] }
+        end
       end
     end
   end

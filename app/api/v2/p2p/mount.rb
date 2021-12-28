@@ -10,6 +10,7 @@ module API::V2
       mount P2p::Advertisements
       mount P2p::Member
       mount P2p::P2pOrderClaims
+      mount P2p::PaymentMethods
     end
   end
 end
