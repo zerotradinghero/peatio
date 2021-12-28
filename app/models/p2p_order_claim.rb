@@ -8,14 +8,27 @@ class P2pOrderClaim < ApplicationRecord
 
   enum status: [:request, :approve, :canceled]
   enum claim_type: [:buyer, :seller]
+
   before_update :release_coin_approve
 
+  scope :status_ordered, ->{
+    order(<<-SQL)
+    CASE p2p_order_claims.status 
+    WHEN 0 THEN 'a' 
+    WHEN 1 THEN 'b'
+    WHEN 2 THEN 'c' 
+    END ASC, 
+    updated_at DESC
+    SQL
+  }
 
   def release_coin_approve
     if status_changed? && approve?
-      p2p_order.update(status: paid)
+      p2p_order.update(status: :paid)
     end
   end
+
+
 
   def self.create_claim(order, params)
     claim = P2pOrderClaim.new(p2p_order_id: order.id)
@@ -41,23 +54,6 @@ class P2pOrderClaim < ApplicationRecord
   end
 
   def reason_claim
-    if p2p_order.sell?
-      {
-        1 => "Tôi đã thanh toán, nhưng người bán không chuyển tiền điện tử",
-        2 => "Trả thêm tiền cho người bán",
-        3 => "Khác"
-      }
-    else
-      {
-        1 => "Tôi đã nhận được thanh toán từ người mua, nhưng số tiền không chính xác",
-        2 => "Người mua đã xác nhận là đã thanh toán nhưng tôi không nhận được thanh toán vào tài khoản của mình",
-        3 => "Tôi đã nhận được thanh toán từ tài khoản của bên thứ ba",
-        4 => "Khác"
-      }
-    end
-  end
-
-  def member_uid
-    member.uid
+    p2p_order.reason_claim
   end
 end

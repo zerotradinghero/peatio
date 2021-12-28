@@ -11,9 +11,26 @@ class P2pOrder < ApplicationRecord
   before_update :update_coin
   after_create :block_coin_sell
 
+
+  scope :status_ordered, ->{
+    order(<<-SQL)
+    CASE p2p_orders.status 
+    WHEN 0 THEN 'a' 
+    WHEN 1 THEN 'b'
+    WHEN 2 THEN 'c' 
+    WHEN 3 THEN 'c' 
+    WHEN 4 THEN 'c' 
+    END ASC, 
+    updated_at DESC
+    SQL
+  }
+
   def update_coin
     if status_changed? && paid?
       successful_p2porder_transfer
+    end
+    if status_changed?
+      send_message_status
     end
   end
 
@@ -48,20 +65,25 @@ class P2pOrder < ApplicationRecord
 
   def send_message_status
     if paid?
-      message = order_number + "is the paid"
+      message = "[Binance] The buyer has marked P2P Order (last 4 digit: #{order_number[8..12]}) as paid. Please release the crypto ASAP after confirming that payment has been received."
+      send_message(message, member) if sell?
+      send_message(message, advertisement.creator) if buy?
     elsif transfer?
-      message = order_number + "is the transfer"
+      message = "[Binance] P2P Order (last 4 digit: #{order_number[8..12]}) has been completed. The seller has released #{number_of_coin} #{advertisement.currency_id} to your P2P wallet."
+      send_message(message, advertisement.creator) if sell?
+      send_message(message, member) if buy?
     elsif cancel?
-      message = order_number + "is the cancel"
+      message = "[Binance] P2P Order (last 4 digit: #{order_number[8..12]}) has been canceled because payment was not transferred in time. Contact Customer Support if you have any questions."
+      send_message(message, advertisement.creator) if sell?
+      send_message(message, member) if buy?
     end
-    send_message(message, advertisement.creator)
   end
 
   def successful_p2porder_transfer
     user_advertisement = advertisement.creator.accounts.where(currency_id: advertisement.currency_id).first
     user_order = member.accounts.where(currency_id: advertisement.currency_id).first
 
-    if sell?
+    if buy?
       unless user_order
         user_order = Account.create(member_id: advertisement.creator, currency_id: advertisement.currency_id, type: "spot")
       end
@@ -69,7 +91,7 @@ class P2pOrder < ApplicationRecord
       user_advertisement.sub_fund(number_of_coin)
       user_order.add_fund(number_of_coin)
 
-    elsif buy?
+    elsif sell?
       if number_of_coin > user_order.try(:locked)
         return puts "your total coin is not enough to buy"
       end
@@ -77,22 +99,22 @@ class P2pOrder < ApplicationRecord
       user_order.sub_fund(number_of_coin)
       user_advertisement.add_fund(number_of_coin)
     end
-    update(status: :complete, claim_status: :approve)
+    update(status: :complete)
   end
 
   def reason_claim
     if sell?
       {
-        1 => "Tôi đã thanh toán, nhưng người bán không chuyển tiền điện tử",
-        2 => "Trả thêm tiền cho người bán",
-        3 => "Khác"
-      }
-    else
-      {
         1 => "Tôi đã nhận được thanh toán từ người mua, nhưng số tiền không chính xác",
         2 => "Người mua đã xác nhận là đã thanh toán nhưng tôi không nhận được thanh toán vào tài khoản của mình",
         3 => "Tôi đã nhận được thanh toán từ tài khoản của bên thứ ba",
         4 => "Khác"
+      }
+    else
+      {
+        1 => "Tôi đã thanh toán, nhưng người bán không chuyển tiền điện tử",
+        2 => "Trả thêm tiền cho người bán",
+        3 => "Khác"
       }
     end
   end

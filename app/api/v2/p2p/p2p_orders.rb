@@ -25,14 +25,12 @@ module API::V2
 
         return error!({ errors: ['member.unverified_identity'] }, 412) unless current_user.is_kyc?
         return error!({ errors: ['member.lack_of_use_date'] }, 412) unless current_user.is_enough_time_registration?(advertis.member_registration_day.to_i)
-        return error!({ errors: ['member.insufficient_coins'] }, 412) unless current_user.is_hold_enough_coin?(advertis.member_coin_number.to_i)
+        return error!({ errors: ['member.insufficient_coins'] }, 412) unless current_user.is_hold_enough_coin?(advertis)
 
         unless order.save
           return error!({ errors: ['p2p_order.created_unsuccess'] }, 412)
         end
 
-        message = order.send_message("This order has been ordered", order.advertisement.creator)
-        present :response_message, message
         present :order, order, with: API::V2::Entities::P2pOrder
       end
 
@@ -57,7 +55,6 @@ module API::V2
         end
 
         if order.update(params)
-          present :response_message, order.send_message_status
           present :order, order, with: API::V2::Entities::P2pOrder
         else
           present "update fail!"
@@ -76,7 +73,7 @@ module API::V2
         search_attrs["status_in"] = params[:status].split(",") if params[:status].present?
         search_attrs["order_number_eq"] = params[:order_number] if params[:order_number].present?
         search_attrs["p2p_orders_type_eq"] = params[:p2p_orders_type] if params[:p2p_orders_type].present?
-        order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id).order(updated_at: :desc)
+        order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id).status_ordered
         order = order.ransack(search_attrs).result
         present order, with: API::V2::Entities::P2pOrder
       end
@@ -116,7 +113,6 @@ module API::V2
           if order.update(params)
             present :complete_order, order.successful_p2porder_transfer
             order.update(status: :complete)
-            present :response_message, order.send_message_status
             present :order, order
           else
             present "update fail!"

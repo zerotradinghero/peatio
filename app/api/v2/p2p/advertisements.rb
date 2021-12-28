@@ -38,20 +38,13 @@ module API::V2
       get '/advertises' do
         search_attrs = { m: 'or' }
 
-        present paginate(Rails.cache.fetch("advertis_#{params}_p2p", expires_in: 6) do
-
-          result = Advertisement.send(params[:advertis_type] || "sell").enabled.order('created_at DESC')
-          result = result.where(currency_id: params[:currency_id]) if params[:currency_id].present?
-          result = result.where(currency_payment_id: params[:currency_payment_id]) if params[:currency_payment_id].present?
-          result = result.ransack(search_attrs)
-          if Advertisement.buy
-            result = result.result.load.to_a.select { |adv| current_user.is_quantified_to_trade?(adv.creator_id) && current_user.is_enough_time_registration?(adv.member_registration_day.to_i) &&
-              current_user.is_hold_enough_coin?(adv.member_coin_number.to_i) && current_user.is_kyc? }
-          else
-            result = result.result.load.to_a.select { |adv| current_user.is_quantified_to_trade?(adv.creator_id) }
-          end
-          result
-        end), with: API::V2::Entities::Advertisement
+        result = Advertisement.send(params[:advertis_type] || "sell").enabled.order('created_at DESC')
+        result = result.where(currency_id: params[:currency_id]) if params[:currency_id].present?
+        result = result.where(currency_payment_id: params[:currency_payment_id]) if params[:currency_payment_id].present?
+        result = result.ransack(search_attrs)
+        result = result.result.load.to_a.select { |adv| current_user.is_quantified_to_trade?(adv.creator_id) && current_user.is_enough_time_registration?(adv.member_registration_day.to_i) &&
+          current_user.is_hold_enough_coin?(adv) && current_user.is_kyc? && adv.coin_avaiable > 0 }
+        present Kaminari.paginate_array(result).page(params[:page].to_i || 1).per(params[:limit] || 15), with: API::V2::Entities::Advertisement
       end
 
       #--------------------------------------------------------------------------------------------------------------
@@ -74,18 +67,14 @@ module API::V2
         ads = Advertisement.new(params[:advertisement])
 
         if ads.sell?
-          balance = current_user.accounts.where(currency_id: ads.currency_id).first.try(:balance)
-          if balance.to_f < 0
+          balance = current_user.coin_avaiable(ads.currency_id)
+          if balance < 0
             return error!({ errors: ['advertis.ability.balance_not_enough'] }, 412)
           end
         end
 
-        unless Currency.find_by id: ads.currency_id
+        unless (Currency.find_by id: ads.currency_id) && (Currency.find_by id: ads.currency_payment_id)
           return error!({ errors: ['currency_id.doesnt_exist'] }, 404)
-        end
-
-        unless Currency.find_by id: ads.currency_payment_id
-          return error!({ errors: ['currency_payment_id.doesnt_exist'] }, 404)
         end
 
         ads.creator_id = current_user.id
@@ -120,12 +109,11 @@ module API::V2
         search_attrs["currency_payment_id_eq"] = params[:currency_payment_id] if params[:currency_payment_id].present?
         search_attrs["visible_eq"] = params[:visible] if params[:visible].present?
 
-        start_date = Date.parse(params[:start_date]|| (Time.now - 10.years).to_s).to_s
-        end_date = Date.parse(params[:end_date]|| (Time.now + 1.day).to_s).to_s
+        start_date = Date.parse(params[:start_date] || (Time.now - 10.years).to_s).to_s
+        end_date = Date.parse(params[:end_date] || (Time.now + 1.day).to_s).to_s
 
         present paginate(Rails.cache.fetch("myadvertis_#{params}", expires_in: 6) do
-          result = Advertisement.where("created_at >= ? and created_at <= ?", start_date, end_date)
-                                .order('created_at DESC')
+          result = Advertisement.filter_created_at(start_date, end_date).order('created_at DESC')
           result = result.ransack(search_attrs)
           result = result.result.load.to_a
           result
@@ -161,8 +149,8 @@ module API::V2
         ads_new = Advertisement.new(params[:advertisement])
 
         if ads_new.sell?
-          balance = current_user.accounts.where(currency_id: ads_new.currency_id).first.try(:balance)
-          if (balance.to_f + ads.coin_avaiable) < ads_new.coin_avaiable
+          balance = current_user.coin_avaiable(ads_new.currency_id)
+          if (balance + ads.coin_avaiable) < ads_new.coin_avaiable
             return error!({ errors: ['account.balance.not_enough'] }, 412)
           end
         end
@@ -171,12 +159,8 @@ module API::V2
           return error!({ errors: ['payment_method.limit'] }, 412)
         end
 
-        unless Currency.find_by id: ads_new.currency_id
+        unless (Currency.find_by id: ads_new.currency_id) && (Currency.find_by id: ads_new.currency_payment_id)
           return error!({ errors: ['currency_id.doesnt_exist'] }, 404)
-        end
-
-        unless Currency.find_by id: ads_new.currency_payment_id
-          return error!({ errors: ['currency_payment_id.doesnt_exist'] }, 404)
         end
 
         ads_new.creator_id = current_user.id

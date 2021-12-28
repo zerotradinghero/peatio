@@ -159,7 +159,7 @@ module API
         private
 
         def visible
-          object["visible"].to_i
+          ::Advertisement::visibles[object["visible"]]
         end
 
       end

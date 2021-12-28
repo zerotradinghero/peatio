@@ -37,21 +37,23 @@ module API::V2
           p2p_oder_id = P2pOrder.find_by(order_number: params[:order_number]).try(:id)
         end
         search_attrs = {m: 'and', "creator_id_eq": current_user.id}
-        search_attrs["claim_type_eq"] = params[:claim_type] if params[:claim_type].present?
+        search_attrs["claim_type_in"] = params[:claim_type].split(",") if params[:claim_type].present?
         search_attrs["status_in"] = params[:status].split(",") if params[:status].present?
-        search_attrs["member_id_eq"] = params[:member_id] if params[:member_id].present?
+        search_attrs["member_id_eq"] = params[:member_id].to_i if params[:member_id].present?
         search_attrs["p2p_order_id_eq"] = p2p_oder_id if p2p_oder_id.present?
 
         if current_user.admin?
           list_order_claim = P2pOrderClaim.order(updated_at: :desc)
         else
           list_order_claim = P2pOrderClaim.where(member_id: current_user.id)
-                                          .or.where(creator_adv_id: current_user.id)
-                                          .order(updated_at: :desc)
+                                          .or(P2pOrderClaim.where(creator_adv_id: current_user.id))
+                                          .status_ordered
         end
         list_order_claim = list_order_claim.ransack(search_attrs)
-        list_order_claim = Kaminari.paginate_array(list_order_claim.result.load.to_a).page(params[:page] || 1).per(params[:limit] || 10)
-        present list_order_claim, with: API::V2::P2p::Entities::P2pOrderClaim
+        total_item = list_order_claim.result.count
+        list_order_claim = Kaminari.paginate_array(list_order_claim.result.load.to_a).page(params[:page] || 1).per(params[:limit] || 15)
+        present :data, list_order_claim, with: API::V2::P2p::Entities::P2pOrderClaim
+        present :total, total_item
       end
 
       #---------------------------------------------------------------
