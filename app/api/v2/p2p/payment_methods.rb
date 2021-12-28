@@ -1,0 +1,49 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
+module API::V2
+  module P2p
+    class PaymentMethods < Grape::API
+      helpers ::API::V2::P2p::NamedParams
+      helpers ::API::V2::ParamHelpers
+
+      #------------------------------------------------------
+      desc 'Create Payment Method',
+           is_array: true,
+           success: API::V2::P2p::Entities::PaymentMethod
+      params do
+        use :p2p_payment_method
+      end
+
+      post '/payment_method' do
+        payment_method = current_user.payment_methods.new(params)
+        if payment_method.save
+          present payment_method, with: API::V2::P2p::Entities::PaymentMethod
+        else
+          return error!({ errors: ['payment_method.create_failed!'] }, 412)
+        end
+      end
+
+      #--------------------------------------------------------------------------
+
+      desc 'Edit Payment Method',
+           is_array: true,
+           success: API::V2::P2p::Entities::PaymentMethod
+      params do
+        use :p2p_edit_payment_method
+      end
+
+      put '/payment_method/:id' do
+        payment_method = PaymentMethod.find_by id: params[:id]
+        return error!({ errors: ['payment_method.not_found!'] }, 404) if payment_method.member_id != current_user.id
+
+        payment_method.account_number = params[:account_number] if params[:account_number].present?
+        payment_method.account_name = params[:account_name] if params[:account_name].present?
+        payment_method.bank_name = params[:bank_name] if params[:bank_name].present?
+        payment_method.payment_type = params[:payment_type] if params[:payment_type].present?
+        payment_method.save
+        present payment_method, with: API::V2::P2p::Entities::PaymentMethod
+      end
+    end
+  end
+end

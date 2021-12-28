@@ -9,5 +9,5 @@ class PaymentMethod < ApplicationRecord
   has_many :advertisesment, through: :advertisesment_payment_methods
   has_many :p2p_orders, through: :advertisesment_payment_methods
 
-  enum payment_type: ['', :bank_transfer, :wallet]
+  enum payment_type: ["", :bank_transfer, :other]
 end

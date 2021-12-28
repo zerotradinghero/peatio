@@ -44,6 +44,14 @@ module API
               type: String
             }
           )
+
+          expose(
+            :member_id,
+            documentation: {
+              desc: 'member_id of payment',
+              type: Integer
+            }
+          )
         end
       end
     end
