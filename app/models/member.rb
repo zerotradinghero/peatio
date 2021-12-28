@@ -33,7 +33,7 @@ class Member < ApplicationRecord
   end
 
   def withdraw_limit
-    WithdrawLimit.for(kyc_level: member.level, group: member.group)
+    WithdrawLimit.for(kyc_level: level, group: group)
   end
 
   def trades
