@@ -13,7 +13,7 @@ class P2pOrderClaim < ApplicationRecord
 
   def release_coin_approve
     if status_changed? && approve?
-      p2p_order.update(status: paid)
+      p2p_order.update(status: :paid)
     end
   end
 

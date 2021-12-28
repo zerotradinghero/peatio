@@ -134,7 +134,8 @@ class Member < ApplicationRecord
     (Time.now.to_date - created_at.to_date).to_i > time_date
   end
 
-  def is_hold_enough_coin?(coin_member)
+  def is_hold_enough_coin?(ads)
+    coin_member = ads.member_coin_number.to_i
     member_avaiable_usdt.to_f >= coin_member
   end
 

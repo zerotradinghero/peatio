@@ -25,14 +25,12 @@ module API::V2
 
         return error!({ errors: ['member.unverified_identity'] }, 412) unless current_user.is_kyc?
         return error!({ errors: ['member.lack_of_use_date'] }, 412) unless current_user.is_enough_time_registration?(advertis.member_registration_day.to_i)
-        return error!({ errors: ['member.insufficient_coins'] }, 412) unless current_user.is_hold_enough_coin?(advertis.member_coin_number.to_i)
+        return error!({ errors: ['member.insufficient_coins'] }, 412) unless current_user.is_hold_enough_coin?(advertis)
 
         unless order.save
           return error!({ errors: ['p2p_order.created_unsuccess'] }, 412)
         end
 
-        message = order.send_message("This order has been ordered", order.advertisement.creator)
-        present :response_message, message
         present :order, order, with: API::V2::Entities::P2pOrder
       end
 
@@ -57,7 +55,6 @@ module API::V2
         end
 
         if order.update(params)
-          present :response_message, order.send_message_status
           present :order, order, with: API::V2::Entities::P2pOrder
         else
           present "update fail!"
@@ -116,7 +113,6 @@ module API::V2
           if order.update(params)
             present :complete_order, order.successful_p2porder_transfer
             order.update(status: :complete)
-            present :response_message, order.send_message_status
             present :order, order
           else
             present "update fail!"

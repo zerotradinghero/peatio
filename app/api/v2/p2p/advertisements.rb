@@ -44,12 +44,8 @@ module API::V2
           result = result.where(currency_id: params[:currency_id]) if params[:currency_id].present?
           result = result.where(currency_payment_id: params[:currency_payment_id]) if params[:currency_payment_id].present?
           result = result.ransack(search_attrs)
-          if Advertisement.buy
-            result = result.result.load.to_a.select { |adv| current_user.is_quantified_to_trade?(adv.creator_id) && current_user.is_enough_time_registration?(adv.member_registration_day.to_i) &&
-              current_user.is_hold_enough_coin?(adv.member_coin_number.to_i) && current_user.is_kyc? }
-          else
-            result = result.result.load.to_a.select { |adv| current_user.is_quantified_to_trade?(adv.creator_id) }
-          end
+          result = result.result.load.to_a.select { |adv| current_user.is_quantified_to_trade?(adv.creator_id) && current_user.is_enough_time_registration?(adv.member_registration_day.to_i) &&
+            current_user.is_hold_enough_coin?(adv) && current_user.is_kyc? && adv.coin_avaiable > 0 }
           result
         end), with: API::V2::Entities::Advertisement
       end

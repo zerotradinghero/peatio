@@ -71,7 +71,17 @@ module API
 
           expose(:reason_claim)
           expose(:note)
-          expose(:member_uid)
+          expose(
+            :member,
+            using: API::V2::P2p::Entities::Member,
+            documentation: {
+              type: 'API::V2::P2p::Entities::Member',
+              is_array: true,
+              uniq: true,
+              desc: 'member if claim',
+              type: String
+            }
+          )
 
           expose(
             :attachments,
@@ -96,7 +106,7 @@ module API
           private
 
           def claim_type
-            object["claim_type"].to_i
+            ::P2pOrderClaim::claim_types[object["claim_type"]]
           end
         end
       end

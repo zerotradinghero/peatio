@@ -23,6 +23,8 @@ module API
             }
           )
 
+          expose(:uid)
+
           expose(
             :accounts,
             using: API::V2::P2p::Entities::Account,
