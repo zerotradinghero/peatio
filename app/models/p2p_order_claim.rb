@@ -28,18 +28,16 @@ class P2pOrderClaim < ApplicationRecord
     end
   end
 
-
-
-  def self.create_claim(order, params)
+  def self.create_claim(order, params, current_user)
     claim = P2pOrderClaim.new(p2p_order_id: order.id)
     claim.creator_adv_id = order.advertisement.creator_id
-    claim.member_id = order.member_id
+    claim.member_id = current_user.id
     claim.reason = params[:reason]
     claim.claim_type = claim.get_claim_type(order)
     claim.description = params[:description]
     claim.status = "request"
     (params[:claim_images] || []).each do |image|
-      claim.attachments.new(image: image)
+      claim.attachments.new(image: image, member_id: current_user.id)
     end
     claim.save
   end

@@ -134,13 +134,17 @@ module API
           }
         )
 
-
-        # expose(
-        #   :images,
-        #   documentation: {
-        #     desc: 'images.'
-        #   }
-        # )
+        expose(
+          :attachments,
+          using: API::V2::P2p::Entities::Attachment,
+          documentation: {
+            type: 'API::V2::P2p::Entities::Attachment',
+            is_array: true,
+            uniq: true,
+            desc: 'images at of Claim',
+            type: String
+          }
+        )
 
       end
     end
