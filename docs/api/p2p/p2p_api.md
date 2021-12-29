@@ -271,7 +271,8 @@ Update status of P2pOrder(ordered/paid/complete/cancel)
 ```ruby
 {
   "status": "paid", #(ordered transfer paid complete cancel)
-  "payment_method_id": 1
+  "payment_method_id": 1,
+  "images": ["image_1, images_2, images_3"]
 }
 ```
 
@@ -281,62 +282,87 @@ success:
 
 ```ruby
 {
-  "response_message": "{\"error\":\"management.phone.doesnt_exists\"}",
   "order": {
-    "id": 97,
-    "status": "paid",
-    "p2p_orders_type": "sell",
-    "price": "1000000000000000.0",
-    "ammount": "100000000000000.0",
-    "number_of_coin": "0.1",
-    "order_number": "ec93a475a8a0",
-    "payment_method": {
-      "payment_type": "bank_transfer",
-      "account_number": "123456789",
-      "bank_name": "thai",
-      "account_name": "hoangthai"
-    },
+    "id": 255,
+    "status": "transfer",
+    "p2p_orders_type": "buy",
+    "price": "1000.0",
+    "price_percent": null,
+    "amount": "10000.0",
+    "total": "10000.0",
+    "number_of_coin": "10.0",
+    "order_number": "408b659d9571",
+    "payment_method": null,
     "advertisement": {
-      "id": 40,
-      "price": "1000000000000000.0",
-      "expired_time": 2,
+      "id": 181,
+      "price": "1000.0",
+      "expired_time": 30,
       "advertis_type": "sell",
-      "avaiable_coin": "2.0",
-      "upper_limit": "50000.0",
-      "lower_limit": "30000.0",
-      "description": "mua tien ao",
+      "coin_avaiable": 80.0,
+      "upper_limit": "22072222.0",
+      "lower_limit": "999999.0",
+      "description": "ban tien ao",
+      "price_percent": null,
       "currency": {
-        "id": "btc",
-        "name": "Bitcoin",
+        "id": "usdt",
+        "name": "Tether",
         "description": null,
         "homepage": null,
         "price": "1.0",
         "type": "coin",
         "precision": 8,
-        "position": 3
+        "position": 1
       },
       "creator": {
-        "username": null
+        "id": 2,
+        "email": "admin@zsmart.tech",
+        "created_at": "2021-11-30T07:21:52.944Z",
+        "updated_at": "2021-12-24T09:55:57.362Z",
+        "uid": "IDE62B62363D",
+        "level": 3,
+        "role": "admin",
+        "state": "active",
+        "group": "vip-0",
+        "username": null,
+        "referral_uid": null,
+        "beneficiaries_whitelisting": true,
+        "is_kyc": true
       },
       "payment_methods": [
         {
+          "id": 12,
           "payment_type": "bank_transfer",
-          "account_number": "123456789",
-          "bank_name": "thai",
-          "account_name": "hoangthai"
-        },
-        {
-          "payment_type": "",
-          "account_number": "123456",
-          "bank_name": "vietcombank",
-          "account_name": "thaidang"
+          "account_number": "Edit payment method",
+          "bank_name": "ACB",
+          "account_name": "ThaidangHoang"
         }
       ],
-      "currency_payment_id": "eth",
+      "currency_payment_id": "vnd",
       "price_type": "fixed",
-      "total_amount": "100000.0"
+      "visible": 1,
+      "created_at": "2021-12-29T06:27:35.561Z",
+      "total_amount": "100.0",
+      "member_registration_day": "20",
+      "member_coin_number": "10.0"
     },
-    "member_id": 2
+    "member_id": 2,
+    "created_at": "2021-12-29T07:31:43.666Z",
+    "claim_status": null,
+    "claim_description": null,
+    "claim_title": null,
+    "reason_claim": {
+      "1": "Tôi đã thanh toán, nhưng người bán không chuyển tiền điện tử",
+      "2": "Trả thêm tiền cho người bán",
+      "3": "Khác"
+    },
+    "attachments": [
+      {
+        "image": "image_1, images_2"
+      },
+      {
+        "image": "image_1, images_2, images_3"
+      }
+    ]
   }
 }
 ```
