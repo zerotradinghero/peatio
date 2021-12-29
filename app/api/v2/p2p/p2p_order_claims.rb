@@ -20,7 +20,7 @@ module API::V2
         unless order
           return error!({ errors: ['p2p_order.not_found!'] }, 404)
         end
-        if P2pOrderClaim.create_claim(order, params)
+        if P2pOrderClaim.create_claim(order, params, current_user)
           present "Create claim order success!"
         else
           return error!({ errors: ['p2p_order_claim.create_failed!'] }, 412)
@@ -85,9 +85,9 @@ module API::V2
         claim.note = params[:note] if params[:note]
         if claim.valid?
           if params[:reason].present?
-            claim.attachments.destroy_all
+            claim.attachments.where(member_id: current_user.id).destroy_all
             (params[:claim_images] || []).each do |image|
-              claim.attachments.new(image: image)
+              claim.attachments.new(image: image, member_id: current_user.id)
             end
           end
           claim.save

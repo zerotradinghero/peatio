@@ -54,11 +54,13 @@ module API::V2
           return present "cannot update because order is exp!"
         end
 
-        if order.update(params)
-          present :order, order, with: API::V2::Entities::P2pOrder
-        else
-          present "update fail!"
+        order.status = params[:status] if params[:status].present?
+        order.payment_method_id = params[:payment_method_id] if params[:payment_method_id].present?
+        (params[:images] || []).each do |image|
+          order.attachments.new(image: image, member_id: current_user.id)
         end
+        order.save
+        present :order, order, with: API::V2::Entities::P2pOrder
       end
 
       #-----------------------------------------------------------------------------------------------------------------
