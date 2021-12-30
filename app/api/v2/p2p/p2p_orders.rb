@@ -28,7 +28,7 @@ module API::V2
         return error!({ errors: ['member.insufficient_coins'] }, 412) unless current_user.is_hold_enough_coin?(advertis)
 
         unless order.save
-          return error!({ errors: ['p2p_order.created_unsuccess'] }, 412)
+          return error!({ errors: ['p2p_order.create_failed!'] }, 412)
         end
 
         present :order, order, with: API::V2::Entities::P2pOrder
@@ -43,15 +43,13 @@ module API::V2
       end
       post '/p2p_order/:id' do
         order = P2pOrder.find_by id: params[:id]
-        if order.blank?
-          return present "Order not found"
-        end
+        return error!({ errors: ['p2p_order.not_found!'] }, 404) if order.blank?
         payment_method_ids = order.advertisement.advertisement_payment_methods.pluck(:payment_method_id)
         if params[:payment_method_id].present? && !payment_method_ids.include?(params[:payment_method_id])
-          return present "Invalid payment method"
+          return error!({ errors: ['p2p_order.invalid_payment_method'] }, 412)
         end
         if order.cancel? && params[:status] == "transfer"
-          return present "cannot update because order is exp!"
+          return error!({ errors: ['p2p_order.order_expired'] }, 412)
         end
 
         order.status = params[:status] if params[:status].present?
@@ -85,9 +83,7 @@ module API::V2
            success: API::V2::Entities::P2pOrder
       get '/p2p_order/:id' do
         order = P2pOrder.find_by id: params[:id]
-        unless order
-          return present 'id not found!'
-        end
+        return error!({ errors: ['p2p_order.not_found!'] }, 404) unless order
         present order, with: API::V2::Entities::P2pOrder
       end
 
@@ -96,9 +92,7 @@ module API::V2
            success: API::V2::Entities::P2pOrder
       get '/p2p_order/:id/claim' do
         order = P2pOrder.find_by id: params[:id]
-        unless order
-          return present 'id not found!'
-        end
+        return error!({ errors: ['p2p_order.not_found!'] }, 404) unless order
         present order, with: API::V2::Entities::P2pOrder
       end
 
