@@ -43,7 +43,7 @@ module API::V2
         result = result.where(currency_payment_id: params[:currency_payment_id]) if params[:currency_payment_id].present?
         result = result.ransack(search_attrs)
         result = result.result.load.to_a.select { |adv| current_user.is_quantified_to_trade?(adv.creator_id) && current_user.is_enough_time_registration?(adv.member_registration_day.to_i) &&
-          current_user.is_hold_enough_coin?(adv) && current_user.is_kyc? && adv.coin_avaiable > 0 }
+          current_user.is_hold_enough_coin?(adv) && current_user.is_kyc? && adv.coin_avaiable > 0 && adv.filter_by_payment_type(params[:payment_type]) }
         present Kaminari.paginate_array(result).page(params[:page].to_i || 1).per(params[:limit] || 15), with: API::V2::Entities::Advertisement
       end
 
@@ -112,12 +112,10 @@ module API::V2
         start_date = Date.parse(params[:start_date] || (Time.now - 10.years).to_s).to_s
         end_date = Date.parse(params[:end_date] || (Time.now + 1.day).to_s).to_s
 
-        present paginate(Rails.cache.fetch("myadvertis_#{params}", expires_in: 6) do
-          result = Advertisement.filter_created_at(start_date, end_date).order('created_at DESC')
-          result = result.ransack(search_attrs)
-          result = result.result.load.to_a
-          result
-        end), with: API::V2::Entities::Advertisement
+        result = Advertisement.filter_created_at(start_date, end_date).order('created_at DESC')
+        result = result.ransack(search_attrs)
+        result = result.result.load.to_a.select {|adv| adv.filter_by_payment_type(params[:payment_type])}
+        present result, with: API::V2::Entities::Advertisement
       end
 
       #----------------------------------------------------------------------------------------------------------------------
