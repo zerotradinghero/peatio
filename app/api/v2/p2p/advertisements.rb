@@ -15,7 +15,7 @@ module API::V2
         use :pagination
         optional :advertis_type,
                  type: String,
-                 values: { value: %w[sell buy], message: 'public.advertis.invalid_type' },
+                 values: { value: %w[sell buy], message: 'public.advertis_type.invalid_type' },
                  desc: -> { API::V2::Entities::Advertisement.documentation[:advertis_type][:desc] }
         optional :currency_id,
                  type: String
@@ -61,7 +61,7 @@ module API::V2
         end
 
         if params[:payment_method_ids].count > 5
-          return error!({ errors: ['advertis.ability.payment_method_limit'] }, 412)
+          return error!({ errors: ['advertis.payment_method_limit'] }, 412)
         end
 
         ads = Advertisement.new(params[:advertisement])
@@ -69,7 +69,7 @@ module API::V2
         if ads.sell?
           balance = current_user.coin_avaiable(ads.currency_id)
           if balance < 0
-            return error!({ errors: ['advertis.ability.balance_not_enough'] }, 412)
+            return error!({ errors: ['advertis.balance_not_enough'] }, 412)
           end
         end
 
@@ -128,7 +128,7 @@ module API::V2
       get '/my_advertise/:id' do
         ads = Advertisement.find_by(id: params[:id], creator_id: current_user.id)
         unless ads
-          return error!({ errors: ['advertis.ability.not_found'] }, 404)
+          return error!({ errors: ['advertis.not_found'] }, 404)
         end
         present ads, with: API::V2::Entities::Advertisement
       end
@@ -144,7 +144,7 @@ module API::V2
       post '/my_advertise/:id' do
         ads = Advertisement.find_by(id: params[:id], creator_id: current_user.id)
         unless ads
-          return error!({ errors: ['advertis.ability.not_found'] }, 404)
+          return error!({ errors: ['advertis.not_found'] }, 404)
         end
         ads_new = Advertisement.new(params[:advertisement])
 

@@ -85,9 +85,9 @@ module API::V2
         claim.note = params[:note] if params[:note]
         if claim.valid?
           if params[:reason].present?
-            claim.attachments.where(member_id: current_user.id).destroy_all
+            claim.attachments.destroy_all
             (params[:claim_images] || []).each do |image|
-              claim.attachments.new(image: image, member_id: current_user.id)
+              claim.attachments.new(image: image)
             end
           end
           claim.save

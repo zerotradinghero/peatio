@@ -19,8 +19,8 @@ class P2pOrder < ApplicationRecord
     WHEN 0 THEN 'a' 
     WHEN 1 THEN 'b'
     WHEN 2 THEN 'c' 
-    WHEN 3 THEN 'c' 
-    WHEN 4 THEN 'c' 
+    WHEN 3 THEN 'd' 
+    WHEN 4 THEN 'e' 
     END ASC, 
     updated_at DESC
     SQL
@@ -106,16 +106,16 @@ class P2pOrder < ApplicationRecord
   def reason_claim
     if sell?
       {
-        1 => "Tôi đã nhận được thanh toán từ người mua, nhưng số tiền không chính xác",
-        2 => "Người mua đã xác nhận là đã thanh toán nhưng tôi không nhận được thanh toán vào tài khoản của mình",
-        3 => "Tôi đã nhận được thanh toán từ tài khoản của bên thứ ba",
-        4 => "Khác"
+        1 => "I received the payment from the buyer, but the amount is not correct",
+        2 => "The buyer marked as paid but I did not receive the payment to my account",
+        3 => "I received payment from a third party account",
+        4 => "Others"
       }
     else
       {
-        1 => "Tôi đã thanh toán, nhưng người bán không chuyển tiền điện tử",
-        2 => "Trả thêm tiền cho người bán",
-        3 => "Khác"
+        5 => "I made the payment, but the seller did not release the cryptocurrencies",
+        6 => "Pay the seller extra money",
+        4 => "Others"
       }
     end
   end
