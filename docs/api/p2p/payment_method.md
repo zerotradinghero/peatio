@@ -1,6 +1,4 @@
 # P2p API v2 payment method
-
-# P2p API v2 payment method
 ### api/v2/trade/public/trade_methods/
 
 #### GET
@@ -133,7 +131,9 @@ Create payment method
   "account_number": "12345",
   "account_name": "Hoang Thai",
   "bank_name": "VIB",
-  "payment_type": "other"
+  "payment_type": "other",
+  "phone": "+84988343334",
+  "email": "hant@2nf.vn"
 }
 ```
 
@@ -148,7 +148,9 @@ success:
     "account_number": "12345",
     "bank_name": "VIB",
     "account_name": "Hoang Thai",
-    "member_id": 3
+    "member_id": 3,
+    "phone": "+84988343334",
+    "email": "hant@2nf.vn"
 }
 ```
 

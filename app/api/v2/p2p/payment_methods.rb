@@ -50,7 +50,7 @@ module API::V2
 
       #--------------------------------------------------------------------------
 
-      desc 'Edit Payment Method',
+      desc 'Update Payment Method',
            is_array: true,
            success: API::V2::P2p::Entities::PaymentMethod
       params do
@@ -61,12 +61,11 @@ module API::V2
         payment_method = PaymentMethod.find_by(id: params[:id], member_id: current_user.id)
         return error!({ errors: ['payment_method.not_found!'] }, 404) unless payment_method
 
-        payment_method.account_number = params[:account_number] if params[:account_number].present?
-        payment_method.account_name = params[:account_name] if params[:account_name].present?
-        payment_method.bank_name = params[:bank_name] if params[:bank_name].present?
-        payment_method.payment_type = params[:payment_type] if params[:payment_type].present?
-        payment_method.save
-        present payment_method, with: API::V2::P2p::Entities::PaymentMethod
+        if payment_method.update(params)
+          present payment_method, with: API::V2::P2p::Entities::PaymentMethod
+        else
+          error!({ errors: ['payment_method.update_false!'] }, 412)
+        end
       end
 
       #--------------------------------------------------------------------------

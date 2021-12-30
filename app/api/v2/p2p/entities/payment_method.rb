@@ -38,6 +38,22 @@ module API
           )
 
           expose(
+            :phone,
+            documentation: {
+              desc: 'Phone of payment',
+              type: String
+            }
+          )
+
+          expose(
+            :email,
+            documentation: {
+              desc: 'Email of payment',
+              type: String
+            }
+          )
+
+          expose(
             :account_name,
             documentation: {
               desc: 'Type of payment',

@@ -13,9 +13,15 @@ module API::V2
       params do
       end
       get '/trade_methods' do
-        trade_methods = TradeMethod.all.page(params[:page] || 1).per(params[:limit] || 15)
+        if params[:name].present?
+          trade_methods = TradeMethod.where("name like ?", params[:name].to_s + '%').order(name: :asc).page(params[:page] || 1).per(params[:limit] || 15)
+          present :total, TradeMethod.where("name like ?", params[:name].to_s + '%').count
+        else
+          trade_methods = TradeMethod.all.page(params[:page] || 1).per(params[:limit] || 15)
+          present :total, TradeMethod.all.count
+        end
         present :data, trade_methods, with: API::V2::Entities::TradeMethod
-        present :total, TradeMethod.all.count
+
       end
     end
   end
