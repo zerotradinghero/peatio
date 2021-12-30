@@ -11,6 +11,20 @@ module API::V2
       get '/member/info' do
         present current_user, with: API::V2::P2p::Entities::Member
       end
+
+      desc 'Check OPT'
+      params do
+        requires :otp,
+                 type: { value: Integer, message: 'account.beneficiary.non_integer_otp' },
+                 allow_blank: false,
+                 desc: 'OTP to perform action'
+      end
+      get '/otp/check' do
+        unless Vault::TOTP.validate?(current_user.uid, params[:otp])
+          return error!({ errors: ['account.withdraw.invalid_otp'] }, 422)
+        end
+        present :status, 200
+      end
     end
   end
 end

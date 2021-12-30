@@ -15,11 +15,13 @@ class Advertisement < ApplicationRecord
   after_create :block_coin_after_create
   after_update :update_block_coin
 
+  scope :filter_created_at, ->(start_date, end_date){ where("created_at >= ? and created_at <= ?", start_date, end_date) }
+
   def update_block_coin
     if visible_changed? && disabled?
-      account.unlock_funds(total_amount) if sell?
+      account.unlock_funds(coin_avaiable) if sell?
     else
-      account.lock_funds(total_amount) if sell?
+      account.lock_funds(coin_avaiable) if sell?
     end
   end
 
@@ -36,6 +38,7 @@ class Advertisement < ApplicationRecord
   end
 
   def block_coin_after_create
-    account.lock_funds!(total_amount) if sell?
+    account.lock_funds!(total_amount) if sell? && enabled?
   end
+
 end
