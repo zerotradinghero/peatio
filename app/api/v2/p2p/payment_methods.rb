@@ -8,6 +8,30 @@ module API::V2
       helpers ::API::V2::ParamHelpers
 
       #------------------------------------------------------
+      desc 'List Payment Method',
+           is_array: true,
+           success: API::V2::P2p::Entities::PaymentMethod
+      params do
+      end
+      get '/payment_methods' do
+        payment_methods = current_user.payment_methods
+        present payment_methods, with: API::V2::P2p::Entities::PaymentMethod
+      end
+
+      #------------------------------------------------------
+      desc 'Show a Payment Method',
+           is_array: true,
+           success: API::V2::P2p::Entities::PaymentMethod
+      params do
+      end
+      get '/payment_method/:id' do
+        payment_method = PaymentMethod.find_by(id: params[:id], member_id: current_user.id)
+        return error!({ errors: ['payment_method.not_found!'] }, 404) unless payment_method
+
+        present payment_method, with: API::V2::P2p::Entities::PaymentMethod
+      end
+
+      #------------------------------------------------------
       desc 'Create Payment Method',
            is_array: true,
            success: API::V2::P2p::Entities::PaymentMethod
@@ -34,8 +58,8 @@ module API::V2
       end
 
       put '/payment_method/:id' do
-        payment_method = PaymentMethod.find_by id: params[:id]
-        return error!({ errors: ['payment_method.not_found!'] }, 404) if payment_method.member_id != current_user.id
+        payment_method = PaymentMethod.find_by(id: params[:id], member_id: current_user.id)
+        return error!({ errors: ['payment_method.not_found!'] }, 404) unless payment_method
 
         payment_method.account_number = params[:account_number] if params[:account_number].present?
         payment_method.account_name = params[:account_name] if params[:account_name].present?

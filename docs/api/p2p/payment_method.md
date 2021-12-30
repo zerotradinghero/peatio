@@ -1,4 +1,77 @@
 # P2p API v2 payment method
+### api/v2/trade/p2p/payment_method/:id
+
+#### GET
+
+##### Description
+
+SHOW A PAYMENT METHOD
+
+##### Parameters
+
+```ruby
+
+```
+
+##### Responses
+
+success:
+
+```ruby
+  {
+    "id": 20,
+    "payment_type": "other",
+    "account_number": "12345",
+    "bank_name": "VIB",
+    "account_name": "Hoang Thai",
+    "member_id": 3
+  }
+```
+#----------------------------------------------------------------------------
+
+### api/v2/trade/p2p/payment_methods
+
+#### GET
+
+##### Description
+
+List payment method
+
+##### Parameters
+
+```ruby
+
+```
+
+##### Responses
+
+success:
+
+```ruby
+[
+  {
+    "id": 20,
+    "payment_type": "other",
+    "account_number": "12345",
+    "bank_name": "VIB",
+    "account_name": "Hoang Thai",
+    "member_id": 3
+  },
+  {
+    "id": 21,
+    "payment_type": "other",
+    "account_number": "12345",
+    "bank_name": "MB",
+    "account_name": "Hoang Thai",
+    "member_id": 3
+  }
+]
+```
+
+
+#----------------------------------------------------------------------------
+
+# P2p API v2 payment method
 
 ### api/v2/trade/p2p/payment_method
 
@@ -34,6 +107,7 @@ success:
 }
 ```
 
+#----------------------------------------------------------------------------
 ### api/v2/trade/p2p/payment_method/:id
 
 #### PUT
