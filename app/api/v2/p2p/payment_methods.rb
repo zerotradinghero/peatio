@@ -68,6 +68,23 @@ module API::V2
         payment_method.save
         present payment_method, with: API::V2::P2p::Entities::PaymentMethod
       end
+
+      #--------------------------------------------------------------------------
+
+      desc 'DELETE Payment Method',
+           is_array: true,
+           success: API::V2::P2p::Entities::PaymentMethod
+      params do
+
+      end
+
+      delete '/payment_method/:id' do
+        payment_method = PaymentMethod.find_by(id: params[:id], member_id: current_user.id)
+        return error!({ errors: ['payment_method.not_found!'] }, 404) unless payment_method
+
+        payment_method.destroy!
+        present "destroy success"
+      end
     end
   end
 end

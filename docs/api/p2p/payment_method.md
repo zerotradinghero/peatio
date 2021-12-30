@@ -1,4 +1,49 @@
 # P2p API v2 payment method
+
+# P2p API v2 payment method
+### api/v2/trade/public/trade_methods/
+
+#### GET
+
+##### Description
+
+SHOW ALl TRADE METHODS
+
+##### Parameters
+
+```ruby
+{
+  name: "MoMo",
+  page: 1,
+  limit: 15
+}
+```
+
+##### Responses
+
+success:
+
+```ruby
+{
+  "data":[
+    {
+      "id":32,
+      "name":"JETCOPay",
+      "icon":null,
+      "type_code":"web-wallet"
+    }, 
+    { 
+      "id":33, 
+      "name":"QIWI", 
+      "icon":null, 
+      "type_code":"web-wallet" 
+    }
+  ],
+  total: 401
+}
+```
+#----------------------------------------------------------------------------
+
 ### api/v2/trade/p2p/payment_method/:id
 
 #### GET
@@ -140,4 +185,27 @@ success:
   "account_name": "ThaidangHoang",
   "member_id": 3
 }
+```
+#------------------------------------------------------------
+#----------------------------------------------------------------------------
+### api/v2/trade/p2p/payment_method/:id
+
+#### DELETE
+
+##### Description
+
+DELETE payment method
+
+##### Parameters
+
+```ruby
+
+```
+
+##### Responses
+
+success:
+
+```ruby
+"delete success!"
 ```
