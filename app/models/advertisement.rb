@@ -41,4 +41,11 @@ class Advertisement < ApplicationRecord
     account.lock_funds!(total_amount) if sell? && enabled?
   end
 
+  def filter_by_payment_type(type)
+    if type.present?
+      return payment_methods.pluck(:payment_type).uniq.include?(type)
+    end
+    true
+  end
+
 end
