@@ -17,6 +17,7 @@ module API
         mount Public::GlobalPrice
         mount Public::Config
         mount Public::Advertises
+        mount Public::TradeMethods
       end
     end
   end

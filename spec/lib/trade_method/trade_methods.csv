@@ -1,0 +1,401 @@
+RUBfiatbalance,RUB fiat balance,web-wallet
+BankTransferVietnam,Bank Transfer (Vietnam),bank
+UAHfiatbalance,UAH fiat balance,web-wallet
+Banktransferperu,Bank Transfer Peru,bank
+BankofGeorgia,Bank of Georgia,bank
+TBCbank,TBC Bank,bank
+Terabank,Terabank,bank
+BANK,Bank Transfer,bank
+7Eleven,7-Eleven,gift-card
+BancoFalabella,Banco Falabella,bank
+Paysera,Paysera,web-wallet
+SuperUp,SuperUp,web-wallet
+ABNAMRO,ABN AMRO,bank
+LendMN,LendMN,web-wallet
+SettlePay,SettlePay,web-wallet
+MACH,MACH,web-wallet
+Facebank,Facebank International,bank
+ALIPAY,Alipay,web-wallet
+CEC,CEC,bank
+BRDBank,BRD Bank,bank
+ArCA,ArCA,bank
+Inecobank,Inecobank,bank
+Idram,Idram,bank
+ArmBusinessBank,ArmBusinessBank,bank
+ArmEconomBank,ArmEconomBank,bank
+Ameriabank,Ameriabank,bank
+WECHAT,WeChat,web-wallet
+PKObank,PKO Bank,bank
+JysanBank,Jysan Bank,bank
+MongolChat,Mongol Chat,web-wallet
+JETCOpay,JETCOPay,web-wallet
+QIWI,QIWI,web-wallet
+BACcostarica,BAC Costa Rica,bank
+PipolPay,Pipol Pay,web-wallet
+BancoEconomico,Banco Economico,bank
+BancoDeBolivia,Banco Nacional de Bolivia,bank
+BancoDeCredito,Banco de Credito,bank
+BancoSantaCruz,Banco Mercantil Santa Cruz,bank
+BankTransferCosta,Bank Transfer (Costa Rica),bank
+SpecificBank,Transfers with specific bank,bank
+YandexMoney,Yandex.Money,web-wallet
+EurasianBank,Eurasian Bank,bank
+AltynBank,Altyn Bank,bank
+BankRBK,Bank RBK,bank
+Nurbank,Nurbank,bank
+Coinpay,Coinpay,web-wallet
+MoMo,MoMo,web-wallet
+ViettelPay,ViettelPay,web-wallet
+ZaloPay,ZaloPay,web-wallet
+BankTransferMena,Bank Transfer (Middle East),bank
+SWIFT,International Wire (SWIFT),bank
+BanktransferTurkey,Bank Transfer (Turkey),bank
+SilvergateBank,Silvergate Bank,bank
+LemonCash,Lemon Cash,web-wallet
+ApplePay,Apple Pay,web-wallet
+VisionBanco,Vision Banco,bank
+BancoFamiliar,Banco Familiar,bank
+InferfisaBanco,Interfisa Banco,bank
+BancoAtlas,Banco Atlas,bank
+WesternUnion,Western Union,cash
+ForwardBank,Forward Bank,bank
+ABank,A-Bank,bank
+BankPivdenny,Bank Pivdenny,bank
+IdeaBank,Idea Bank,bank
+PravexBank,Pravex Bank,bank
+KredoBank,KredoBank,bank
+Ukrsibbank,Ukrsibbank,bank
+RaiffeisenBankAval,Raiffeisen Bank Aval,bank
+Sportbank,Sportbank,bank
+Tascombank,Tascombank,bank
+bKash,bKash,web-wallet
+Esewa,Esewa,web-wallet
+Khalti,Khalti,web-wallet
+Nagad,Nagad,web-wallet
+Rocket,Rocket,web-wallet
+Cashapp,Cash app,web-wallet
+SkrillMoneybookers,Skrill (Moneybookers),web-wallet
+stcpay,stc pay,web-wallet
+EasyPay,EasyPay,web-wallet
+GEOPay,GEO Pay,web-wallet
+BankTransferCambodia,Bank Transfer (Cambodia),bank
+BankTransferLaos,Bank Transfer (Laos),bank
+NETELLER,NETELLER,web-wallet
+MMoneyLaos,M Money Laos,web-wallet
+BCEL,BCEL,bank
+CashInPerson,Cash in Person,cash
+BCSBank,BCS Bank,bank
+CreditEuropeBank,Credit Europe Bank (Russia),bank
+HomeCreditBank,Home Credit Bank (Russia),bank
+RenaissanceCredit,Renaissance Credit Bank,bank
+BankSaintPetersburg,Bank Saint-Petersburg,bank
+VostochnyBank,Vostochny Bank,bank
+AkBarsBank,Ak Bars Bank,bank
+AbsolutBank,Absolut Bank,bank
+RNCBbank,RNCB Bank,bank
+UralsibBank,Uralsib Bank,bank
+PermataMe,Permata Me,bank
+BankJago,Bank Jago,bank
+Flip,Flip,bank
+Oy,Oy!,bank
+CIMBNiaga,CIMB Niaga,bank
+Maybank,Maybank,bank
+OCBCNISP,OCBC NISP,bank
+Sinarmas,Sinarmas,bank
+Paytm,Paytm,web-wallet
+BancoAgricolaSV,Banco Agricola SV,bank
+BancoDaviviendaSV,Banco Davivienda SV,bank
+BancoPromericaSV,Banco Promerica SV,bank
+BancoBACCredomaticSV,Banco BAC Credomatic SV,bank
+BankPekao,Bank Pekao,bank
+BGZBNPparibas,BGZ BNP Paribas,bank
+GetinNobleBank,Getin Noble Bank,bank
+AliorBank,Alior Bank,bank
+BosBank,BOS Bank,bank
+CitiHandlowy,Citi Handlowy,bank
+InteracETransfer,Interac e-Transfer,web-wallet
+IMPS,IMPS,bank
+UPI,UPI,bank
+PhonePe,PhonePe,web-wallet
+GPay,Google Pay (GPay),web-wallet
+Mobikwik,Mobikwik,web-wallet
+FPS,Faster Payment System (FPS),bank
+Payme,PayMe,web-wallet
+Revolut,Revolut,web-wallet
+SEPA,SEPA (EU) bank transfer,bank
+WorldRemit,WorldRemit,web-wallet
+CashDeposit,Cash Deposit to Bank,cash
+UzbekNationalBank,Uzbek National Bank,bank
+Uzpromstroybank,Uzpromstroybank,bank
+AsakaBank,Asaka Bank,bank
+AgroBank,Agrobank,bank
+IpotekaBank,Ipoteka Bank,bank
+TuronBank,Turon Bank,bank
+XalqBank,Xalq Bank,bank
+QishloqQurilishBank,Qishloq Qurilish Bank,bank
+Mikrokreditbank,Mikrokreditbank,bank
+AloqaBank,Aloqa Bank,bank
+Sofort,Sofort,web-wallet
+CartesBancaires,Cartes Bancaires,bank
+Vipps,Vipps,web-wallet
+iDEAL,iDEAL,bank
+Girocard,Girocard,web-wallet
+Bancontact,Bancontact,bank
+FasterPayments,Faster Payments,bank
+Postepay,Postepay,web-wallet
+TigoMoney1,Tigo Money,web-wallet
+MoovMoney,Moov Money,web-wallet
+OrangeMoney,Orange Money - OM,web-wallet
+MTNMobileMoney,MTN Mobile Money,web-wallet
+PhilippinesNationalB,Philippines National Bank (PNB),bank
+Venmo,Venmo,web-wallet
+Blik,Blik,web-wallet
+Millennium,Millenium,bank
+SantanderPoland,Santander Poland,bank
+Ziraat,Ziraat,bank
+Garanti,Garanti,bank
+Papara,Papara,bank
+PerfectMoney,Perfect Money,web-wallet
+Mobiletopup,Mobile top-up,web-wallet
+Vodafonecash,Vodafone cash,web-wallet
+JazzCash,Jazzcash,web-wallet
+Upaisa,Upaisa,web-wallet
+EasypaisaPK,Easypaisa-PK Only,bank
+RecargasPrepago,Recargas prepago,bank
+RecargaPines,Recarga Pines,web-wallet
+BancoHipotecario,Banco Hipotecario SV,bank
+BNCBancoNacional,BNC Banco Nacional de Crédito,bank
+Zinli,Zinli,web-wallet
+UbiiPagos,Ubii Pagos,web-wallet
+BancoDeVenezuela,Banco de Venezuela,bank
+CitiBanamex,Citibanamex,bank
+BancoDelPacifico,Banco del pacifico,bank
+BancoBolivariano,Banco Bolivariano,bank
+BancoDelSol,Banco del Sol,bank
+BancoRio,Banco Rio,bank
+FinancieraSolar,Financiera Solar,bank
+BancoDeCostaRica,Banco de Costa Rica,bank
+Tenpo,Tenpo,bank
+Bancamiga2,Bancamiga,bank
+Reba,Reba,bank
+MultibankPanama,Multibank Panama,bank
+Cobru,Cobru,bank
+JeniusPayMe,Jenius PayMe,bank
+MandiriPay,Mandiri Pay,bank
+YapBNI,Yap! (BNI),bank
+BCAMobile,BCA Mobile,bank
+LinkAja,LinkAja,web-wallet
+Bakong,Bakong,bank
+UBoP,UnionBank of the Philippines,bank
+BPI,Bank of the Philippine Islands (BPI),bank
+MBoP,Metropolitan Bank of the Philippines,bank
+LoP,Landbank of the Philippines,bank
+RCBC,Rizal Commercial Banking Corporation,bank
+MpesaVodaphone,M-pesa (Vodafone),web-wallet
+TigoPesa,Tigo Pesa,web-wallet
+Transferwise,Transferwise,web-wallet
+Coinsph,Coins.ph,web-wallet
+Payeer,Payeer,web-wallet
+Advcash,Advcash,web-wallet
+FNBewallet,FNB-ewallet,web-wallet
+GoPay,GoPay,web-wallet
+OVO,OVO,web-wallet
+MPesaKenya,M-PESA Kenya (Safaricom),web-wallet
+MpesaPaybill,M-pesa Paybill,web-wallet
+Bundle,Bundle,bank
+GoMoney,GoMoney,web-wallet
+UniCreditBulbank,UniCredit Bulbank,bank
+DSKBank,DSK Bank,bank
+UnitedBulgarianBank,United Bulgarian Bank (UBB),bank
+FiBank,Fibank,bank
+OTPBank,OTP Bank,bank
+KHBank,K&H Bank,bank
+ErsteBank,Erste Bank,bank
+BudapestBank,Budapest Bank,bank
+CIBBank,CIB Bank,bank
+MKBBank,MKB Bank,bank
+FinComBank,FinComBank,bank
+BCRBank,BCR Bank,bank
+BankTransilvania,Bank Transilvania,bank
+Victoriabank,Victoriabank,bank
+MAIB,MAIB,bank
+MICB,MICB,bank
+FoxPay,Foxpay,web-wallet
+VNPTpay,VNPT Pay,web-wallet
+VinID,VinID,web-wallet
+VNpay,VNPAY,web-wallet
+SmartPay,SmartPay,web-wallet
+ABA,ABA,bank
+airtelmoney,Airtel Money,web-wallet
+Monpay,Monpay,web-wallet
+Banesco,Banesco,bank
+Provincial,Provincial,bank
+Mercantil,Mercantil,bank
+PagoMovil,Pago Movil,bank
+Nequi,Nequi,bank
+BanescoPanama,Banesco Panama,bank
+BankTaiwan,Bank Transfer (Taiwan),bank
+LINEPay,LINE Pay,web-wallet
+jkopay,JKOPAY,web-wallet
+PicPay,PicPay,web-wallet
+BancoActivo,Banco Activo,bank
+PagSeguro,PagSeguro,web-wallet
+Boleto,Bank slip,bank
+MercadoPago,Mercadopago,web-wallet
+Chippercash,Chipper Cash,web-wallet
+TrueMoney,True Money,web-wallet
+Gcash,Gcash,web-wallet
+Paymaya,Paymaya,web-wallet
+DANA,DANA,web-wallet
+TouchnGo,Touch n Go,web-wallet
+WaveMobile,Wave Mobile Money,web-wallet
+Humo,Humo,bank
+Uzcard,Uzcard,bank
+Kapitalbank,Kapitalbank,bank
+InfinBank,InfinBank,bank
+TrastBank,TrastBank,bank
+BankIndia,Bank Transfer (India),bank
+Bizum,Bizum,web-wallet
+BancoFucerep,Banco Fucerep,bank
+TransferenciaACH,Transferencia ACH (Panamá),web-wallet
+OcaBlue,OCA Blue,bank
+Banplus,Banplus,bank
+Wilobank,Wilobank,bank
+Bancaribe,Bancaribe,bank
+BancoItauChile,Banco Itau Chile,bank
+RedPagos,Red Pagos,bank
+BankVenezuela,Bank Transfer (Venezuela),bank
+SEPAinstant,SEPA Instant,bank
+DashApp,Dash - App,web-wallet
+SEAbank,SEA Bank,bank
+NEO,NEO,bank
+BankArgentina,Bank Transfer (Argentina),bank
+BankBrazil,Bank Transfer (Brazil),bank
+ItauBrazil,Itaú Brazil,bank
+Hype,Hype,bank
+N26,N26,bank
+Monzo,Monzo,bank
+StarlingBank,Starling Bank,bank
+Bunq,Bunq,bank
+OKSO,OSKO,web-wallet
+BancoPlaza,Banco Plaza,bank
+TuDineroYa,Tu Dinero Ya (Banco Plaza),web-wallet
+AsiaUnitedBank,Asia United Bank,bank
+TDbank,TD Bank,bank
+RBCRoyalbank,RBC Royal Bank,bank
+BMObank,BMO,bank
+CIBCbank,CIBC,bank
+Tangerinebank,Tangerine bank,bank
+EQbank,EQ Bank,bank
+DCbank,DCBank,bank
+WavePay1,WavePay,web-wallet
+WingMoney,Wing Money,web-wallet
+KBZPay1,KBZPay,web-wallet
+TeleBirr,Tele Birr,web-wallet
+CBEBirr,CBE Birr,web-wallet
+Abyssinia,Abyssinia,bank
+Awash,Awash,bank
+Dashen,Dashen,bank
+CBE,CBE,bank
+Sberbank,Sberbank,bank
+Oschadbank,Oschadbank,bank
+Tinkoff,Tinkoff,bank
+AlfaBank,Alfa-bank,bank
+VTBBank,VTB Bank,bank
+GazpromBank,Gazprombank,bank
+CreditMoscow,Credit Bank of Moscow,bank
+KaspiBank,Kaspi Bank,bank
+HalykBank,Halyk Bank,bank
+ForteBank,ForteBank,bank
+SBP,SBP - Fast Bank Transfer,bank
+Mir,Mir,bank
+MTSBank,MTS-Bank,bank
+OtkritieBank,Otkritie,bank
+OTPBankRussia,OTP,bank
+PostBankRussia,Post Bank,bank
+RaiffeisenBankRussia,Raiffeisenbank,bank
+RosBank,Rosbank,bank
+RosselkhozBank,Rosselkhozbank,bank
+RussianStandardBank,Russian Standard Bank,bank
+CitibankRussia,Citibank (Russia),bank
+SovkomBank,Sovkombank,bank
+TrustBankRussia,Trust,bank
+UniCreditRussia,UniCredit,bank
+Rocketbank,Rocketbank,bank
+PrivatBank,Privat Bank,bank
+Monobank,Monobank,bank
+PUMBBank,PUMB,bank
+BancolombiaSA,Bancolombia S.A,bank
+DaviviendaSA,Davivienda S.A,bank
+BancodeBogota,Banco de Bogota,bank
+BBVABank,BBVA,bank
+WesternDiscountBank,Western Discount Bank,bank
+MercantilBankPanama,Mercantil Bank Panama,bank
+BancoGeneralPanama,Banco General Panama,bank
+BanistmoPanama,Banistmo Panama,bank
+BancoBrubank,Banco Brubank,bank
+Mony,Mony,bank
+AirTM,AirTM,web-wallet
+Uphold,Uphold,web-wallet
+Uala,Uala,bank
+Daviplata,Daviplata,bank
+Efecty,Efecty,cash
+BancoPichincha,Banco Pichincha,bank
+Produbanco,Produbanco,bank
+BancoGuayaquil,Banco Guayaquil,bank
+KuveytTurk,Kuveyt Turk,bank
+BankofAmerica,Bank of America,bank
+Bancamiga,Bancamiga,bank
+BancoGanadero,Banco Ganadero,bank
+TigoMoney,Tigo Money,web-wallet
+BancoUnion,Banco Union,bank
+BancoEstado,Banco Estado,bank
+BancoFassil,Banco Fassil,bank
+BancoItauParaguay,Banco Itau Paraguay,bank
+BancoContinentalPar,Banco Continental Paraguay,bank
+BancoGNBParaguay,Banco GNB Paraguay,bank
+BancodeChile,Banco de Chile,bank
+ItauUruguay,Itaú Uruguay,bank
+BancoSantanderChile,Banco Santander Chile,bank
+BBVAUruguay,BBVA Uruguay,bank
+ScotiabankUruguay,Scotiabank Uruguay,bank
+SantanderUrug,Banco Santander Uruguay,bank
+Zelle,Zelle,web-wallet
+BandesUruguay,Bandes Uruguay,bank
+Prex,Prex,bank
+BankRepublicUruguay,Bank of the Republic of Uruguay,bank
+Yape,Yape,web-wallet
+Plin,Plin,web-wallet
+STP,STP,bank
+Movii,Movii,credit-card
+OXXO,OXXO,cash
+Paynet,Paynet,cash
+CreditBankofPeru,Credit Bank of Peru,bank
+ScotiabankPeru,Scotiabank Peru,bank
+ScotiabankColpatria,Scotiabank Colpatria,bank
+Interbank,Interbank,bank
+ScotiabankPanama,Scotiabank Panama,bank
+BACCredomatic,BAC Credomatic,bank
+Pix,Pix,web-wallet
+Payall,Payall,web-wallet
+Paysend,Paysend.com,bank
+CSOB,ČSOB,bank
+mBank,mBank,bank
+Ceskasporitelna,Česká spořitelna,bank
+Fiobanka,Fio banka,bank
+MONETAMoneyBank,MONETA Money Bank,bank
+SocieteGenerale,Societe Generale,bank
+CreditAgricole,Credit Agricole,bank
+BNPParibas,BNP Paribas,bank
+LaBanquepostale,La Banque postale,bank
+Caissedepargne,Caisse d′Epargne,bank
+LloydsBank,Lloyds Bank,bank
+ING,ING,bank
+UniCreditEU,UniCredit,bank
+MoneyGram,Moneygram,cash
+CashU,CashU,web-wallet
+ShopeePay,ShopeePay-SEA,web-wallet
+CentralBankofUruguay,Central Bank of Uruguay,bank
+ShopeeTW,Shopee (Taiwan),web-wallet
+CenterCreditBank,CenterCredit Bank,bank
+HomeCreditKazakhstan,Home Credit Kazakhstan,bank
