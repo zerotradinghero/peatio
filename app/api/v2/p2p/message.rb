@@ -15,7 +15,11 @@ module API::V2
         unless order
           return error!({ errors: ['p2p_orders.not_found'] }, 404)
         end
-        order.messages.create(member_id: current_user.id, content: params[:content], p2p_order_id: params[:id])
+        message = order.messages.new(member_id: current_user.id, content: params[:content], p2p_order_id: params[:id])
+        (params[:images] || []).each do |image|
+          message.attachments.new(image: image, member_id: current_user.id)
+        end
+        message.save
         present "create success!"
       end
 
