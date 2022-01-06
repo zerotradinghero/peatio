@@ -115,7 +115,7 @@ module API::V2
         result = Advertisement.filter_created_at(start_date, end_date).order('created_at DESC')
         result = result.ransack(search_attrs)
         result = result.result.load.to_a.select {|adv| adv.filter_by_payment_type(params[:payment_type])}
-        present result, with: API::V2::Entities::Advertisement
+        present Kaminari.paginate_array(result).page(params[:page].to_i || 1).per(params[:limit] || 15), with: API::V2::Entities::Advertisement
       end
 
       #----------------------------------------------------------------------------------------------------------------------
