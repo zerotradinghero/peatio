@@ -103,7 +103,7 @@ module API::V2
       end
       get '/my_advertises' do
         search_attrs = {m: 'and', "creator_id_eq": current_user.id}
-        search_attrs["advertis_type_eq"] = params[:advertis_type] if params[:advertis_type].present?
+        search_attrs["advertis_type_eq"] = Advertisement.advertis_types[params[:advertis_type]] if params[:advertis_type].present?
         search_attrs["price_type_eq"] = params[:price_type] if params[:price_type].present?
         search_attrs["currency_id_eq"] = params[:currency_id] if params[:currency_id].present?
         search_attrs["currency_payment_id_eq"] = params[:currency_payment_id] if params[:currency_payment_id].present?
