@@ -11,6 +11,7 @@ module API::V2
       mount P2p::Member
       mount P2p::P2pOrderClaims
       mount P2p::PaymentMethods
+      mount P2p::Message
     end
   end
 end

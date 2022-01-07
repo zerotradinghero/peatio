@@ -75,7 +75,8 @@ module API::V2
         search_attrs["p2p_orders_type_eq"] = params[:p2p_orders_type] if params[:p2p_orders_type].present?
         order = P2pOrder.joins(:advertisement).where("advertisements.creator_id = ? OR p2p_orders.member_id = ?", current_user.id, current_user.id).status_ordered
         order = order.ransack(search_attrs).result
-        present order, with: API::V2::Entities::P2pOrder
+        present :data, Kaminari.paginate_array(order).page(params[:page].to_i || 1).per(params[:limit] || 15), with: API::V2::Entities::P2pOrder
+        present :total, order.count
       end
 
       desc 'Show P2p order',

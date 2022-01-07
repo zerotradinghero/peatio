@@ -6,6 +6,7 @@ class P2pOrder < ApplicationRecord
   belongs_to :advertisement_payment_methods
   belongs_to :member
   has_many :attachments, as: :object
+  has_many :messages
 
   enum status: [:ordered, :transfer, :paid, :complete, :cancel]
   enum p2p_orders_type: [:sell, :buy]
