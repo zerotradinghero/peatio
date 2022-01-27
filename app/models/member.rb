@@ -32,6 +32,10 @@ class Member < ApplicationRecord
     end
   end
 
+  def withdraw_limit
+    WithdrawLimit.for(kyc_level: level, group: group)
+  end
+
   def trades
     Trade.where('maker_id = ? OR taker_id = ?', id, id)
   end

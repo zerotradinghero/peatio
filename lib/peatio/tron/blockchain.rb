@@ -3,6 +3,7 @@ module Tron
     include ::Tron::Concerns::Common
     include ::Tron::Concerns::Encryption
 
+    NATIVE_CURRENCY_ID = 'trx'
     DEFAULT_FEATURES = { case_sensitive: true, cash_addr_format: false }.freeze
     TRC20_EVENT_IDENTIFIER = 'ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
     SUCCESS = 'success'
@@ -109,6 +110,7 @@ module Tron
                            txout: 0,
                            block_number: txn['block_number'],
                            currency_id: currency.fetch(:id),
+                           fee_currency_id: NATIVE_CURRENCY_ID,
                            status: SUCCESS }
       end
     end
@@ -136,6 +138,7 @@ module Tron
                              txout: index,
                              block_number: txn_receipt['block_number'],
                              currency_id: currency.fetch(:id),
+                             fee_currency_id: NATIVE_CURRENCY_ID,
                              status: trc20_txn_status(txn_receipt)
           }
         end
@@ -152,6 +155,7 @@ module Tron
           txout: 0,
           block_number: txn_hash['block_number'],
           currency_id: currency.fetch(:id),
+          fee_currency_id: NATIVE_CURRENCY_ID,
           status: SUCCESS }
       end
     end
